@@ -1,0 +1,8 @@
+render_distance 8
+window_size 2560 1440
+fov 70
+gamma 1.0
+contrast 1.0
+saturation 1.2
+brightness 1.0
+post_process 1

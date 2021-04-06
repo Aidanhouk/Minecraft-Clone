@@ -1,0 +1,26 @@
+Name
+Birch Bark
+
+Id
+12
+
+TexTop
+14 1
+
+TexSide
+13 1
+
+TexBottom
+14 1
+
+Opaque
+1
+
+MeshType
+0
+
+ShaderType
+0
+
+Collidable
+1

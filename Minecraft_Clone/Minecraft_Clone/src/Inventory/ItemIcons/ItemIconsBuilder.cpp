@@ -1,0 +1,185 @@
+#include "ItemIconsBuilder.h"
+
+#include "../IconsMesh.h"
+#include "../Inventory.h"
+#include "../IconDatabase.h"
+
+#include "World/Block/ChunkBlock.h"
+#include "World/Block/BlockData.h"
+
+#include "RenderSettings.h"
+
+#include <iostream>
+
+const std::array<sf::Vector2i, 10> DigitsTexturePositions{
+	sf::Vector2i{0, 8},
+	sf::Vector2i{6, 8},
+	sf::Vector2i{12, 8},
+	sf::Vector2i{18, 8},
+	sf::Vector2i{24, 8},
+	sf::Vector2i{30, 8},
+	sf::Vector2i{36, 8},
+	sf::Vector2i{42, 8},
+	sf::Vector2i{48, 8},
+	sf::Vector2i{54, 8},
+};
+
+ItemIconsBuilder::ItemIconsBuilder(Inventory &inventory, IconsMesh &itemIconsMesh)
+	: m_pInventory{ &inventory },
+	m_pItemIconsMesh{ &itemIconsMesh }
+{
+	m_invSlotSize = m_pInventory->getInvSlotSize();
+	m_toolbarSlotSize = m_pInventory->getToolbarSlotSize();
+}
+
+void ItemIconsBuilder::buildmesh()
+{
+	auto &invSlots = m_pInventory->getInvSlots();
+
+	if (m_pInventory->isInventoryOpened()) {
+		for (int i = 0; i < invSlots.size(); ++i) {
+			if (invSlots[i].item.getMaterial().id != Material::ID::Nothing) {
+				buildIcon(invSlots[i]);
+			}
+		}
+	}
+	else {
+		for (int i = 0; i < 9; ++i) {
+			if (invSlots[i].item.getMaterial().id != Material::ID::Nothing) {
+				buildToolbarIcon(invSlots[i], m_pInventory->getToolbarSlotsPos()[i]);
+			}
+		}
+	}
+}
+
+void ItemIconsBuilder::buildIcon(ItemSlot &slot)
+{
+	static const float RESX = g_renderSettings.resolutionX;
+	static const float RESY = g_renderSettings.resolutionY;
+
+	std::array<GLfloat, 12> vertexPos{
+		(slot.position.x)					/ RESX,	(RESY - slot.position.y)					/ RESY,	0.0f,
+		(slot.position.x + m_invSlotSize)	/ RESX,	(RESY - slot.position.y)					/ RESY,	0.0f,
+		(slot.position.x + m_invSlotSize)	/ RESX,	(RESY - slot.position.y + m_invSlotSize)	/ RESY,	0.0f,
+		(slot.position.x)					/ RESX,	(RESY - slot.position.y + m_invSlotSize)	/ RESY,	0.0f,
+	};
+
+	for (auto & vertex : vertexPos) {
+		vertex = vertex * 2 - 1.0f;
+	}
+
+	ChunkBlock block(slot.item.getMaterial().toBlockID());
+	auto textureCoords = block.getData().texSideCoord;
+
+	auto texCoords = IconDatabase::get().textureAtlas.getTextureCoords(textureCoords);
+
+	m_pItemIconsMesh->addIcon(vertexPos, texCoords);
+
+
+
+	int number = slot.item.getNumInStack();
+	/// Like in Minecraft
+	//if (number == 1)
+	//	return;
+
+	int bias = m_toolbarSlotSize * 0.05f;
+
+	if (number >= 10) {
+		// 1st digit
+		buildDigit(number / 10, sf::Vector2i(
+			slot.position.x + m_invSlotSize - m_invSlotSize / 2.7f + bias,
+			RESY - slot.position.y - bias), m_invSlotSize);
+		// 2nd digit
+		buildDigit(number % 10, sf::Vector2i(
+			slot.position.x + m_invSlotSize + bias,
+			RESY - slot.position.y - bias), m_invSlotSize);
+	}
+	else {
+		buildDigit(number, sf::Vector2i(
+			slot.position.x + m_invSlotSize + bias,
+			RESY - slot.position.y - bias), m_invSlotSize);
+	}
+}
+
+void ItemIconsBuilder::buildToolbarIcon(ItemSlot & slot, sf::Vector2i &toolbarSlotPos)
+{
+	static const float RESX = g_renderSettings.resolutionX;
+	static const float RESY = g_renderSettings.resolutionY;
+
+	std::array<GLfloat, 12> vertexPos{
+		(toolbarSlotPos.x)						/ RESX, (RESY - toolbarSlotPos.y)						/ RESY,	0.0f,
+		(toolbarSlotPos.x + m_toolbarSlotSize)	/ RESX, (RESY - toolbarSlotPos.y)						/ RESY,	0.0f,
+		(toolbarSlotPos.x + m_toolbarSlotSize)	/ RESX, (RESY - toolbarSlotPos.y + m_toolbarSlotSize)	/ RESY,	0.0f,
+		(toolbarSlotPos.x)						/ RESX, (RESY - toolbarSlotPos.y + m_toolbarSlotSize)	/ RESY,	0.0f,
+	};
+
+	for (auto & vertex : vertexPos) {
+		vertex = vertex * 2 - 1.0f;
+	}
+
+	ChunkBlock block(slot.item.getMaterial().toBlockID());
+	auto textureCoords = block.getData().texSideCoord;
+
+	auto texCoords = IconDatabase::get().textureAtlas.getTextureCoords(textureCoords);
+
+	m_pItemIconsMesh->addIcon(vertexPos, texCoords);
+
+
+
+	int number = slot.item.getNumInStack();
+	/// Like in Minecraft
+	//if (number == 1)
+	//	return;
+
+	int bias = m_toolbarSlotSize * 0.05f;
+
+	if (number >= 10) {
+		// 1st digit
+		buildDigit(number / 10, sf::Vector2i(
+			toolbarSlotPos.x + m_toolbarSlotSize - m_toolbarSlotSize / 2.7f + bias,
+			RESY - toolbarSlotPos.y - bias), m_toolbarSlotSize);
+		// 2nd digit
+		buildDigit(number % 10, sf::Vector2i(
+			toolbarSlotPos.x + m_toolbarSlotSize + bias,
+			RESY - toolbarSlotPos.y - bias), m_toolbarSlotSize);
+	}
+	else {
+		buildDigit(number, sf::Vector2i(
+			toolbarSlotPos.x + m_toolbarSlotSize + bias,
+			RESY - toolbarSlotPos.y - bias), m_toolbarSlotSize);
+	}
+}
+
+void ItemIconsBuilder::buildDigit(int digit, sf::Vector2i rightBottomPos, float slotSize)
+{
+	static const float RESX = g_renderSettings.resolutionX;
+	static const float RESY = g_renderSettings.resolutionY;
+
+	float digitWidth = slotSize / 2.7f;
+	float digitHeight = digitWidth * 8 / 6;
+
+	std::array<GLfloat, 12> vertexPos{
+		(rightBottomPos.x - digitWidth)	/ RESX, (rightBottomPos.y)					/ RESY,	0.0f,
+		(rightBottomPos.x)				/ RESX, (rightBottomPos.y)					/ RESY,	0.0f,
+		(rightBottomPos.x)				/ RESX, (rightBottomPos.y + digitHeight)	/ RESY,	0.0f,
+		(rightBottomPos.x - digitWidth)	/ RESX, (rightBottomPos.y + digitHeight)	/ RESY,	0.0f,
+	};
+
+	for (auto & vertex : vertexPos) {
+		vertex = vertex * 2 - 1.0f;
+	}
+
+	sf::Vector2i textureStarPos = DigitsTexturePositions[digit];
+	std::array<GLfloat, 8U> texCoords{
+		textureStarPos.x,		textureStarPos.y,
+		textureStarPos.x + 6,	textureStarPos.y,
+		textureStarPos.x + 6,	textureStarPos.y - 8,
+		textureStarPos.x,		textureStarPos.y - 8,
+	};
+
+	for (auto & textCoord : texCoords)
+		// might change to textCoord /= IconDatabase::get().textureAtlas.getAtlasSize()
+		textCoord /= 4096.0f;
+
+	m_pItemIconsMesh->addIcon(vertexPos, texCoords);
+}

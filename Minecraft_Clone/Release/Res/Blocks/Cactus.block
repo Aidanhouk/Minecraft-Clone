@@ -1,0 +1,26 @@
+Name
+Cactus
+
+Id
+8
+
+TexTop
+9 1
+
+TexSide
+9 0
+
+TexBottom
+9 1
+
+Opaque
+1
+
+MeshType
+0
+
+ShaderType
+0
+
+Collidable
+1

@@ -1,0 +1,26 @@
+Name
+Palm Bark
+
+Id
+13
+
+TexTop
+11 1
+
+TexSide
+10 1
+
+TexBottom
+11 1
+
+Opaque
+1
+
+MeshType
+0
+
+ShaderType
+0
+
+Collidable
+1

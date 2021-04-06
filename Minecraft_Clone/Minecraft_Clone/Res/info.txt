@@ -1,0 +1,25 @@
+
+============WELCOME TO MINECRAFT============
+
+Implemented features:
+-World generation
+-Biomes
+-Collision detection
+-Block breaking and placing
+-Day & night cycle
+-Post processing
+-Health and damage system
+-Swimming and oxygen system
+-Inventory
+-Snow and rain
+
+Features are missing:
+-Chunks saving
+-Caves
+-Crafting
+-Mobs
+
+Please view 'controls.txt for controls!
+When the world is loaded click mouse to make the window active!
+
+============Press enter to begin ============
