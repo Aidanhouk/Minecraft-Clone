@@ -44,7 +44,7 @@ private:
 
 	inline void parametersUpdate();
 	
-	bool m_creativeMode = true;
+	bool m_creativeMode = false;
 	bool m_isOnGround = false;
 	bool m_isFlying = false;
 	bool m_isMoving = false;

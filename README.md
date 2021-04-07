@@ -1,7 +1,11 @@
 # Minecraft-Clone
 
+Developed using C++, OpenGL, SFML.
+
 The game without source code:
 https://drive.google.com/file/d/1ooYgrUq4L9GoeznGaJ97S0H_J8xGBByp/view?usp=sharing
+
+Video: https://youtu.be/tOq64h83sDs
 
 I used Hopson's version of Minecraft as a base. It can be found here:
 https://github.com/Hopson97/MineCraft-One-Week-Challenge

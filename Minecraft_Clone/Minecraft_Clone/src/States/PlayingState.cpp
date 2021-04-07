@@ -121,7 +121,7 @@ void StatePlaying::render(RenderMaster &renderer)
 {
     static sf::Clock dt;
 
-    static bool drawGUI = false;
+    static bool drawGUI = true;
     static ToggleKey drawKey(sf::Keyboard::F3);
 
 	renderer.drawSFML(m_crosshair);

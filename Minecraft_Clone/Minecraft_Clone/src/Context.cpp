@@ -20,13 +20,13 @@ Context::Context(const Config &config)
 	//This is no longer necessary due to the Mac Support update.
 
 	if (config.isFullscreen) {
-		window.create(sf::VideoMode::getDesktopMode(), "MineCraft Week", sf::Style::Fullscreen, settings);
+		window.create(sf::VideoMode::getDesktopMode(), "Minecraft-Clone", sf::Style::Fullscreen, settings);
 		g_renderSettings.resolutionX = sf::VideoMode::getDesktopMode().width;
 		g_renderSettings.resolutionY = sf::VideoMode::getDesktopMode().height;
 	}
 	else {
 		sf::VideoMode winMode(config.windowX, config.windowY);
-		window.create(winMode, "MineCraft Week", sf::Style::Close, settings);
+		window.create(winMode, "Minecraft-Clone", sf::Style::Close, settings);
 		g_renderSettings.resolutionX = config.windowX;
 		g_renderSettings.resolutionY = config.windowY;
 	}
