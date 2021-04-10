@@ -6,6 +6,7 @@
 #include "Player/PlayerInfo.h"
 #include "ItemIcons/ItemIconsBuilder.h"
 #include "PlayerParametersIcons/ParametersBuilder.h"
+#include "Item/DroppedItem/DroppedItemsManager.h"
 
 #include <iostream>
 
@@ -177,6 +178,8 @@ void Inventory::addItems(const Material & material, int number, int callNumber)
 
 void Inventory::removeHeldItem(int number)
 {
+	if (isSlotEmpty(&m_slots[m_heldItem]))
+		return;
 	m_slots[m_heldItem].item.remove(number);
 	updateIcons();
 	updateToolbarText();
@@ -185,11 +188,14 @@ void Inventory::removeHeldItem(int number)
 void Inventory::throwItem(int number, ItemSlot *thrownSlot)
 {
 	if (thrownSlot) {
-		//THROW thrownSlot;
-		addItems(thrownSlot->item.getMaterial(), number);
+		m_pDroppedItemsManager->addItem(thrownSlot->item,
+			m_pPlayer->position, m_pPlayer->rotation);
 	}
 	else {
-		//THROW &m_slots[m_heldItem];
+		if (isSlotEmpty(&m_slots[m_heldItem]))
+			return;
+		m_pDroppedItemsManager->addItem({ m_slots[m_heldItem].item.getMaterial(), 1 },
+			m_pPlayer->position, m_pPlayer->rotation);
 	}
 }
 
@@ -346,9 +352,9 @@ int Inventory::getPointedSlotColumn(int mousePosX)
 void Inventory::updateIcons()
 {
 	m_iconsMesh.deleteData();
-	ItemIconsBuilder(*this, m_iconsMesh).buildmesh();
+	ItemIconsBuilder(*this, m_iconsMesh).buildMesh();
 	if (!m_isOpened)
-		ParametersBuilder(*this, m_iconsMesh, *m_pPlayer).buildmesh();
+		ParametersBuilder(*this, m_iconsMesh, *m_pPlayer).buildMesh();
 }
 
 void Inventory::updateGrabbedItemIcon()

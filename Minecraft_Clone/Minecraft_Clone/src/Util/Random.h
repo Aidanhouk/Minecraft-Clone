@@ -7,24 +7,26 @@
 #include "Singleton.h"
 
 class RandomSingleton : public Singleton {
-  public:
+public:
     static RandomSingleton &get();
 
-    template <typename T> T intInRange(T low, T high)
+    template <typename T>
+	T intInRange(T low, T high)
     {
         static_assert(std::is_integral<T>::value, "Not integral type!");
         std::uniform_int_distribution<T> dist(low, high);
         return dist(m_randomEngine);
     }
 
-  private:
+private:
     RandomSingleton();
 
     std::mt19937 m_randomEngine;
 };
 
-template <typename REngine = std::mt19937> class Random {
-  public:
+template <typename REngine = std::mt19937>
+class Random {
+public:
     Random(int n = std::time(nullptr))
     {
         m_randomEngine.seed(n);
@@ -44,7 +46,7 @@ template <typename REngine = std::mt19937> class Random {
         m_randomEngine.seed(seed);
     }
 
-  private:
+private:
     REngine m_randomEngine;
 };
 

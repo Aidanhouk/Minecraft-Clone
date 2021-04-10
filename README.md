@@ -5,27 +5,20 @@ Developed using C++, OpenGL, SFML.
 The game without source code:
 https://drive.google.com/file/d/1ooYgrUq4L9GoeznGaJ97S0H_J8xGBByp/view?usp=sharing
 
-Video: https://youtu.be/tOq64h83sDs
+Video: https://youtu.be/Xgi8jtWoRi0. Some lags only on the video.
 
-I used Hopson's version of Minecraft as a base. It can be found here:
-https://github.com/Hopson97/MineCraft-One-Week-Challenge
-
-It had the following features implemented:
-- Biomes generation
+Implemented features:
+- World generation
+- Biomes
 - Collision detection
 - Block breaking/placing
-- Postprocessing
+- Items dropping
+- Postprocessing (bloom, fxaa, motion blur)
 - Day and night cycle
-
-Most of them had flaws or looked poor. I changed and fixed a lot of original code. After that the game felt much better.
-I completely refactored blocks and biomes generation, added lots of blocks and changed textures to the original textures from Minecraft.
-
-The features I implemented:
 - Health and damage system
 - Swimming and oxygen system
 - HUD: inventory, toolbar, health and oxygen bars
 - Snowfall and rain
-- Ice sliding, leaves are not hollow anymore, acceptable block breaking/placing
 - And much more
 
 ## Controls

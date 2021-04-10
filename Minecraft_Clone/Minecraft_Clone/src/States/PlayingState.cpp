@@ -33,6 +33,7 @@ StatePlaying::StatePlaying(Application &app, const Config &config)
 	m_tickManager->add(m_sky);
 
 	app.setPlayer(&m_player);
+	m_player.setDroppedItemsManager(&m_world.getDroppedItemsManager());
 }
 
 void StatePlaying::handleEvent(sf::Event e)
@@ -55,7 +56,7 @@ void StatePlaying::handleInput()
     static sf::Clock timer;
     glm::vec3 lastPosition;
 
-    for (Ray ray({ m_player.position.x, m_player.position.y + 0.57f, m_player.position.z }, m_player.rotation); // Corrected for camera offset
+    for (Ray ray({ m_player.position.x, m_player.position.y + 0.57f, m_player.position.z }, m_player.rotation);
          ray.getLength() < 5; ray.step(0.05f)) {
         int x = (int)ray.getEnd().x;
 		int y = (int)ray.getEnd().y;
@@ -112,7 +113,7 @@ void StatePlaying::update(float deltaTime)
 
     m_fpsCounter.update();
     m_player.update(deltaTime, m_world);
-    m_world.update(m_pApplication->getCamera());
+    m_world.update(m_player, deltaTime);
 
 	m_sky->Update(m_player.position);
 }

@@ -1,26 +1,24 @@
-Mouse 			- Move around to look
-Left Click 		- Break block
-Right Click 		- Place block
-
-WASD 			- Movement
-Hold CTRL 		- Speed up
-
-Tab			- Toggle gamemode (creative or survival)
-F			- Toggle fly mode (only available in creative mode)
-
-Space 			- Go up (when flying) / Jump
-Shift 			- Go down (when flying)
-
-Q			- Throw held item on ground (vanishes now)
-E			- Open/Close inventory
-Wheel up/down	 	- Previous/Next item in toolbar
-Num 1-9			- Num 1-9 item in toolbar
-
-F3 			- Hide/Show FPS and other info
-P			- Toggle post processing
-+/-			- +/- 1 hour
-F5/F6/F7		- Rain/Snowfall/Clear sky
-
-L 			- Lock/Unlock looking
-
-Escape 			- Exit Game
+| Button                        | Action                                                         |
+|-------------------------------|----------------------------------------------------------------|
+| Move mouse                    | Look around                                                    |
+| Left mouse button             | Break block                                                    |
+| Right mouse button            | Place block                                                    |
+| W, A, S, D                    | Move                                                           |
+| Space                         | Jump/move up         	                                         |
+| Shift                         | Move down                                                      |
+| Hold Ctrl                     | Speed up                                                       |
+| Tab                           | Toggle creative mode                                           |
+| F                             | Toggle flying (only available in creative mode)                |
+| Q                             | Drop itemstack (vanishes now)                                  |
+| E                             | Open/Close inventory                                           |
+| Mouse wheel                   | Select item                                                    |
+| 0-9                           | Select item                                                    |
+| +/-                           | Add/Subtract 1 hour                                            |
+| P                             | Toggle postprocessing                                          |
+| F3                            | Hide/show FPS, player's coordinates and other info             |
+| F5                            | Set rain                                                       |
+| F6                            | Set snowfall                                                   |
+| F7                            | Disable weather                                                |
+| Esc                           | Close the game                                                 |
+| L                             | Lock/unlock looking                                            |
+| C                             | Reload chunks                                                  |

@@ -24,7 +24,7 @@ ParametersBuilder::ParametersBuilder(Inventory &inventory, IconsMesh &itemIconsM
 {
 }
 
-void ParametersBuilder::buildmesh()
+void ParametersBuilder::buildMesh()
 {
 	int hp = m_pPlayer->getHP();
 	if (hp < 0)

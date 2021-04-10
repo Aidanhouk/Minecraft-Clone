@@ -18,7 +18,7 @@
 #include <iostream>
 
 Player::Player(const Config &config, Application &app)
-	: Entity({ 2500, 125, 2500 }, { 0.f, 0.f, 0.f }, { 0.3f, 1.f, 0.3f }),
+	: Entity({ 2500, 125, 2500 }, { 0.0f, 0.0f, 0.0f }, { 0.3f, 1.0f, 0.3f }),
 	m_inventoryKey(sf::Keyboard::E),
 	m_throwItemKey(sf::Keyboard::Q),
 	m_flyKey(sf::Keyboard::F),
@@ -124,10 +124,10 @@ void Player::mouseScrollEvent(int delta)
 {
 	if (p_info.interfaceCursor)
 		return;
-	// Wheel down = next item
+	/// Wheel down = next item
 	if (delta < 0)
 		m_Inventory.nextItem();
-	// Wheel up = previous item
+	/// Wheel up = previous item
 	else
 		m_Inventory.previousItem();
 }
@@ -155,13 +155,13 @@ void Player::update(float dt, World &world)
     }
 
     position.x += velocity.x * dt;
-    collide(world, {velocity.x, 0, 0}, dt);
+    collide(world, {velocity.x, 0, 0});
 
     position.y += velocity.y * dt;
-    collide(world, {0, velocity.y, 0}, dt);
+    collide(world, {0, velocity.y, 0});
 
     position.z += velocity.z * dt;
-    collide(world, {0, 0, velocity.z}, dt);
+    collide(world, {0, 0, velocity.z});
 
 	movementInWater(world);
 
@@ -198,7 +198,7 @@ void Player::update(float dt, World &world)
     }
 }
 
-void Player::collide(World &world, const glm::vec3 &vel, float dt)
+void Player::collide(World &world, const glm::vec3 &vel)
 {
 	for (int x = position.x - box.dimensions.x; x < position.x + box.dimensions.x; ++x) {
 		for (int y = position.y - box.dimensions.y; y < position.y + 0.97f; ++y) {
@@ -222,7 +222,7 @@ void Player::collide(World &world, const glm::vec3 &vel, float dt)
 						position.y = y - box.dimensions.y;
 						velocity.y = 0;
 					}
-					// when on ground
+					/// When on ground
 					else if (vel.y < 0) {
 						if (vel.y < -25.0f && !m_creativeMode) {
 							int lastHP = m_hp;
@@ -263,7 +263,7 @@ void Player::movementInWater(World & world)
 	if (world.getBlock(position.x, position.y, position.z).getData().id == BlockId::Water) {
 		m_isUnderwater = true;
 		m_isSwimming = true;
-		// underwater, bad vision
+		/// Underwater, bad vision
 		if (position.y < WATER_LEVEL + 0.3f) {
 			if (p_info.underwater != true) {
 				parametersUpdate();
@@ -524,4 +524,9 @@ void Player::drawGUI(RenderMaster &master)
 void Player::drawInventory(RenderMaster & master)
 {
 	m_Inventory.draw(master);
+}
+
+void Player::setDroppedItemsManager(DroppedItemsManager * manager)
+{
+	m_Inventory.setDroppedItemsManager(manager);
 }

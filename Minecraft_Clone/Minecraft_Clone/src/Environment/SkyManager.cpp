@@ -2,6 +2,7 @@
 
 #include "../Camera.h"
 #include "../GlobalInfo.h"
+#include "Player/PlayerInfo.h"
 
 #include <iostream>
 
@@ -154,10 +155,12 @@ void SkyManager::render(const Camera& camera)
 	GL::drawElements(m_MoonModel.getIndicesCount());
 	
 	clouds.Render(camera, playerPos);
-	if (g_info.weather == Weather::Rain)
-		rain.Render(camera, playerPos);
-	else if (g_info.weather == Weather::Snowfall)
-		snowfall.Render(camera, playerPos);
+	if (!p_info.underwater) {
+		if (g_info.weather == Weather::Rain)
+			rain.Render(camera, playerPos);
+		else if (g_info.weather == Weather::Snowfall)
+			snowfall.Render(camera, playerPos);
+	}
 
 	glDisable(GL_BLEND);
 	

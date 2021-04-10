@@ -9,6 +9,7 @@
 #include "SFMLRenderer.h"
 #include "WaterRenderer.h"
 #include "Renderer_2D.h"
+#include "DroppedItemsRenderer.h"
 
 #include "../States/PlayingState.h"
 #include "../PostProcess/Framebuffer.h"
@@ -26,24 +27,23 @@ public:
 	void drawSFMLOverInterface(const sf::Drawable &drawable);
     void addChunkToRender(const ChunkSection &chunk);
 	void drawIcons(const IconsMesh &iconsMesh);
+	void drawDroppedItems(const DroppedItemsMesh &droppedItemsMesh);
 
     void finishRender(sf::RenderWindow &window, const Camera &camera);
 
 private:
-	//Primitives
-	PostProcessRender m_postRenderer;
+	PostProcessRender	m_postRenderer;
 
-    // Chunks
-    ChunkRenderer m_chunkRenderer;
-    WaterRenderer m_waterRenderer;
-    FloraRenderer m_floraRenderer;
+    ChunkRenderer		m_chunkRenderer;
+    WaterRenderer		m_waterRenderer;
+    FloraRenderer		m_floraRenderer;
 
-    // Detail
-    SFMLRenderer m_sfmlRenderer;
+	DroppedItemsRenderer	m_droppedItemsRenderer;
 
-	Renderer_2D m_2D_Renderer;
+    SFMLRenderer		m_sfmlRenderer;
+	Renderer_2D			m_2D_Renderer;
 
-	FrameBufferObject m_fbo;
+	FrameBufferObject	m_fbo;
 };
 
 #endif // RENDERMASTER_H_INCLUDED

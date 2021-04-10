@@ -52,8 +52,10 @@ void World::setBlock(int x, int y, int z, ChunkBlock block)
 }
 
 /// loads chunks and make chunk meshes
-void World::update(const Camera &camera)
+void World::update(Player &player, float dt)
 {
+	m_droppedItemManager.update(player, *this, dt);
+
     static ToggleKey key(sf::Keyboard::C);
 
     if (key.isKeyPressed()) {
@@ -68,6 +70,16 @@ void World::update(const Camera &camera)
     m_events.clear();
 
     updateChunks();
+}
+
+void World::addDroppedItem(const ItemStack & itemStack, const glm::vec3 & pos)
+{
+	m_droppedItemManager.addItem(itemStack, pos);
+}
+
+void World::blockBroken(const glm::vec3 & pos)
+{
+	m_droppedItemManager.blockBrokenUpdate(pos);
 }
 
 ///@TODO
@@ -177,6 +189,8 @@ void World::updateChunk(int blockX, int blockY, int blockZ)
 
 void World::renderWorld(RenderMaster &renderer, const Camera &camera)
 {
+	m_droppedItemManager.addToRender(renderer);
+
     std::unique_lock<std::mutex> lock(m_mainMutex);
 
     auto &chunkMap = m_chunkManager.getChunks();

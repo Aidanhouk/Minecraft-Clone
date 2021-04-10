@@ -10,6 +10,7 @@
 class RenderMaster;
 class Application;
 class Player;
+class DroppedItemsManager;
 
 struct ItemSlot
 {
@@ -36,6 +37,7 @@ public:
 	void throwItem(int number, ItemSlot *thrownSlot = nullptr);
 	ItemSlot* getPointedItem() { return m_pPointedSlot; }
 	ItemSlot* getGrabbedItem() { return &m_grabbedSlot; }
+	void setDroppedItemsManager(DroppedItemsManager* manager) { m_pDroppedItemsManager = manager; }
 
 	void setHeldItem(int heldItem);
 	void nextItem();
@@ -73,30 +75,31 @@ private:
 
 	bool m_isOpened = false;
 
-	sf::Font			m_font;
+	sf::Font				m_font;
 	// inventory objects
-	sf::RectangleShape	m_inventory;
-	sf::Texture			m_inventoryTexture;
-	sf::Text			m_inventoryItemText;
-	sf::RectangleShape	m_itemTextBackground;
-	sf::Texture			m_itemTextBackgroundTexture;
+	sf::RectangleShape		m_inventory;
+	sf::Texture				m_inventoryTexture;
+	sf::Text				m_inventoryItemText;
+	sf::RectangleShape		m_itemTextBackground;
+	sf::Texture				m_itemTextBackgroundTexture;
 	// Kind of in-game pixel's size. Multiply by it when using pixels to be not dependent on resolution
-	float				m_invPixelSize;
-	float				m_invSlotSize;
-	float				m_invDistanceBetweenSlots;
+	float					m_invPixelSize;
+	float					m_invSlotSize;
+	float					m_invDistanceBetweenSlots;
 	// toolbar objects
-	sf::RectangleShape	m_toolbar;
-	sf::Texture			m_toolbarTexture;
-	sf::Text			m_toolbarItemText;
-	sf::RectangleShape	m_heldItemFrame;
-	sf::Texture			m_heldItemTexture;
-	float				m_toolSlotSize;
-	float				m_toolDistanceBetweenSlots;
+	sf::RectangleShape		m_toolbar;
+	sf::Texture				m_toolbarTexture;
+	sf::Text				m_toolbarItemText;
+	sf::RectangleShape		m_heldItemFrame;
+	sf::Texture				m_heldItemTexture;
+	float					m_toolSlotSize;
+	float					m_toolDistanceBetweenSlots;
 
-	sf::Clock			m_clickTimer;
-	ItemSlot			m_grabbedSlot;
-	ItemSlot*			m_pPointedSlot = nullptr;
+	sf::Clock				m_clickTimer;
+	ItemSlot				m_grabbedSlot;
+	ItemSlot*				m_pPointedSlot = nullptr;
 
-	IconsMesh			m_iconsMesh;
-	GrabbedItemDrawer	m_grabbedItemDrawer;
+	IconsMesh				m_iconsMesh;
+	GrabbedItemDrawer		m_grabbedItemDrawer;
+	DroppedItemsManager*	m_pDroppedItemsManager;
 };

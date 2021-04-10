@@ -49,6 +49,11 @@ void RenderMaster::drawIcons(const IconsMesh & iconsMesh)
 	m_2D_Renderer.setMeshToDraw(iconsMesh);
 }
 
+void RenderMaster::drawDroppedItems(const DroppedItemsMesh & droppedItemsMesh)
+{
+	m_droppedItemsRenderer.setMeshToDraw(droppedItemsMesh);
+}
+
 void RenderMaster::finishRender(sf::RenderWindow &window, const Camera &camera)
 {
 	bool postProc = g_Config.postProcess;
@@ -65,6 +70,7 @@ void RenderMaster::finishRender(sf::RenderWindow &window, const Camera &camera)
 
     m_chunkRenderer.render(camera);
     m_floraRenderer.render(camera);
+	m_droppedItemsRenderer.render(camera);
     m_waterRenderer.render(camera);
 
 	m_sky->render(camera);

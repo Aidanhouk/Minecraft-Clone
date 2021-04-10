@@ -17,6 +17,7 @@ public:
 
 private:
     void dig(World &world);
+	void breakBlocksAbove(World &world, const glm::vec3 &pos);
 
     sf::Mouse::Button m_buttonPress;
     glm::vec3 m_digSpot;

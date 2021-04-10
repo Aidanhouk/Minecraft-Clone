@@ -18,7 +18,7 @@ class ParametersBuilder
 public:
 	ParametersBuilder(Inventory &inventory, IconsMesh &itemIconsMesh, Player &player);
 
-	void buildmesh();
+	void buildMesh();
 private:
 	void buildIcon(ParameterType parameterType, int number);
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Texture/TextureAtlas.h"
+#include "SFML/Graphics.hpp"
 
 class IconsMesh;
 class Inventory;
@@ -11,7 +11,7 @@ class ItemIconsBuilder
 public:
 	ItemIconsBuilder(Inventory &inventory, IconsMesh &itemIconsMesh);
 
-	void buildmesh();
+	void buildMesh();
 private:
 	void buildIcon(ItemSlot &slot);
 	void buildToolbarIcon(ItemSlot &slot, sf::Vector2i &toolbarSlotPos);

@@ -14,6 +14,7 @@ class Keyboard;
 class World;
 class RenderMaster;
 class Application;
+class DroppedItemsManager;
 
 class Player : public Entity {
 public:
@@ -33,8 +34,10 @@ public:
 
 	void drawGUI(RenderMaster &master);
 	void drawInventory(RenderMaster &master);
+
+	void setDroppedItemsManager(DroppedItemsManager* manager);
 private:
-	void collide(World &world, const glm::vec3 &vel, float dt);
+	void collide(World &world, const glm::vec3 &vel);
 	void movementInWater(World &world);
 	
 	void keyboardInput(Keyboard &keyboard);

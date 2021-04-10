@@ -38,7 +38,7 @@ class ChunkSection : public IChunk {
         int m_solidBlockCount = 0;
     };
 
-  public:
+public:
     ChunkSection(const sf::Vector3i &position, World &world);
 
     void setBlock(int x, int y, int z, ChunkBlock block) override;
@@ -67,7 +67,7 @@ class ChunkSection : public IChunk {
         return &m_blocks[0];
     }
 
-  private:
+private:
     sf::Vector3i toWorldPosition(int x, int y, int z) const;
 
     static bool outOfBounds(int value);

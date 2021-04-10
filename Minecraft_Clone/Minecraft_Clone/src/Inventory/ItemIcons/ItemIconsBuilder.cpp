@@ -12,16 +12,16 @@
 #include <iostream>
 
 const std::array<sf::Vector2i, 10> DigitsTexturePositions{
-	sf::Vector2i{0, 8},
-	sf::Vector2i{6, 8},
-	sf::Vector2i{12, 8},
-	sf::Vector2i{18, 8},
-	sf::Vector2i{24, 8},
-	sf::Vector2i{30, 8},
-	sf::Vector2i{36, 8},
-	sf::Vector2i{42, 8},
-	sf::Vector2i{48, 8},
-	sf::Vector2i{54, 8},
+	sf::Vector2i{0 * 6, 8},
+	sf::Vector2i{1 * 6, 8},
+	sf::Vector2i{2 * 6, 8},
+	sf::Vector2i{3 * 6, 8},
+	sf::Vector2i{4 * 6, 8},
+	sf::Vector2i{5 * 6, 8},
+	sf::Vector2i{6 * 6, 8},
+	sf::Vector2i{7 * 6, 8},
+	sf::Vector2i{8 * 6, 8},
+	sf::Vector2i{9 * 6, 8},
 };
 
 ItemIconsBuilder::ItemIconsBuilder(Inventory &inventory, IconsMesh &itemIconsMesh)
@@ -32,7 +32,7 @@ ItemIconsBuilder::ItemIconsBuilder(Inventory &inventory, IconsMesh &itemIconsMes
 	m_toolbarSlotSize = m_pInventory->getToolbarSlotSize();
 }
 
-void ItemIconsBuilder::buildmesh()
+void ItemIconsBuilder::buildMesh()
 {
 	auto &invSlots = m_pInventory->getInvSlots();
 
@@ -85,11 +85,11 @@ void ItemIconsBuilder::buildIcon(ItemSlot &slot)
 	int bias = m_toolbarSlotSize * 0.05f;
 
 	if (number >= 10) {
-		// 1st digit
+		/// 1st digit
 		buildDigit(number / 10, sf::Vector2i(
 			slot.position.x + m_invSlotSize - m_invSlotSize / 2.7f + bias,
 			RESY - slot.position.y - bias), m_invSlotSize);
-		// 2nd digit
+		/// 2nd digit
 		buildDigit(number % 10, sf::Vector2i(
 			slot.position.x + m_invSlotSize + bias,
 			RESY - slot.position.y - bias), m_invSlotSize);
@@ -134,11 +134,11 @@ void ItemIconsBuilder::buildToolbarIcon(ItemSlot & slot, sf::Vector2i &toolbarSl
 	int bias = m_toolbarSlotSize * 0.05f;
 
 	if (number >= 10) {
-		// 1st digit
+		/// 1st digit
 		buildDigit(number / 10, sf::Vector2i(
 			toolbarSlotPos.x + m_toolbarSlotSize - m_toolbarSlotSize / 2.7f + bias,
 			RESY - toolbarSlotPos.y - bias), m_toolbarSlotSize);
-		// 2nd digit
+		/// 2nd digit
 		buildDigit(number % 10, sf::Vector2i(
 			toolbarSlotPos.x + m_toolbarSlotSize + bias,
 			RESY - toolbarSlotPos.y - bias), m_toolbarSlotSize);
@@ -178,7 +178,7 @@ void ItemIconsBuilder::buildDigit(int digit, sf::Vector2i rightBottomPos, float 
 	};
 
 	for (auto & textCoord : texCoords)
-		// might change to textCoord /= IconDatabase::get().textureAtlas.getAtlasSize()
+		/// might change to textCoord /= IconDatabase::get().textureAtlas.getAtlasSize()
 		textCoord /= 4096.0f;
 
 	m_pItemIconsMesh->addIcon(vertexPos, texCoords);

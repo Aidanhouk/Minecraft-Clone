@@ -12,6 +12,7 @@
 #include "Chunk/ChunkManager.h"
 
 #include "Event/IWorldEvent.h"
+#include "Item/DroppedItem/DroppedItemsManager.h"
 
 #include "../Config.h"
 
@@ -29,12 +30,13 @@ public:
     ChunkBlock getBlock(int x, int y, int z);
     void setBlock(int x, int y, int z, ChunkBlock block);
 
-    void update(const Camera &camera);
+    void update(Player &player, float dt);
     void updateChunk(int blockX, int blockY, int blockZ);
 
     void renderWorld(RenderMaster &master, const Camera &camera);
 
     ChunkManager &getChunkManager();
+	DroppedItemsManager &getDroppedItemsManager() { return m_droppedItemManager; }
 
     static VectorXZ getBlockXZ(int x, int z);
     static VectorXZ getChunkXZ(int x, int z);
@@ -44,6 +46,8 @@ public:
         m_events.push_back(std::make_unique<T>(std::forward<Args>(args)...));
     }
 
+	void addDroppedItem(const ItemStack& itemStack, const glm::vec3& pos);
+	void blockBroken(const glm::vec3& pos);
 private:
     void loadChunks(const Camera &camera);
     void updateChunks();
@@ -63,6 +67,8 @@ private:
     const int m_renderDistance;
 
     glm::vec3 m_playerSpawnPoint;
+
+	DroppedItemsManager m_droppedItemManager;
 };
 
 #endif // WORLD_H_INCLUDED

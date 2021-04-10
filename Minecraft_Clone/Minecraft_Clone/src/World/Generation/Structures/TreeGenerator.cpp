@@ -3,53 +3,12 @@
 #include "../../Chunk/Chunk.h"
 #include "StructureBuilder.h"
 
-constexpr BlockId CACTUS = BlockId::Cactus;
 constexpr BlockId OAKLEAF = BlockId::OakLeaf;
 constexpr BlockId BIRCHLEAF = BlockId::BirchLeaf;
 constexpr BlockId SPRUCELEAF = BlockId::SpruceLeaf;
 constexpr BlockId PALMLEAF = BlockId::PalmLeaf;
 
 namespace {
-void makeCactus1(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int y,
-                 int z)
-{
-    StructureBuilder builder;
-    builder.makeColumn(x, z, y, rand.intInRange(4, 7), CACTUS);
-    builder.build(chunk);
-}
-
-void makeCactus2(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int y,
-                 int z)
-{
-    StructureBuilder builder;
-    int height = rand.intInRange(6, 8);
-    builder.makeColumn(x, z, y, height, CACTUS);
-
-    int stem = height / 2;
-
-    builder.makeRowX(x - 2, x + 2, stem + y, z, CACTUS);
-    builder.addBlock(x - 2, stem + y + 1, z, CACTUS);
-    builder.addBlock(x - 2, stem + y + 2, z, CACTUS);
-    builder.addBlock(x + 2, stem + y + 1, z, CACTUS);
-
-    builder.build(chunk);
-}
-
-void makeCactus3(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int y, int z)
-{
-    StructureBuilder builder;
-    int height = rand.intInRange(6, 8);
-    builder.makeColumn(x, z, y, height, CACTUS);
-
-    int stem = height / 2;
-
-    builder.makeRowZ(z - 2, z + 2, x, stem + y, CACTUS);
-    builder.addBlock(x, stem + y + 1, z - 2, CACTUS);
-    builder.addBlock(x, stem + y + 2, z - 2, CACTUS);
-    builder.addBlock(x, stem + y + 1, z + 2, CACTUS);
-
-    builder.build(chunk);
-}
 
 void makeSpruceTree1(Chunk & chunk, Random<std::minstd_rand>& rand, int x, int y, int z)
 {
@@ -301,20 +260,9 @@ void makeSpruceTree(Chunk & chunk, Random<std::minstd_rand>& rand, int x, int y,
 
 void makeCactus(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int y, int z)
 {
-	int cac = rand.intInRange(0, 2);
-
-	switch (cac) {
-	case 0:
-		makeCactus1(chunk, rand, x, y, z);
-		break;
-
-	case 1:
-		makeCactus2(chunk, rand, x, y, z);
-		break;
-
-	case 2:
-		makeCactus3(chunk, rand, x, y, z);
-	}
+	StructureBuilder builder;
+	builder.makeColumn(x, z, y, rand.intInRange(3, 5), BlockId::Cactus);
+	builder.build(chunk);
 }
 
 void makeSugarCane(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int y, int z)

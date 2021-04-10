@@ -11,7 +11,6 @@ uniform mat4 modelMatrix;
 void main()
 {
     vec4 worldPos = modelMatrix * vec4(inVertexPosition, 1.0);
-    worldPos.y += 0.5;
     gl_Position = projViewMatrix * worldPos;
 
     passTextureCoord = inTextureCoord;
