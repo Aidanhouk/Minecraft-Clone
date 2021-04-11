@@ -82,6 +82,11 @@ void World::blockBroken(const glm::vec3 & pos)
 	m_droppedItemManager.blockBrokenUpdate(pos);
 }
 
+void World::checkForDroppedItems(const glm::vec3 & pos)
+{
+	m_droppedItemManager.checkForDroppedItems(pos, *this);
+}
+
 ///@TODO
 /// Optimize for chunkPositionU usage :thinking:
 void World::loadChunks(const Camera &camera)

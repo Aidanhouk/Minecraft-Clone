@@ -145,7 +145,7 @@ ItemStack & Inventory::getHeldItems()
 	return m_slots[m_heldItem].item;
 }
 
-void Inventory::addItems(const Material & material, int number, int callNumber)
+int Inventory::addItems(const Material & material, int number, int callNumber)
 {
 	for (auto &itemSlot : m_slots) {
 		if (material.id == itemSlot.item.getMaterial().id &&
@@ -159,7 +159,7 @@ void Inventory::addItems(const Material & material, int number, int callNumber)
 
 			if (callNumber == 1)
 				updateIcons();
-			return;
+			return 0;
 		}
 	}
 	for (int i = 0; i < m_slots.size(); ++i) {
@@ -171,9 +171,10 @@ void Inventory::addItems(const Material & material, int number, int callNumber)
 
 			if (callNumber == 1)
 				updateIcons();
-			return;
+			return 0;
 		}
 	}
+	return number;
 }
 
 void Inventory::removeHeldItem(int number)

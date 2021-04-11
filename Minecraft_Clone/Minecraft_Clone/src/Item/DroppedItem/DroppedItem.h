@@ -17,10 +17,12 @@ public:
 	void setAcceleration(float x, float y);
 	void move(World &world, float dt);
 	void startMoving() { m_acceleration.y = -0.01f; }
+	void collisionMove(World &world);
+	void setItemStackNumber(int number);
 
 	float getExistingTime() const { return m_existingTime.getElapsedTime().asSeconds(); }
 	ItemStack& getItemStack() { return m_itemStack; }
-	bool isMoving() const { return m_acceleration.y == 0.0f; }
+	bool shouldMove() const { return m_acceleration.y != 0.0f; }
 	bool canBeGrabbed() const;
 private:
 	ItemStack m_itemStack;

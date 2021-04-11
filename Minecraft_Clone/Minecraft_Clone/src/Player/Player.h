@@ -25,7 +25,7 @@ public:
 	
 	void update(float dt, World &wolrd);
 
-	void addItem(const Material &material, int number);
+	int addItem(const Material &material, int number);
 	void removeHeldItem(int number);
 	ItemStack &getHeldItems();
 

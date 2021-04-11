@@ -44,6 +44,24 @@ void DroppedItemsManager::addToRender(RenderMaster & renderer)
 	m_droppedItemsMesh.bufferMesh();
 }
 
+void DroppedItemsManager::checkForDroppedItems(const glm::vec3 pos, World &world)
+{
+	for (auto &item : m_items) {
+		if (
+			item.position.x > pos.x
+			&& item.position.x < pos.x + 1
+			&& item.position.z > pos.z
+			&& item.position.z < pos.z + 1
+			&& item.position.y > pos.y
+			&& item.position.y < pos.y + 1
+			)
+		{
+			item.collisionMove(world);
+		}
+	}
+	updateMesh();
+}
+
 void DroppedItemsManager::updateMesh()
 {
 	m_droppedItemsMesh.deleteData();
@@ -57,6 +75,7 @@ void DroppedItemsManager::checkItemsLifetime()
 
 void DroppedItemsManager::checkIfPlayerCanGrabItem(Player & player)
 {
+	int leftover = 0;
 	for (auto item = m_items.begin(); item != m_items.end(); ++item) {
 		if (glm::abs(item->position.x - player.position.x) <= 1.2f
 			&& glm::abs(item->position.z - player.position.z) <= 1.2f
@@ -65,8 +84,11 @@ void DroppedItemsManager::checkIfPlayerCanGrabItem(Player & player)
 			if (!item->canBeGrabbed())
 				return;
 
-			player.addItem(item->getItemStack().getMaterial(), item->getItemStack().getNumInStack());
-			m_items.erase(item);
+			leftover = player.addItem(item->getItemStack().getMaterial(), item->getItemStack().getNumInStack());
+			if (leftover)
+				item->setItemStackNumber(leftover);
+			else
+				m_items.erase(item);
 			updateMesh();
 			break;
 		}
@@ -77,7 +99,7 @@ void DroppedItemsManager::itemsMove(World &world, float dt)
 {
 	bool shouldUpdateMesh = false;
 	for (auto &item : m_items) {
-		if (!item.isMoving()) {
+		if (item.shouldMove()) {
 			item.move(world, dt);
 			shouldUpdateMesh = true;
 		}

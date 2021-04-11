@@ -48,6 +48,7 @@ public:
 
 	void addDroppedItem(const ItemStack& itemStack, const glm::vec3& pos);
 	void blockBroken(const glm::vec3& pos);
+	void checkForDroppedItems(const glm::vec3& pos);
 private:
     void loadChunks(const Camera &camera);
     void updateChunks();

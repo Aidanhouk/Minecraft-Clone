@@ -39,7 +39,11 @@
     <ClCompile Include="src\Inventory\IconsMesh.cpp" />
     <ClCompile Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.cpp" />
     <ClCompile Include="src\Item\ItemStack.cpp" />
+    <ClCompile Include="src\Item\DroppedItem\DroppedItemsBuilder.cpp" />
+    <ClCompile Include="src\Item\DroppedItem\DroppedItemsManager.cpp" />
+    <ClCompile Include="src\Item\DroppedItem\DroppedItemsMesh.cpp" />
     <ClCompile Include="src\Item\Material.cpp" />
+    <ClCompile Include="src\Item\DroppedItem\DroppedItem.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Maths\Frustum.cpp" />
     <ClCompile Include="src\Maths\GeneralMaths.cpp" />
@@ -65,6 +69,7 @@
     <ClCompile Include="src\PostProcess\MotionBlur.cpp" />
     <ClCompile Include="src\PostProcess\PostProcessRenderer.cpp" />
     <ClCompile Include="src\PostProcess\VerticalGaussian.cpp" />
+    <ClCompile Include="src\Renderer\DroppedItemsRenderer.cpp" />
     <ClCompile Include="src\Renderer\Renderer_2D.cpp" />
     <ClCompile Include="src\renderer\ChunkRenderer.cpp" />
     <ClCompile Include="src\renderer\FloraRenderer.cpp" />
@@ -80,6 +85,7 @@
     <ClCompile Include="src\Shaders\Environment\RainShader.cpp" />
     <ClCompile Include="src\Shaders\Environment\SnowShader.cpp" />
     <ClCompile Include="src\Shaders\FloraShader.cpp" />
+    <ClCompile Include="src\Shaders\DroppedItemShader.cpp" />
     <ClCompile Include="src\Shaders\PostProcessShader.cpp" />
     <ClCompile Include="src\Shaders\Environment\ProcSkyShader.cpp" />
     <ClCompile Include="src\Shaders\Shader.cpp" />
@@ -141,7 +147,11 @@
     <ClInclude Include="src\Inventory\IconsMesh.h" />
     <ClInclude Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.h" />
     <ClInclude Include="src\Item\ItemStack.h" />
+    <ClInclude Include="src\Item\DroppedItem\DroppedItemsBuilder.h" />
+    <ClInclude Include="src\Item\DroppedItem\DroppedItemsManager.h" />
+    <ClInclude Include="src\Item\DroppedItem\DroppedItemsMesh.h" />
     <ClInclude Include="src\Item\Material.h" />
+    <ClInclude Include="src\Item\DroppedItem\DroppedItem.h" />
     <ClInclude Include="src\Maths\Frustum.h" />
     <ClInclude Include="src\Maths\GeneralMaths.h" />
     <ClInclude Include="src\Maths\glm.h" />
@@ -174,6 +184,7 @@
     <ClInclude Include="src\PostProcess\MotionBlur.h" />
     <ClInclude Include="src\PostProcess\PostProcessRenderer.h" />
     <ClInclude Include="src\PostProcess\VerticalGaussian.h" />
+    <ClInclude Include="src\Renderer\DroppedItemsRenderer.h" />
     <ClInclude Include="src\Renderer\Renderer_2D.h" />
     <ClInclude Include="src\renderer\ChunkRenderer.h" />
     <ClInclude Include="src\renderer\FloraRenderer.h" />
@@ -190,6 +201,7 @@
     <ClInclude Include="src\Shaders\Environment\SnowShader.h" />
     <ClInclude Include="src\Shaders\Environment\RainShader.h" />
     <ClInclude Include="src\Shaders\FloraShader.h" />
+    <ClInclude Include="src\Shaders\DroppedItemShader.h" />
     <ClInclude Include="src\Shaders\PostProcessShader.h" />
     <ClInclude Include="src\Shaders\Environment\ProcSkyShader.h" />
     <ClInclude Include="src\Shaders\Shader.h" />
@@ -687,6 +699,7 @@
     <ProjectGuid>{9F4B8C05-3B7A-46FC-B731-9A210B616CC0}</ProjectGuid>
     <RootNamespace>MinecraftClone</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>Minecraft_Clone</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

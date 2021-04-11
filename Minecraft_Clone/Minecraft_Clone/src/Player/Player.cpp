@@ -45,9 +45,9 @@ Player::Player(const Config &config, Application &app)
 	m_playerInfo.setPosition(0.0f, 50.0f);
 }
 
-void Player::addItem(const Material &material, int number)
+int Player::addItem(const Material &material, int number)
 {
-	m_Inventory.addItems(material, number);
+	return m_Inventory.addItems(material, number);
 }
 
 void Player::removeHeldItem(int number)
@@ -418,7 +418,6 @@ void Player::mouseInput(const sf::RenderWindow &window)
 	rotation.y += change.x * 0.05f;
 	rotation.x += change.y * 0.05f;
 
-	//static float const BOUND = 89.9999f;
 	/// if degree > 87.1 then the ray which detects the block player aiming at, doesn't work correctly
 	static float const BOUND = 87.1f;
 	if (rotation.x > BOUND)

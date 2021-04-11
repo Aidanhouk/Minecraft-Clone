@@ -31,7 +31,7 @@ public:
 	float getToolbarSlotSize() { return m_toolSlotSize; }
 	bool isInventoryOpened() { return m_isOpened; }
 
-	void addItems(const Material &material, int number, int callNumber = 1);
+	int addItems(const Material &material, int number, int callNumber = 1);
 	void removeHeldItem(int number);
 	// finish it after creating physics
 	void throwItem(int number, ItemSlot *thrownSlot = nullptr);

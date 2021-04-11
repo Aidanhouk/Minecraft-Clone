@@ -4,6 +4,8 @@
 #include "../../Player/Player.h"
 #include "../World.h"
 
+#include <iostream>
+
 PlayerDigEvent::PlayerDigEvent(sf::Mouse::Button button, const glm::vec3 &location, Player &player)
     : m_buttonPress(button)
     , m_digSpot(location)
@@ -51,6 +53,9 @@ void PlayerDigEvent::dig(World &world)
                 return;
             }
             else {
+				//if (ChunkBlock((BlockId)material.id).getData().isCollidable) {
+					world.checkForDroppedItems(glm::vec3(floor(x), floor(y), floor(z)));
+				//}
 				m_pPlayer->removeHeldItem(1);
                 world.updateChunk(x, y, z);
                 world.setBlock(x, y, z, material.toBlockID());

@@ -77,6 +77,7 @@ void DroppedItem::move(World &world, float dt)
 
 	/// if the block hasn't collided any other block
 	if (m_acceleration.x != 0.0f && m_acceleration.z != 0.0f) {
+
 		for (int x = position.x - box.dimensions.x; x < position.x + box.dimensions.x; ++x) {
 			for (int y = position.y - box.dimensions.y; y < position.y + box.dimensions.y; ++y) {
 				for (int z = position.z - box.dimensions.z; z < position.z + box.dimensions.z; ++z) {
@@ -95,6 +96,7 @@ void DroppedItem::move(World &world, float dt)
 		}
 	}
 	else {
+
 		auto blockBelow = world.getBlock(position.x, position.y - box.dimensions.y, position.z);
 		if (blockBelow != 0 && blockBelow.getData().isCollidable) {
 			m_acceleration.y = 0.0f;
@@ -102,9 +104,47 @@ void DroppedItem::move(World &world, float dt)
 
 		auto blockAbove = world.getBlock(position.x, position.y + 0.6f * box.dimensions.y, position.z);
 		if (blockAbove != 0 && blockAbove.getData().isCollidable) {
+			position.y -= m_acceleration.y * dt;
 			m_acceleration.y = -0.01f;
 		}
 	}
+}
+
+void DroppedItem::collisionMove(World &world)
+{
+	int x = position.x, y = position.y, z = position.z;
+
+	if (world.getBlock(x + 1, y, z) == 0) {
+		/// ceil(x) in these cases might not work
+		/// e.g. if x == 10.0 we need 11.0, but ceil will return 10.0
+		position.x = floor(x) + 1 + box.dimensions.x;
+	}
+	else if (world.getBlock(x - 1, y, z) == 0) {
+		position.x = floor(x) - box.dimensions.x;
+	}
+
+	else if (world.getBlock(x, y, z + 1) == 0) {
+		position.z = floor(z) + 1 + box.dimensions.z;
+	}
+	else if (world.getBlock(x, y, z - 1) == 0) {
+		position.z = floor(z) - box.dimensions.z;
+	}
+
+	else if (world.getBlock(x, y + 1, z) == 0) {
+		position.y = floor(y) + 1 + box.dimensions.y;
+	}
+	else if (world.getBlock(x, y - 1, z) == 0) {
+		position.y = floor(y) - box.dimensions.y;
+	}
+
+	m_acceleration.x = 0.0f;
+	m_acceleration.z = 0.0f;
+	m_acceleration.y = -0.01f;
+}
+
+void DroppedItem::setItemStackNumber(int number)
+{
+	m_itemStack = ItemStack(m_itemStack.getMaterial(), number);
 }
 
 bool DroppedItem::canBeGrabbed() const
