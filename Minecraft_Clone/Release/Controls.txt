@@ -9,7 +9,7 @@
 | Hold Ctrl                     | Speed up                                                       |
 | Tab                           | Toggle creative mode                                           |
 | F                             | Toggle flying (only available in creative mode)                |
-| Q                             | Drop itemstack (vanishes now)                                  |
+| Q                             | Drop itemstack                                                 |
 | E                             | Open/Close inventory                                           |
 | Mouse wheel                   | Select item                                                    |
 | 0-9                           | Select item                                                    |

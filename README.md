@@ -3,9 +3,9 @@
 Developed using C++, OpenGL, SFML.
 
 The game without source code:
-https://drive.google.com/file/d/1lRBQl1ZEfIb3vVM_1zQ1gP83axihsNyq/view?usp=sharing
+https://drive.google.com/file/d/1DQGx8WSqU7ocloi1r4mQ8PjtFLXnP9SL/view?usp=sharing
 
-Video: https://youtu.be/Xgi8jtWoRi0. Some lags only on the video.
+Video: https://youtu.be/QyfevEQ5BTE
 
 Implemented features:
 - World generation
@@ -34,7 +34,7 @@ Implemented features:
 | Hold Ctrl                     | Speed up                                                       |
 | Tab                           | Toggle creative mode                                           |
 | F                             | Toggle flying (only available in creative mode)                |
-| Q                             | Drop itemstack (vanishes now)                                  |
+| Q                             | Drop itemstack                                                 |
 | E                             | Open/Close inventory                                           |
 | Mouse wheel                   | Select item                                                    |
 | 0-9                           | Select item                                                    |

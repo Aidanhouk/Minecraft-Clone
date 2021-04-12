@@ -69,13 +69,24 @@ void DroppedItem::setAcceleration(float x, float y)
 
 void DroppedItem::move(World &world, float dt)
 {
-	position.x += m_acceleration.x * dt;
-	position.z += m_acceleration.z * dt;
-	position.y += m_acceleration.y * dt;
+	if (world.getBlock(position.x, position.y, position.z).getData().shaderType == BlockShaderType::Liquid
+		&& m_acceleration.y < 0.0f) {
 
-	m_acceleration.y -= 15.0f * dt;
+		position.x += m_acceleration.x * dt / 5.0f;
+		position.z += m_acceleration.z * dt / 5.0f;
+		position.y += m_acceleration.y * dt / 5.0f;
 
-	/// if the block hasn't collided any other block
+		m_acceleration.y -= 15.0f * dt / 5.0f;
+	}
+	else {
+		position.x += m_acceleration.x * dt;
+		position.z += m_acceleration.z * dt;
+		position.y += m_acceleration.y * dt;
+
+		m_acceleration.y -= 15.0f * dt;
+	}
+
+	/// If the dropped block hasn't collided any other block
 	if (m_acceleration.x != 0.0f && m_acceleration.z != 0.0f) {
 
 		for (int x = position.x - box.dimensions.x; x < position.x + box.dimensions.x; ++x) {
