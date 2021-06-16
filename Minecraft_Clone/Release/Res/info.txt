@@ -11,6 +11,7 @@ Implemented features:
 -Health and damage system
 -Swimming and oxygen system
 -Inventory
+-Items dropping
 -Snow and rain
 
 Features are missing:

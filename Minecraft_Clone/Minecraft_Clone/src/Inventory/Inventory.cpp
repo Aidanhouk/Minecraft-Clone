@@ -189,7 +189,8 @@ void Inventory::removeHeldItem(int number)
 void Inventory::throwItem(int number, ItemSlot *thrownSlot)
 {
 	if (thrownSlot) {
-		m_pDroppedItemsManager->addItem(thrownSlot->item,
+		auto thrownItemStack = ItemStack(thrownSlot->item.getMaterial(), number);
+		m_pDroppedItemsManager->addItem(thrownItemStack,
 			m_pPlayer->position, m_pPlayer->rotation);
 	}
 	else {
@@ -406,68 +407,130 @@ void Inventory::mouseInput(const sf::RenderWindow & window)
 		m_grabbedSlot.position = mouseCoords;
 		updateGrabbedItemIcon();
 
-		if (!(sf::Mouse::isButtonPressed(sf::Mouse::Left)))
-			return;
-		if (m_clickTimer.getElapsedTime().asSeconds() <= 0.3f)
-			return;
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (m_clickTimer.getElapsedTime().asSeconds() <= 0.3f)
+				return;
 
-		if (m_pPointedSlot) {
-			m_clickTimer.restart();
+			if (m_pPointedSlot) {
+				m_clickTimer.restart();
 
-			if (isSlotEmpty(m_pPointedSlot)) {
-				std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-			}
-			else {
-				// if the same material
-				if (m_pPointedSlot->item.getMaterial().id == m_grabbedSlot.item.getMaterial().id) {
-					int sum = m_pPointedSlot->item.getNumInStack() + m_grabbedSlot.item.getNumInStack();
-					int toAdd = m_pPointedSlot->item.getMaterial().maxStackSize - m_pPointedSlot->item.getNumInStack();
-					if (sum > m_pPointedSlot->item.getMaterial().maxStackSize) {
-						m_pPointedSlot->item.add(toAdd);
-						m_grabbedSlot.item.remove(toAdd);
-					}
-					else {
-						m_pPointedSlot->item.add(toAdd);
-						m_grabbedSlot.item.remove(toAdd);
-						if (m_grabbedSlot.item.getNumInStack() == 0)
-							m_grabbedSlot = ItemSlot();
-					}
-				}
-				else {
+				if (isSlotEmpty(m_pPointedSlot)) {
 					std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
 				}
+				else {
+					/// if the same material
+					if (m_pPointedSlot->item.getMaterial().id == m_grabbedSlot.item.getMaterial().id) {
+						int sum = m_pPointedSlot->item.getNumInStack() + m_grabbedSlot.item.getNumInStack();
+						if (sum > m_pPointedSlot->item.getMaterial().maxStackSize) {
+							int toAdd = m_pPointedSlot->item.getMaterial().maxStackSize - m_pPointedSlot->item.getNumInStack();
+							m_pPointedSlot->item.add(toAdd);
+							m_grabbedSlot.item.remove(toAdd);
+						}
+						else {
+							int toAdd = m_grabbedSlot.item.getNumInStack();
+							m_pPointedSlot->item.add(toAdd);
+							m_grabbedSlot.item.remove(toAdd);
+							if (m_grabbedSlot.item.getNumInStack() == 0)
+								m_grabbedSlot = ItemSlot();
+						}
+					}
+					else {
+						std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
+					}
+				}
+
+				updateIcons();
 			}
+			/// throw itemstack behind interface borders
+			else if (mouseCoords.x < m_inventory.getGlobalBounds().left ||
+				mouseCoords.x > m_inventory.getGlobalBounds().left + m_inventory.getSize().x ||
+				mouseCoords.y < m_inventory.getGlobalBounds().top ||
+				mouseCoords.y > m_inventory.getGlobalBounds().top + m_inventory.getSize().y)
+			{
+				m_clickTimer.restart();
 
-			updateIcons();
+				throwItem(m_grabbedSlot.item.getNumInStack(), &m_grabbedSlot);
+				m_grabbedSlot = ItemSlot();
+				updateGrabbedItemIcon();
+			}
 		}
-		// throw itemstack behind interface borders
-		else if (mouseCoords.x < m_inventory.getGlobalBounds().left ||
-			mouseCoords.x > m_inventory.getGlobalBounds().left + m_inventory.getSize().x ||
-			mouseCoords.y < m_inventory.getGlobalBounds().top ||
-			mouseCoords.y > m_inventory.getGlobalBounds().top + m_inventory.getSize().y)
-		{
-			m_clickTimer.restart();
 
-			throwItem(m_grabbedSlot.item.getNumInStack(), &m_grabbedSlot);
-			m_grabbedSlot = ItemSlot();
-			updateGrabbedItemIcon();
+
+
+		else if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+			if (m_clickTimer.getElapsedTime().asSeconds() <= 0.3f)
+				return;
+
+			if (m_pPointedSlot) {
+				m_clickTimer.restart();
+
+				if (isSlotEmpty(m_pPointedSlot)) {
+					m_pPointedSlot->item = ItemStack(m_grabbedSlot.item.getMaterial(), 1);
+					m_grabbedSlot.item.remove(1);
+				}
+				else {
+					/// if the same material
+					if (m_pPointedSlot->item.getMaterial().id == m_grabbedSlot.item.getMaterial().id) {
+						if (m_pPointedSlot->item.getNumInStack() != m_pPointedSlot->item.getMaterial().maxStackSize) {
+							m_pPointedSlot->item.add(1);
+							m_grabbedSlot.item.remove(1);
+							if (m_grabbedSlot.item.getNumInStack() == 0)
+								m_grabbedSlot = ItemSlot();
+						}
+					}
+					else {
+						std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
+					}
+				}
+
+				updateIcons();
+			}
+			/// throw 1 item behind interface borders
+			else if (mouseCoords.x < m_inventory.getGlobalBounds().left ||
+				mouseCoords.x > m_inventory.getGlobalBounds().left + m_inventory.getSize().x ||
+				mouseCoords.y < m_inventory.getGlobalBounds().top ||
+				mouseCoords.y > m_inventory.getGlobalBounds().top + m_inventory.getSize().y)
+			{
+				m_clickTimer.restart();
+
+				throwItem(1, &m_grabbedSlot);
+				m_grabbedSlot.item.remove(1);
+				if (m_grabbedSlot.item.getNumInStack() == 0)
+					m_grabbedSlot = ItemSlot();
+				updateGrabbedItemIcon();
+			}
 		}
 	}
-	// grab item
+	/// grab item
 	else {
 		if (!m_pPointedSlot)
 			return;
 		if (isSlotEmpty(m_pPointedSlot))
 			return;
 		updateInventoryText(mouseCoords);
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			if (m_clickTimer.getElapsedTime().asSeconds() > 0.3f) {
 				m_clickTimer.restart();
 				std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
 				m_grabbedSlot.position = mouseCoords;
-				updateIcons();
-				updateGrabbedItemIcon();
 			}
+		}
+		else if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+			if (m_clickTimer.getElapsedTime().asSeconds() > 0.3f) {
+				m_clickTimer.restart();
+				int leftStack = m_pPointedSlot->item.getNumInStack() / 2;
+				int grabbedStack = m_pPointedSlot->item.getNumInStack() - leftStack;
+
+				m_grabbedSlot.item = ItemStack(m_pPointedSlot->item.getMaterial(), grabbedStack);
+				m_grabbedSlot.position = mouseCoords;
+
+				m_pPointedSlot->item.remove(grabbedStack);
+				if (m_pPointedSlot->item.getNumInStack() == 0)
+					m_pPointedSlot->item = ItemStack();
+			}
+		}
+		updateIcons();
+		updateGrabbedItemIcon();
 	}
 }
 

@@ -68,6 +68,13 @@ namespace {
 		+pos, +pos, -pos,
 		-pos, +pos, +pos,
 	};
+
+	const std::array<GLfloat, 12> shadow{
+		-pos, -1.9 * pos, -pos,
+		+pos, -1.9 * pos, -pos,
+		+pos, -1.9 * pos, +pos,
+		-pos, -1.9 * pos, +pos,
+	};
 }
 
 DroppedItemsBuilder::DroppedItemsBuilder(DroppedItemsManager &droppedItemsManager, DroppedItemsMesh &droppedItemsMesh)
@@ -109,6 +116,11 @@ void DroppedItemsBuilder::buildMesh()
 
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
 			m_pDroppedItemsMesh->addItem(backFace, texCoords, position);
+		}
+
+		if (item.getAcceleration().y == 0.0f) {
+			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(sf::Vector2i(0, 15));
+			m_pDroppedItemsMesh->addItem(shadow, texCoords, position);
 		}
 	}
 }

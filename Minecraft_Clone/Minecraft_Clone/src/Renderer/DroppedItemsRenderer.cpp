@@ -19,23 +19,12 @@ void DroppedItemsRenderer::render(const Camera & camera)
 
 	m_shader.useProgram();
 	BlockDatabase::get().textureAtlas.bindTexture();
+
 	m_shader.loadProjectionViewMatrix(camera.getProjectionViewMatrix());
 
-	//m_shader.loadModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(1, 1, 1)));
-	//m_shader.loadModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
-	//m_shader.loadModelMatrix(glm::rotate(glm::mat4(1.0f), 45.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	//m_shader.loadModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+	//m_shader.loadModelMatrix(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f * g_info.dayTime), glm::vec3(0.0f, 1.0f, 0.0f)));
 	//m_shader.loadModelMatrix(glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
-
-	//glm::mat4 MM = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 1.0f, 1.0f));
-	//glm::mat4 MM = glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(1, 1, 1));
-	//std::cout << "\n";
-	//for (int i = 0; i < 4; ++i) {
-	//	for (int j = 0; j < 4; ++j) {
-	//		std::cout << MM[i][j] << " ";
-	//	}
-	//	std::cout << "\n";
-	//}
-	//std::cout << "\n";
 
 	m_shader.loadTime(g_info.dayTime);
 	m_shader.loadLighting(g_info.lighting);

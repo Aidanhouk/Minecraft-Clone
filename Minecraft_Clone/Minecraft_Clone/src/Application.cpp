@@ -22,6 +22,7 @@ void Application::runLoop()
 
     sf::Time m;
 
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     while (m_context.window.isOpen() && !m_states.empty()) {
         auto deltaTime = dtTimer.restart();
 		g_info.deltaTime = deltaTime.asSeconds();

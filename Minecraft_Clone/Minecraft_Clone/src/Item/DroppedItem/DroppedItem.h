@@ -22,6 +22,8 @@ public:
 
 	float getExistingTime() const { return m_existingTime.getElapsedTime().asSeconds(); }
 	ItemStack& getItemStack() { return m_itemStack; }
+	glm::vec3 getAcceleration() const { return m_acceleration; }
+
 	bool shouldMove() const { return m_acceleration.y != 0.0f; }
 	bool canBeGrabbed() const;
 private:

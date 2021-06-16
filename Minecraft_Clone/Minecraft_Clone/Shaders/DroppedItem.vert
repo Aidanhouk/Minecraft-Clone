@@ -12,7 +12,8 @@ uniform float globalTime;
 vec4 getWorldPos()
 {
 	vec3 inVert = inVertexPosition.xyz;
-	inVert.y += sin(globalTime / 10.0f) / 15.0f;
+	if (inTextureCoord.y < 0.9)
+		inVert.y += sin(globalTime / 8.0f) / 20.0f;
 	
 	return vec4(inVert, 1.0);
 }
@@ -20,6 +21,7 @@ vec4 getWorldPos()
 void main()
 {
 	gl_Position = projViewMatrix * getWorldPos();
+	//gl_Position = projViewMatrix * modelMatrix * getWorldPos();
 	
 	passTextureCoord = inTextureCoord;
 }

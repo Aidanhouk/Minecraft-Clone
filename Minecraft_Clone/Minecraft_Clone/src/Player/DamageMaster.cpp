@@ -13,7 +13,7 @@ int DamageMaster::getFallDamage(float acceleration)
 	if (m_FallDamageClock.getElapsedTime().asSeconds() > 0.1f) {
 		m_FallDamageClock.restart();
 		int damage = -(int)acceleration - 15;
-		damage *= damage * 0.01;
+		damage *= damage * 0.02;
 		return damage;
 	}
 	return 0;
