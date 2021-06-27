@@ -21,7 +21,7 @@ int DamageMaster::getFallDamage(float acceleration)
 
 int DamageMaster::getCactusDamage()
 {
-	if (m_CactusDamageClock.getElapsedTime().asSeconds() > 1.5f) {
+	if (m_CactusDamageClock.getElapsedTime().asSeconds() > 0.5f) {
 		m_CactusDamageClock.restart();
 		return 1;
 	}

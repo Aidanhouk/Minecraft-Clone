@@ -313,7 +313,7 @@ void Player::movementInWater(World & world)
 
 void Player::keyboardInput(Keyboard &keyboard)
 {
-	static float const m_SPEED = 0.21f;
+	static float const m_SPEED = 0.16f;
 	static bool isRunning = false;
 	
 	if (!p_info.canMove)
@@ -365,7 +365,7 @@ void Player::keyboardInput(Keyboard &keyboard)
 	}
 	
 	if (m_isOnIce) {
-		const float VEL = 10.0f;
+		const float VEL = 7.0f;
 		if (!isRunning) {
 			if (glm::abs(velocity.x) > VEL / 2.0f
 				|| glm::abs(velocity.z) > VEL / 2.0f) {

@@ -11,76 +11,120 @@
 #include <iostream>
 #include <vector>
 
+namespace cubeFaces {
+
+	const std::array<GLfloat, 12> frontFace{
+		0, 0, 1,
+		1, 0, 1,
+		1, 1, 1,
+		0, 1, 1,
+	};
+	const std::array<GLfloat, 12> backFace{
+		1, 0, 0,
+		0, 0, 0,
+		0, 1, 0,
+		1, 1, 0,
+	};
+	const std::array<GLfloat, 12> leftFace{
+		0, 0, 0,
+		0, 0, 1,
+		0, 1, 1,
+		0, 1, 0,
+	};
+	const std::array<GLfloat, 12> rightFace{
+		1, 0, 1,
+		1, 0, 0,
+		1, 1, 0,
+		1, 1, 1,
+	};
+	const std::array<GLfloat, 12> topFace{
+		0, 1, 1,
+		1, 1, 1,
+		1, 1, 0,
+		0, 1, 0,
+	};
+	const std::array<GLfloat, 12> bottomFace{
+		0, 0, 0,
+		1, 0, 0,
+		1, 0, 1,
+		0, 0, 1,
+	};
+
+} // namespace cubeFaces
+
+namespace xBlockFaces {
+
+	const std::array<GLfloat, 12> xFace1{
+		0, 0, 0,
+		1, 0, 1,
+		1, 1, 1,
+		0, 1, 0,
+	};
+	const std::array<GLfloat, 12> xFace1back{
+		0, 0, 0,
+		0, 1, 0,
+		1, 1, 1,
+		1, 0, 1,
+	};
+	const std::array<GLfloat, 12> xFace2{
+		0, 0, 1,
+		1, 0, 0,
+		1, 1, 0,
+		0, 1, 1,
+	};
+	const std::array<GLfloat, 12> xFace2back{
+		0, 0, 1,
+		0, 1, 1,
+		1, 1, 0,
+		1, 0, 0,
+	};
+
+} // namespace xBlockFaces
+
+namespace cactusFaces {
+
+	const static float bias = 1 / 16.0f;
+
+	const std::array<GLfloat, 12> frontFace{
+		0, 0, 1 - bias,
+		1, 0, 1 - bias,
+		1, 1, 1 - bias,
+		0, 1, 1 - bias,
+	};
+	const std::array<GLfloat, 12> backFace{
+		1, 0, bias,
+		0, 0, bias,
+		0, 1, bias,
+		1, 1, bias,
+	};
+	const std::array<GLfloat, 12> leftFace{
+		bias, 0, 0,
+		bias, 0, 1,
+		bias, 1, 1,
+		bias, 1, 0,
+	};
+	const std::array<GLfloat, 12> rightFace{
+		1 - bias, 0, 1,
+		1 - bias, 0, 0,
+		1 - bias, 1, 0,
+		1 - bias, 1, 1,
+	};
+	const std::array<GLfloat, 12> topFace{
+		0, 1, 1,
+		1, 1, 1,
+		1, 1, 0,
+		0, 1, 0,
+	};
+	const std::array<GLfloat, 12> bottomFace{
+		0, 0, 0,
+		1, 0, 0,
+		1, 0, 1,
+		0, 0, 1,
+	};
+
+} // namespace cactusFaces
+
 namespace {
-const std::array<GLfloat, 12> frontFace{
-    0, 0, 1,
-	1, 0, 1,
-	1, 1, 1,
-	0, 1, 1,
-};
-
-const std::array<GLfloat, 12> backFace{
-    1, 0, 0,
-	0, 0, 0,
-	0, 1, 0,
-	1, 1, 0,
-};
-
-const std::array<GLfloat, 12> leftFace{
-    0, 0, 0,
-	0, 0, 1,
-	0, 1, 1,
-	0, 1, 0,
-};
-
-const std::array<GLfloat, 12> rightFace{
-    1, 0, 1,
-	1, 0, 0,
-	1, 1, 0,
-	1, 1, 1,
-};
-
-const std::array<GLfloat, 12> topFace{
-    0, 1, 1, 
-	1, 1, 1, 
-	1, 1, 0, 
-	0, 1, 0,
-};
-
-const std::array<GLfloat, 12> bottomFace{
-	0, 0, 0,
-	1, 0, 0,
-	1, 0, 1,
-	0, 0, 1,
-};
-
-const std::array<GLfloat, 12> xFace1{
-	0, 0, 0,
-	1, 0, 1,
-	1, 1, 1,
-	0, 1, 0,
-};
-
-const std::array<GLfloat, 12> xFace1back{
-	0, 0, 0,
-	0, 1, 0,
-	1, 1, 1,
-	1, 0, 1,
-};
-
-const std::array<GLfloat, 12> xFace2{
-    0, 0, 1,
-	1, 0, 0,
-	1, 1, 0,
-	0, 1, 1,
-};
-
-const std::array<GLfloat, 12> xFace2back{
-	0, 0, 1,
-	0, 1, 1,
-	1, 1, 0,
-	1, 0, 0,
-};
 
 constexpr GLfloat LIGHT_TOP = 1.0f;
 constexpr GLfloat LIGHT_LEFT = 0.9f;
@@ -143,22 +187,36 @@ void ChunkMeshBuilder::buildMesh()
 				m_pBlockData = &block.getData();
 				auto &data = *m_pBlockData;
 
-				if (data.meshType == BlockMeshType::X) {
-					addXBlockToMesh(data.texTopCoord, position);
-				}
-				else {
+				if (data.meshType == BlockMeshType::Cube) {
 					directions.update(x, y, z);
 
 					// Up/ Down
 					if ((m_pChunk->getLocation().y != 0) || y != 0)
-						tryAddFaceToMesh(bottomFace,	data.texBottomCoord, position, directions.down, LIGHT_BOT);
-					tryAddFaceToMesh(topFace,			data.texTopCoord, position, directions.up, LIGHT_TOP);
+						tryAddFaceToMesh(cubeFaces::bottomFace,	data.texBottomCoord, position, directions.down, LIGHT_BOT);
+					tryAddFaceToMesh(cubeFaces::topFace,			data.texTopCoord, position, directions.up, LIGHT_TOP);
 					// Left/ Right
-					tryAddFaceToMesh(leftFace,			data.texSideCoord, position, directions.left, LIGHT_LEFT);
-					tryAddFaceToMesh(rightFace,			data.texSideCoord, position, directions.right, LIGHT_RIGHT);
+					tryAddFaceToMesh(cubeFaces::leftFace,			data.texSideCoord, position, directions.left, LIGHT_LEFT);
+					tryAddFaceToMesh(cubeFaces::rightFace,			data.texSideCoord, position, directions.right, LIGHT_RIGHT);
 					// Front/ Back
-					tryAddFaceToMesh(frontFace,			data.texSideCoord, position, directions.front, LIGHT_FRONT);
-					tryAddFaceToMesh(backFace,			data.texSideCoord, position, directions.back, LIGHT_BACK);
+					tryAddFaceToMesh(cubeFaces::frontFace,			data.texSideCoord, position, directions.front, LIGHT_FRONT);
+					tryAddFaceToMesh(cubeFaces::backFace,			data.texSideCoord, position, directions.back, LIGHT_BACK);
+				}
+				else if (data.meshType == BlockMeshType::X) {
+					addXBlockToMesh(data.texTopCoord, position);
+				}
+				else if (data.meshType == BlockMeshType::Cactus) {
+					directions.update(x, y, z);
+
+					// Up/ Down
+					if ((m_pChunk->getLocation().y != 0) || y != 0)
+						tryAddFaceToMesh(cactusFaces::bottomFace, data.texBottomCoord, position, directions.down, LIGHT_BOT);
+					tryAddFaceToMesh(cactusFaces::topFace, data.texTopCoord, position, directions.up, LIGHT_TOP);
+					// Left/ Right
+					tryAddFaceToMesh(cactusFaces::leftFace, data.texSideCoord, position, directions.left, LIGHT_LEFT);
+					tryAddFaceToMesh(cactusFaces::rightFace, data.texSideCoord, position, directions.right, LIGHT_RIGHT);
+					// Front/ Back
+					tryAddFaceToMesh(cactusFaces::frontFace, data.texSideCoord, position, directions.front, LIGHT_FRONT);
+					tryAddFaceToMesh(cactusFaces::backFace, data.texSideCoord, position, directions.back, LIGHT_BACK);
 				}
 			}
     }
@@ -185,8 +243,8 @@ void ChunkMeshBuilder::addXBlockToMesh(const sf::Vector2i &textureCoords,
                                        const sf::Vector3i &blockPosition)
 {
     auto texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(textureCoords);
-	m_pActiveMesh->addFace(xFace1, texCoords, m_pChunk->getLocation(), blockPosition, LIGHT_LEFT);
-	m_pActiveMesh->addFace(xFace2, texCoords, m_pChunk->getLocation(), blockPosition, LIGHT_RIGHT);
+	m_pActiveMesh->addFace(xBlockFaces::xFace1, texCoords, m_pChunk->getLocation(), blockPosition, LIGHT_LEFT);
+	m_pActiveMesh->addFace(xBlockFaces::xFace2, texCoords, m_pChunk->getLocation(), blockPosition, LIGHT_RIGHT);
 
 	std::array<GLfloat, 8> texCoordsBack{
 		texCoords[0], texCoords[1],
@@ -194,8 +252,8 @@ void ChunkMeshBuilder::addXBlockToMesh(const sf::Vector2i &textureCoords,
 		texCoords[4], texCoords[5],
 		texCoords[2], texCoords[3],
 	};
-	m_pActiveMesh->addFace(xFace1back, texCoordsBack, m_pChunk->getLocation(), blockPosition, LIGHT_LEFT);
-	m_pActiveMesh->addFace(xFace2back, texCoordsBack, m_pChunk->getLocation(), blockPosition, LIGHT_RIGHT);
+	m_pActiveMesh->addFace(xBlockFaces::xFace1back, texCoordsBack, m_pChunk->getLocation(), blockPosition, LIGHT_LEFT);
+	m_pActiveMesh->addFace(xBlockFaces::xFace2back, texCoordsBack, m_pChunk->getLocation(), blockPosition, LIGHT_RIGHT);
 }
 
 void ChunkMeshBuilder::tryAddFaceToMesh(
@@ -216,17 +274,20 @@ void ChunkMeshBuilder::tryAddFaceToMesh(
 	}
 }
 
-bool ChunkMeshBuilder::shouldMakeFace(const sf::Vector3i &adjBlock,
+bool ChunkMeshBuilder::shouldMakeFace(const sf::Vector3i &adjBlockPos,
                                       const BlockDataHolder &blockData)
 {
-    auto block = m_pChunk->getBlock(adjBlock.x, adjBlock.y, adjBlock.z);
-    auto &data = block.getData();
+    auto adjBlock = m_pChunk->getBlock(adjBlockPos.x, adjBlockPos.y, adjBlockPos.z);
+    auto &data = adjBlock.getData();
 
-    if (block == BlockId::Air) {
+    if (adjBlock == BlockId::Air) {
         return true;
     }
     else if (!data.isOpaque) {
-		if (data.id != m_pBlockData->id || data.shaderType == BlockShaderType::Flora) {
+		if (data.id != m_pBlockData->id
+			|| data.shaderType == BlockShaderType::Flora
+			|| data.meshType == BlockMeshType::Cactus
+			) {
 			return true;
 		}
     }

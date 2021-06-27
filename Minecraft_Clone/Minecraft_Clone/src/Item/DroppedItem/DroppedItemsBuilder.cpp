@@ -11,49 +11,49 @@
 
 #include <iostream>
 
-namespace {
-	const float pos = 0.15f;
+const float pos = 0.15f;
+
+namespace cubeFaces {
+
 	const std::array<GLfloat, 12> frontFace{
 		-pos, -pos, +pos,
 		+pos, -pos, +pos,
 		+pos, +pos, +pos,
 		-pos, +pos, +pos,
 	};
-
 	const std::array<GLfloat, 12> backFace{
 		+pos, -pos, -pos,
 		-pos, -pos, -pos,
 		-pos, +pos, -pos,
 		+pos, +pos, -pos,
 	};
-
 	const std::array<GLfloat, 12> leftFace{
 		-pos, -pos, -pos,
 		-pos, -pos, +pos,
 		-pos, +pos, +pos,
 		-pos, +pos, -pos,
 	};
-
 	const std::array<GLfloat, 12> rightFace{
 		+pos, -pos, +pos,
 		+pos, -pos, -pos,
 		+pos, +pos, -pos,
 		+pos, +pos, +pos,
 	};
-
 	const std::array<GLfloat, 12> topFace{
 		-pos, +pos, +pos,
 		+pos, +pos, +pos,
 		+pos, +pos, -pos,
 		-pos, +pos, -pos,
 	};
-
 	const std::array<GLfloat, 12> bottomFace{
 		-pos, -pos, -pos,
 		+pos, -pos, -pos,
 		+pos, -pos, +pos,
 		-pos, -pos, +pos,
 	};
+} // namespace cubeFaces
+
+namespace xBlockFaces {
 
 	const std::array<GLfloat, 12> xFace1{
 		-pos, -pos, -pos,
@@ -61,13 +61,57 @@ namespace {
 		+pos, +pos, +pos,
 		-pos, +pos, -pos,
 	};
-
 	const std::array<GLfloat, 12> xFace2{
 		-pos, -pos, +pos,
 		+pos, -pos, -pos,
 		+pos, +pos, -pos,
 		-pos, +pos, +pos,
 	};
+} // namespace xBlockFaces
+
+namespace cactusFaces {
+
+	const static float bias = 1 / 16.0f * 0.3f;
+
+	const std::array<GLfloat, 12> frontFace{
+		-pos, -pos, +pos - bias,
+		+pos, -pos, +pos - bias,
+		+pos, +pos, +pos - bias,
+		-pos, +pos, +pos - bias,
+	};
+	const std::array<GLfloat, 12> backFace{
+		+pos, -pos, -pos + bias,
+		-pos, -pos, -pos + bias,
+		-pos, +pos, -pos + bias,
+		+pos, +pos, -pos + bias,
+	};
+	const std::array<GLfloat, 12> leftFace{
+		-pos + bias, -pos, -pos,
+		-pos + bias, -pos, +pos,
+		-pos + bias, +pos, +pos,
+		-pos + bias, +pos, -pos,
+	};
+	const std::array<GLfloat, 12> rightFace{
+		+pos - bias, -pos, +pos,
+		+pos - bias, -pos, -pos,
+		+pos - bias, +pos, -pos,
+		+pos - bias, +pos, +pos,
+	};
+	const std::array<GLfloat, 12> topFace{
+		-pos, +pos, +pos,
+		+pos, +pos, +pos,
+		+pos, +pos, -pos,
+		-pos, +pos, -pos,
+	};
+	const std::array<GLfloat, 12> bottomFace{
+		-pos, -pos, -pos,
+		+pos, -pos, -pos,
+		+pos, -pos, +pos,
+		-pos, -pos, +pos,
+	};
+} // namespace cactusFaces
+
+namespace {
 
 	const std::array<GLfloat, 12> shadow{
 		-pos, -1.9 * pos, -pos,
@@ -75,7 +119,7 @@ namespace {
 		+pos, -1.9 * pos, +pos,
 		-pos, -1.9 * pos, +pos,
 	};
-}
+} // namespace
 
 DroppedItemsBuilder::DroppedItemsBuilder(DroppedItemsManager &droppedItemsManager, DroppedItemsMesh &droppedItemsMesh)
 	: m_pDroppedItemsManager{ &droppedItemsManager },
@@ -93,29 +137,48 @@ void DroppedItemsBuilder::buildMesh()
 		auto position = item.position;
 		std::array<GLfloat, 8> texCoords;
 
-		if (data.meshType == BlockMeshType::X) {
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texTopCoord);
-			m_pDroppedItemsMesh->addItem(xFace1, texCoords, position);
-			m_pDroppedItemsMesh->addItem(xFace2, texCoords, position);
-		}
-		else {
+		if (data.meshType == BlockMeshType::Cube) {
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texBottomCoord);
-			m_pDroppedItemsMesh->addItem(bottomFace, texCoords, position);
+			m_pDroppedItemsMesh->addItem(cubeFaces::bottomFace, texCoords, position);
 
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texTopCoord);
-			m_pDroppedItemsMesh->addItem(topFace, texCoords, position);
+			m_pDroppedItemsMesh->addItem(cubeFaces::topFace, texCoords, position);
 
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(leftFace, texCoords, position);
+			m_pDroppedItemsMesh->addItem(cubeFaces::leftFace, texCoords, position);
 
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(rightFace, texCoords, position);
+			m_pDroppedItemsMesh->addItem(cubeFaces::rightFace, texCoords, position);
 
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(frontFace, texCoords, position);
+			m_pDroppedItemsMesh->addItem(cubeFaces::frontFace, texCoords, position);
 
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(backFace, texCoords, position);
+			m_pDroppedItemsMesh->addItem(cubeFaces::backFace, texCoords, position);
+		}
+		else if (data.meshType == BlockMeshType::X) {
+			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texTopCoord);
+			m_pDroppedItemsMesh->addItem(xBlockFaces::xFace1, texCoords, position);
+			m_pDroppedItemsMesh->addItem(xBlockFaces::xFace2, texCoords, position);
+		}
+		else if (data.meshType == BlockMeshType::Cactus) {
+			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texBottomCoord);
+			m_pDroppedItemsMesh->addItem(cactusFaces::bottomFace, texCoords, position);
+
+			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texTopCoord);
+			m_pDroppedItemsMesh->addItem(cactusFaces::topFace, texCoords, position);
+
+			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
+			m_pDroppedItemsMesh->addItem(cactusFaces::leftFace, texCoords, position);
+
+			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
+			m_pDroppedItemsMesh->addItem(cactusFaces::rightFace, texCoords, position);
+
+			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
+			m_pDroppedItemsMesh->addItem(cactusFaces::frontFace, texCoords, position);
+
+			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
+			m_pDroppedItemsMesh->addItem(cactusFaces::backFace, texCoords, position);
 		}
 
 		if (item.getAcceleration().y == 0.0f) {

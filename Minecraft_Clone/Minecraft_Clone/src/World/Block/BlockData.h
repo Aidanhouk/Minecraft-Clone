@@ -8,6 +8,7 @@
 enum class BlockMeshType {
     Cube = 0,
     X = 1,
+	Cactus = 2,
 };
 
 enum class BlockShaderType {

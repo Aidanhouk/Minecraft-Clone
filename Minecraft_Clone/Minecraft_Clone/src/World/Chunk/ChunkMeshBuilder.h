@@ -34,7 +34,7 @@ private:
 		const sf::Vector3i &blockFacing,
 		GLfloat cardinalLight);
 
-    bool shouldMakeFace(const sf::Vector3i &blockPosition,
+    bool shouldMakeFace(const sf::Vector3i &adjBlockPos,
                         const BlockDataHolder &blockData);
 
     bool shouldMakeLayer(int y);
