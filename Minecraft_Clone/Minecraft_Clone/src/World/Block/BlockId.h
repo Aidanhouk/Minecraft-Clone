@@ -27,6 +27,7 @@ enum class BlockId : Block_t {
 	SpruceBark = 18,
 	SpruceLeaf = 19,
 	Ice = 20,
+	Dandelion = 21,
 
     NUM_TYPES
 };

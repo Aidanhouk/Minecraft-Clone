@@ -20,6 +20,7 @@ const Material Material::SNOW(ID::Snow,					64, true, "Snow");
 const Material Material::SPRUCE_BARK(ID::SpruceBark,	64, true, "Spruce Log");
 const Material Material::SPRUCE_LEAF(ID::SpruceLeaf,	64, true, "Spruce Leaves");
 const Material Material::ICE(ID::Ice,					64, true, "Ice");
+const Material Material::DANDELION(ID::Dandelion,		64, true, "Dandelion");
 
 Material::Material(Material::ID id, int maxStack, bool isBlock, std::string &&name)
     : id(id)
@@ -92,6 +93,9 @@ BlockId Material::toBlockID() const
 		case Ice:
 			return BlockId::Ice;
 
+		case Dandelion:
+			return BlockId::Dandelion;
+
         default:
             return BlockId::NUM_TYPES;
     }
@@ -156,6 +160,9 @@ const Material &Material::toMaterial(BlockId id)
 
 		case BlockId::Ice:
 			return ICE;
+
+		case BlockId::Dandelion:
+			return DANDELION;
 
         default:
             return NOTHING;

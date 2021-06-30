@@ -44,7 +44,7 @@ void GrabbedItemDrawer::updateSprite(ItemSlot & grabbedItem)
 		auto texCoords = IconDatabase::get().textureAtlas.getTextureCoords(textureCoords);
 
 		m_grabbedItemSprite.setTextureRect(sf::IntRect(
-			texCoords[0] * m_textureAtlasSize + 10,
+			texCoords[0] * m_textureAtlasSize,
 			texCoords[7] * m_textureAtlasSize - 10,
 			-m_indivTextureSize,
 			m_indivTextureSize

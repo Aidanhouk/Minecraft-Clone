@@ -28,12 +28,13 @@ struct Material : public NonCopyable {
 		SpruceBark,
 		SpruceLeaf,
 		Ice,
+		Dandelion,
     };
 
 	const static Material NOTHING, GRASS_BLOCK, DIRT_BLOCK, STONE_BLOCK,
 		OAK_BARK_BLOCK, OAK_LEAF_BLOCK, SAND_BLOCK, CACTUS_BLOCK, ROSE,
 		TALL_GRASS, DEAD_SHRUB, BIRCH_BARK, PALM_BARK, PALM_LEAF, BIRCH_LEAF,
-		SUGAR_CANE, SNOW, SPRUCE_BARK, SPRUCE_LEAF, ICE;
+		SUGAR_CANE, SNOW, SPRUCE_BARK, SPRUCE_LEAF, ICE, DANDELION;
 
     Material(Material::ID id, int maxStack, bool isBlock, std::string &&name);
 

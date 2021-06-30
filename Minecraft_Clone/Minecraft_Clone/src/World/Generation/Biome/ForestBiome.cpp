@@ -35,7 +35,16 @@ ChunkBlock ForestBiome::getUnderBeachBlock(Rand & rand) const
 
 ChunkBlock ForestBiome::getPlant(Rand &rand) const
 {
-	return rand.intInRange(0, 10) > 8 ? BlockId::Rose : BlockId::TallGrass;
+	int intRand = rand.intInRange(0, 10);
+	if (intRand < 1) {
+		return BlockId::Rose;
+	}
+	else if (intRand < 2) {
+		return BlockId::Dandelion;
+	}
+	else {
+		return BlockId::TallGrass;
+	}
 }
 
 void ForestBiome::makeTree(Rand &rand, Chunk &chunk, int x, int y, int z) const

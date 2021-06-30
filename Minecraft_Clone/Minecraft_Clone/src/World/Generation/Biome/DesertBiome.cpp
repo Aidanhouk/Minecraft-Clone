@@ -32,10 +32,20 @@ ChunkBlock DesertBiome::getPlant(Rand &rand) const
 void DesertBiome::makeTree(Rand &rand, Chunk &chunk, int x, int y, int z) const
 {
     if (y < WATER_LEVEL + 5) {
-        makePalmTree(chunk, rand, x, y, z);
+		if (rand.intInRange(1, 10) <= 2) {
+			makeCactus(chunk, rand, x, y, z);
+		}
+		else {
+			makePalmTree(chunk, rand, x, y, z);
+		}
     }
     else {
-        makeCactus(chunk, rand, x, y, z);
+		if (rand.intInRange(1, 10) > 2) {
+			makeCactus(chunk, rand, x, y, z);
+		}
+		else {
+			makePalmTree(chunk, rand, x, y, z);
+		}
     }
 }
 

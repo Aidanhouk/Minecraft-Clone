@@ -3,7 +3,7 @@
 Developed using C++, OpenGL, SFML.
 
 The game without source code:
-https://drive.google.com/file/d/15nJ7MXFPxQhwFp2dIHwaiN5srTVH5KKI/view?usp=sharing
+https://drive.google.com/file/d/1icGsaNgpHKlOQyoN8YzxOzoLVBv9uvss/view?usp=sharing
 
 Video: https://youtu.be/QyfevEQ5BTE
 
