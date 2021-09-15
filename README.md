@@ -3,9 +3,9 @@
 Developed using C++, OpenGL, SFML.
 
 The game without source code:
-https://drive.google.com/file/d/1icGsaNgpHKlOQyoN8YzxOzoLVBv9uvss/view?usp=sharing
+https://drive.google.com/file/d/1-PTF6SZ0lhkfWGERtZoRq3qJFrXEGPqq/view?usp=sharing
 
-Video: https://youtu.be/QyfevEQ5BTE
+Video: https://youtu.be/Cn06O_pCu_w
 
 Implemented features:
 - World generation

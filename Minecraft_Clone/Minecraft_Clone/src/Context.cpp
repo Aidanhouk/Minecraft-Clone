@@ -49,4 +49,5 @@ Context::Context(const Config &config)
 
     glCullFace(GL_BACK);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glLineWidth(4);
 }

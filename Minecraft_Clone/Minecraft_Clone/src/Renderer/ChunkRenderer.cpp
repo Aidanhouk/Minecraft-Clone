@@ -26,7 +26,6 @@ void ChunkRenderer::render(const Camera &camera)
 	m_shader.loadProjectionMatrix(camera.getProjMatrix());
 	m_shader.loadViewMatrix(camera.getViewMatrix());
 	m_shader.loadDTime(g_info.dayTime);
-
 	m_shader.loadLighting(g_info.lighting);
 
     for (auto mesh : m_chunks) {

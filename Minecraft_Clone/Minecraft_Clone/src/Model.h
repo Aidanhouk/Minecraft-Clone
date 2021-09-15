@@ -19,6 +19,7 @@ public:
 
 	void addData(const Mesh &mesh);
 	void addSnowfallData(const SnowfallMesh &mesh);
+	void addDeliatedBlockData(const Mesh &mesh);
 
     void deleteData();
 

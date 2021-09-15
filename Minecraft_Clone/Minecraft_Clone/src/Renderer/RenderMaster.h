@@ -5,6 +5,8 @@
 
 #include "../Config.h"
 #include "ChunkRenderer.h"
+#include "AimedBlock/DelineateBlockRenderer.h"
+#include "AimedBlock/BreakBlockRenderer.h"
 #include "FloraRenderer.h"
 #include "SFMLRenderer.h"
 #include "WaterRenderer.h"
@@ -28,6 +30,7 @@ public:
     void addChunkToRender(const ChunkSection &chunk);
 	void drawIcons(const IconsMesh &iconsMesh);
 	void drawDroppedItems(const DroppedItemsMesh &droppedItemsMesh);
+	void drawBreakingBlock();
 
     void finishRender(sf::RenderWindow &window, const Camera &camera);
 
@@ -35,6 +38,8 @@ private:
 	PostProcessRender	m_postRenderer;
 
     ChunkRenderer		m_chunkRenderer;
+	BreakBlockRenderer	m_breakBlockRenderer;
+	DelineateBlockRenderer	m_delineateBlockRenderer;
     WaterRenderer		m_waterRenderer;
     FloraRenderer		m_floraRenderer;
 

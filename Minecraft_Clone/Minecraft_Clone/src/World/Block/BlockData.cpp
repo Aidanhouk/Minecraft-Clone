@@ -56,6 +56,11 @@ BlockData::BlockData(const std::string &fileName)
             inFile >> id;
             m_data.shaderType = static_cast<BlockShaderType>(id);
         }
+		else if (line == "Hardness") {
+			float hardness;
+			inFile >> hardness;
+			m_data.hardness = hardness;
+		}
     }
 }
 

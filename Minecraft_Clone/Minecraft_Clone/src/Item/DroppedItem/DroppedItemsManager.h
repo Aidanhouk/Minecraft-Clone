@@ -21,8 +21,8 @@ public:
 	void update(Player &player, World &world, float dt);
 	void addToRender(RenderMaster &renderer);
 	void checkForDroppedItems(const glm::vec3 pos, World &world);
-private:
 	void updateMesh();
+private:
 	void checkItemsLifetime();
 	void checkIfPlayerCanGrabItem(Player &player);
 	void itemsMove(World &world, float dt);

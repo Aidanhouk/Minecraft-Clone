@@ -34,6 +34,8 @@ StatePlaying::StatePlaying(Application &app, const Config &config)
 
 	app.setPlayer(&m_player);
 	m_player.setDroppedItemsManager(&m_world.getDroppedItemsManager());
+
+	m_placeBlockTimer.restart();
 }
 
 void StatePlaying::handleEvent(sf::Event e)
@@ -48,60 +50,95 @@ StatePlaying::~StatePlaying()
 
 void StatePlaying::handleInput()
 {
-    m_player.handleInput(m_pApplication->getWindow(), m_keyboard);
+	m_player.handleInput(m_pApplication->getWindow(), m_keyboard);
 
 	if (p_info.interfaceCursor)
 		return;
 
-    static sf::Clock timer;
-    glm::vec3 lastPosition;
+	glm::vec3 lastPosition;
 
-    for (Ray ray({ m_player.position.x, m_player.position.y + 0.57f, m_player.position.z }, m_player.rotation);
-         ray.getLength() < 5; ray.step(0.05f)) {
-        int x = (int)ray.getEnd().x;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+
+		ChunkBlock block;
+		BlockId blockId = BlockId::Air;
+		Ray ray({ m_player.position.x, m_player.position.y + 0.57f, m_player.position.z }, m_player.rotation);
+
+		for (;
+			ray.getLength() < 5;
+			ray.step(0.05f)) {
+
+			int x = (int)ray.getEnd().x;
+			int y = (int)ray.getEnd().y;
+			int z = (int)ray.getEnd().z;
+
+			block = m_world.getBlock(x, y, z);
+			blockId = (BlockId)block.id;
+
+			if (blockId != BlockId::Air && blockId != BlockId::Water) {
+				p_info.delineatedBlock = { 0, -1, 0 };
+				break;
+			}
+			lastPosition = ray.getEnd();
+		}
+		if (blockId != BlockId::Air && blockId != BlockId::Water) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				/// if the block has been broken
+				if (m_blockBreaker._break(ray.getEnd(), block.getData().hardness)) {
+					m_world.addEvent<PlayerDigEvent>(sf::Mouse::Left, ray.getEnd(), m_player);
+				}
+			}
+			/// right mouse clicked
+			else {
+				m_blockBreaker.stopBreaking();
+				if (m_placeBlockTimer.getElapsedTime().asSeconds() >= 0.2f) {
+					/// There's a bug when you place a block it sometimes replaces another block.\
+						This hack doesn't let it happen. Should fix it later
+					auto positionToPlaceBlock = m_world.getBlock(lastPosition.x, lastPosition.y, lastPosition.z);
+					auto _id = (BlockId)positionToPlaceBlock.id;
+					if (_id == BlockId::Air || _id == BlockId::Water) {
+						/// Not placing block on player position thus no collision
+						if (!(
+							m_player.position.x < ceil(lastPosition.x) + 0.3f
+							&& m_player.position.x > floor(lastPosition.x) - 0.3f
+							&& m_player.position.z < ceil(lastPosition.z) + 0.3f
+							&& m_player.position.z > floor(lastPosition.z) - 0.3f
+							&& m_player.position.y < ceil(lastPosition.y) + 1
+							&& m_player.position.y > floor(lastPosition.y) - 1
+							)) {
+							m_world.addEvent<PlayerDigEvent>(sf::Mouse::Right, lastPosition, m_player);
+							m_placeBlockTimer.restart();
+						}
+					}
+				}
+			}
+		}
+		else {
+			m_blockBreaker.stopBreaking();
+		}
+	}
+	else {
+		m_blockBreaker.stopBreaking();
+	}
+	for (Ray ray({ m_player.position.x, m_player.position.y + 0.57f, m_player.position.z }, m_player.rotation);
+		ray.getLength() < 5;
+		ray.step(0.05f)) {
+		int x = (int)ray.getEnd().x;
 		int y = (int)ray.getEnd().y;
 		int z = (int)ray.getEnd().z;
-		
-        auto block = m_world.getBlock(x, y, z);
-        auto id = (BlockId)block.id;
 
-        if (id != BlockId::Air && id != BlockId::Water) {
-            if (timer.getElapsedTime().asSeconds() > 0.2f) {
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    timer.restart();
-                    m_world.addEvent<PlayerDigEvent>(sf::Mouse::Left, ray.getEnd(), m_player);
-                    break;
-                }
-                else if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-					/// There's a bug when you place a block it sometimes replaces another block.\
-					This hack doesn't let it happen. Should fix it later
-					{
-						auto positionToPlaceBlock = m_world.getBlock(lastPosition.x, lastPosition.y, lastPosition.z);
-						auto _id = (BlockId)positionToPlaceBlock.id;
-						if (!(_id == BlockId::Air || _id == BlockId::Water))
-							return;
-					}
+		auto block = m_world.getBlock(x, y, z);
+		auto id = (BlockId)block.id;
 
-					/// Not placing block on player position thus no collision
-					if (
-						m_player.position.x < ceil(lastPosition.x) + 0.3f
-						&& m_player.position.x > floor(lastPosition.x) - 0.3f
-						&& m_player.position.z < ceil(lastPosition.z) + 0.3f
-						&& m_player.position.z > floor(lastPosition.z) - 0.3f
-						&& m_player.position.y < ceil(lastPosition.y) + 1
-						&& m_player.position.y > floor(lastPosition.y) - 1
-						) {
-						return;
-					}
+		if (id != BlockId::Air && id != BlockId::Water) {
+			p_info.delineatedBlock = { x, y, z };
+			break;
+		}
+		else {
+			p_info.delineatedBlock = { 0, -1, 0 };
+		}
 
-					timer.restart();
-					m_world.addEvent<PlayerDigEvent>(sf::Mouse::Right, lastPosition, m_player);
-					return;
-                }
-            }
-        }
-        lastPosition = ray.getEnd();
-    }
+		lastPosition = ray.getEnd();
+	}
 }
 
 void StatePlaying::update(float deltaTime)
@@ -139,6 +176,8 @@ void StatePlaying::render(RenderMaster &renderer)
 	m_player.drawInventory(renderer);
 
     m_world.renderWorld(renderer, m_pApplication->getCamera());
+
+	renderer.drawBreakingBlock();
 }
 
 void StatePlaying::onOpen()

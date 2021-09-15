@@ -1,8 +1,6 @@
 #ifndef GLOBAL_INFO_H
 #define GLOBAL_INFO_H
 
-#include "Camera.h"
-
 enum class Weather
 {
 	None = 0,

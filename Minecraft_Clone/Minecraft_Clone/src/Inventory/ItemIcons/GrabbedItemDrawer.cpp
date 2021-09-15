@@ -45,7 +45,7 @@ void GrabbedItemDrawer::updateSprite(ItemSlot & grabbedItem)
 
 		m_grabbedItemSprite.setTextureRect(sf::IntRect(
 			texCoords[0] * m_textureAtlasSize,
-			texCoords[7] * m_textureAtlasSize - 10,
+			texCoords[7] * m_textureAtlasSize,
 			-m_indivTextureSize,
 			m_indivTextureSize
 		));

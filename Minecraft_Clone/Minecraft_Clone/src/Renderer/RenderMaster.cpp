@@ -54,6 +54,11 @@ void RenderMaster::drawDroppedItems(const DroppedItemsMesh & droppedItemsMesh)
 	m_droppedItemsRenderer.setMeshToDraw(droppedItemsMesh);
 }
 
+void RenderMaster::drawBreakingBlock()
+{
+	m_breakBlockRenderer.setMeshToDraw();
+}
+
 void RenderMaster::finishRender(sf::RenderWindow &window, const Camera &camera)
 {
 	bool postProc = g_Config.postProcess;
@@ -69,11 +74,13 @@ void RenderMaster::finishRender(sf::RenderWindow &window, const Camera &camera)
     glEnable(GL_DEPTH_TEST);
 
     m_chunkRenderer.render(camera);
+	m_delineateBlockRenderer.render(camera);
     m_floraRenderer.render(camera);
 	m_droppedItemsRenderer.render(camera);
     m_waterRenderer.render(camera);
 
 	m_sky->render(camera);
+	m_breakBlockRenderer.render(camera);
 
 	if (postProc) {
 		m_postRenderer.render(camera, m_fbo);

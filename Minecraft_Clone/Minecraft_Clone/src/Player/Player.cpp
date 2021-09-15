@@ -65,6 +65,8 @@ void Player::handleInput(const sf::RenderWindow &window, Keyboard &keyboard)
 	keyboardInput(keyboard);
 	mouseInput(window);
 
+	p_info.position = position;
+
 	if (m_inventoryKey.isKeyPressed()) {
 		m_Inventory.showOrHideInventory();
 	}
@@ -140,11 +142,11 @@ void Player::update(float dt, World &world)
     if (!m_isFlying) {
         if (!m_isOnGround) {
 			if (m_isUnderwater) {
-				/// -3.5 - drowning speed
-				if (velocity.y < -3.6f) {
+				/// -3.0 is a drowning speed
+				if (velocity.y < -3.1f) {
 					velocity.y += 80 * dt;
 				}
-				else if (velocity.y > -3.4f) {
+				else if (velocity.y > -2.9f) {
 					velocity.y -= 80 * dt;
 				}
 			}
@@ -481,15 +483,16 @@ inline void Player::parametersUpdate()
 void Player::drawGUI(RenderMaster &master)
 {
     std::ostringstream stream;
-	stream <<
-		" X: " << (int)position.x <<
-		" Y: " << (int)position.y <<
-		" Z: " << (int)position.z <<
-		std::boolalpha <<
-		"\n Creative mode <Tab> - " << m_creativeMode <<
-		"\n Flying (in creative mode) <F> - " << m_isFlying <<
-		"\n Post processing <P> - " << g_Config.postProcess <<
-		"\n Weather <F5/F6/F7> - ";
+	stream
+		<< " X: " << (int)position.x
+		<< " Y: " << (int)position.y
+		<< " Z: " << (int)position.z
+		<< "\n Close HUD <F3>"
+		<< std::boolalpha
+		<< "\n Creative mode <Tab> - " << m_creativeMode
+		<< "\n Flying (in creative mode) <F> - " << m_isFlying
+		<< "\n Post processing <P> - " << g_Config.postProcess
+		<< "\n Weather <F5/F6/F7> - ";
 
 	switch (g_info.weather)
 	{

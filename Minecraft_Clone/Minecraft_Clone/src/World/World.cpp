@@ -194,6 +194,13 @@ void World::updateChunk(int blockX, int blockY, int blockZ)
 
 void World::renderWorld(RenderMaster &renderer, const Camera &camera)
 {
+	/// each 30 seconds dropped items get updated according to render distance
+	static sf::Clock droppedItemTimer;
+	if (droppedItemTimer.getElapsedTime().asSeconds() > 30.0f) {
+		droppedItemTimer.restart();
+		m_droppedItemManager.updateMesh();
+	}
+
 	m_droppedItemManager.addToRender(renderer);
 
     std::unique_lock<std::mutex> lock(m_mainMutex);

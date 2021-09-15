@@ -11,6 +11,7 @@
 
 #include "../Tick/TickManager.h"
 #include "../Environment/SkyManager.h"
+#include "BlockBreaker.h"
 
 extern std::shared_ptr<SkyManager> m_sky;
 
@@ -33,6 +34,8 @@ private:
     World m_world;
 
     FPSCounter						m_fpsCounter;
+	BlockBreaker					m_blockBreaker;
+	sf::Clock						m_placeBlockTimer;
 	sf::RectangleShape				m_crosshair;
 	sf::Texture						m_chTexture;
 	std::unique_ptr<TickManager>	m_tickManager;

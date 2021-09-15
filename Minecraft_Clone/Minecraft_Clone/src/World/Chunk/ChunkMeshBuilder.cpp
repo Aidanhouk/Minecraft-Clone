@@ -192,14 +192,14 @@ void ChunkMeshBuilder::buildMesh()
 
 					// Up/ Down
 					if ((m_pChunk->getLocation().y != 0) || y != 0)
-						tryAddFaceToMesh(cubeFaces::bottomFace,	data.texBottomCoord, position, directions.down, LIGHT_BOT);
-					tryAddFaceToMesh(cubeFaces::topFace,			data.texTopCoord, position, directions.up, LIGHT_TOP);
+						tryAddFaceToMesh(cubeFaces::bottomFace,		data.texBottomCoord,	position, directions.down,	LIGHT_BOT);
+					tryAddFaceToMesh(cubeFaces::topFace,			data.texTopCoord,		position, directions.up,	LIGHT_TOP);
 					// Left/ Right
-					tryAddFaceToMesh(cubeFaces::leftFace,			data.texSideCoord, position, directions.left, LIGHT_LEFT);
-					tryAddFaceToMesh(cubeFaces::rightFace,			data.texSideCoord, position, directions.right, LIGHT_RIGHT);
+					tryAddFaceToMesh(cubeFaces::leftFace,			data.texSideCoord,		position, directions.left,	LIGHT_LEFT);
+					tryAddFaceToMesh(cubeFaces::rightFace,			data.texSideCoord,		position, directions.right, LIGHT_RIGHT);
 					// Front/ Back
-					tryAddFaceToMesh(cubeFaces::frontFace,			data.texSideCoord, position, directions.front, LIGHT_FRONT);
-					tryAddFaceToMesh(cubeFaces::backFace,			data.texSideCoord, position, directions.back, LIGHT_BACK);
+					tryAddFaceToMesh(cubeFaces::frontFace,			data.texSideCoord,		position, directions.front,	LIGHT_FRONT);
+					tryAddFaceToMesh(cubeFaces::backFace,			data.texSideCoord,		position, directions.back,	LIGHT_BACK);
 				}
 				else if (data.meshType == BlockMeshType::X) {
 					addXBlockToMesh(data.texTopCoord, position);

@@ -69,6 +69,8 @@
     <ClCompile Include="src\PostProcess\MotionBlur.cpp" />
     <ClCompile Include="src\PostProcess\PostProcessRenderer.cpp" />
     <ClCompile Include="src\PostProcess\VerticalGaussian.cpp" />
+    <ClCompile Include="src\Renderer\AimedBlock\BreakBlockRenderer.cpp" />
+    <ClCompile Include="src\Renderer\AimedBlock\DelineateBlockRenderer.cpp" />
     <ClCompile Include="src\Renderer\DroppedItemsRenderer.cpp" />
     <ClCompile Include="src\Renderer\Renderer_2D.cpp" />
     <ClCompile Include="src\renderer\ChunkRenderer.cpp" />
@@ -78,9 +80,11 @@
     <ClCompile Include="src\renderer\WaterRenderer.cpp" />
     <ClCompile Include="src\RenderSettings.cpp" />
     <ClCompile Include="src\ShaderData.cpp" />
+    <ClCompile Include="src\Shaders\AimedBlock\BreakBlockShader.cpp" />
     <ClCompile Include="src\Shaders\BasicShader.cpp" />
     <ClCompile Include="src\Shaders\Basic_2D_Shader.cpp" />
     <ClCompile Include="src\Shaders\ChunkShader.cpp" />
+    <ClCompile Include="src\Shaders\AimedBlock\DelineateShader.cpp" />
     <ClCompile Include="src\Shaders\Environment\CloudShader.cpp" />
     <ClCompile Include="src\Shaders\Environment\RainShader.cpp" />
     <ClCompile Include="src\Shaders\Environment\SnowShader.cpp" />
@@ -92,6 +96,7 @@
     <ClCompile Include="src\Shaders\ShaderLoader.cpp" />
     <ClCompile Include="src\Shaders\Environment\SunShader.cpp" />
     <ClCompile Include="src\Shaders\WaterShader.cpp" />
+    <ClCompile Include="src\States\BlockBreaker.cpp" />
     <ClCompile Include="src\states\PlayingState.cpp" />
     <ClCompile Include="src\texture\BasicTexture.cpp" />
     <ClCompile Include="src\texture\TextureAtlas.cpp" />
@@ -184,6 +189,8 @@
     <ClInclude Include="src\PostProcess\MotionBlur.h" />
     <ClInclude Include="src\PostProcess\PostProcessRenderer.h" />
     <ClInclude Include="src\PostProcess\VerticalGaussian.h" />
+    <ClInclude Include="src\Renderer\AimedBlock\BreakBlockRenderer.h" />
+    <ClInclude Include="src\Renderer\AimedBlock\DelineateBlockRenderer.h" />
     <ClInclude Include="src\Renderer\DroppedItemsRenderer.h" />
     <ClInclude Include="src\Renderer\Renderer_2D.h" />
     <ClInclude Include="src\renderer\ChunkRenderer.h" />
@@ -194,9 +201,11 @@
     <ClInclude Include="src\renderer\WaterRenderer.h" />
     <ClInclude Include="src\RenderSettings.h" />
     <ClInclude Include="src\ShaderData.h" />
+    <ClInclude Include="src\Shaders\AimedBlock\BreakBlockShader.h" />
     <ClInclude Include="src\Shaders\Basic_2D_Shader.h" />
     <ClInclude Include="src\Shaders\BasicShader.h" />
     <ClInclude Include="src\Shaders\ChunkShader.h" />
+    <ClInclude Include="src\Shaders\AimedBlock\DelineateShader.h" />
     <ClInclude Include="src\Shaders\Environment\CloudShader.h" />
     <ClInclude Include="src\Shaders\Environment\SnowShader.h" />
     <ClInclude Include="src\Shaders\Environment\RainShader.h" />
@@ -209,6 +218,7 @@
     <ClInclude Include="src\Shaders\Environment\SunShader.h" />
     <ClInclude Include="src\Shaders\WaterShader.h" />
     <ClInclude Include="src\shader\Shader.h" />
+    <ClInclude Include="src\States\BlockBreaker.h" />
     <ClInclude Include="src\states\PlayingState.h" />
     <ClInclude Include="src\states\StateBase.h" />
     <ClInclude Include="src\texture\BasicTexture.h" />
@@ -539,13 +549,13 @@
     <None Include="Res\Blocks\BirchBark.block" />
     <None Include="Res\Blocks\BirchLeaf.block" />
     <None Include="Res\Blocks\Cactus.block" />
+    <None Include="Res\Blocks\Dandelion.block" />
     <None Include="Res\Blocks\DeadShrub.block" />
     <None Include="Res\Blocks\Dirt.block" />
     <None Include="Res\Blocks\Grass.block" />
     <None Include="Res\Blocks\Ice.block" />
     <None Include="Res\Blocks\OakBark.block" />
     <None Include="Res\Blocks\OakLeaf.block" />
-    <None Include="Res\Blocks\OakPlank.block" />
     <None Include="Res\Blocks\PalmBark.block" />
     <None Include="Res\Blocks\PalmLeaf.block" />
     <None Include="Res\Blocks\Rose.block" />

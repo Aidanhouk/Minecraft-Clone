@@ -8,6 +8,8 @@
 #include "World/Block/BlockDatabase.h"
 
 #include "RenderSettings.h"
+#include "Config.h"
+#include "Player/PlayerInfo.h"
 
 #include <iostream>
 
@@ -135,6 +137,15 @@ void DroppedItemsBuilder::buildMesh()
 		ChunkBlock block(item.getItemStack().getMaterial().toBlockID());
 		auto &data = block.getData();
 		auto position = item.position;
+
+		if (
+			glm::pow(position.x - p_info.position.x, 2) +
+			glm::pow(position.y - p_info.position.y, 2) +
+			glm::pow(position.z - p_info.position.z, 2) >
+			glm::pow(g_Config.renderDistance * 16, 2)
+			) {
+			continue;
+		}
 		std::array<GLfloat, 8> texCoords;
 
 		if (data.meshType == BlockMeshType::Cube) {
@@ -155,11 +166,25 @@ void DroppedItemsBuilder::buildMesh()
 
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
 			m_pDroppedItemsMesh->addItem(cubeFaces::backFace, texCoords, position);
+
+
+
+			//if (item.getAcceleration().y == 0.0f) {
+			//	texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(sf::Vector2i(1, 15));
+			//	m_pDroppedItemsMesh->addItem(shadow, texCoords, position);
+			//}
 		}
 		else if (data.meshType == BlockMeshType::X) {
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texTopCoord);
 			m_pDroppedItemsMesh->addItem(xBlockFaces::xFace1, texCoords, position);
 			m_pDroppedItemsMesh->addItem(xBlockFaces::xFace2, texCoords, position);
+
+
+
+			//if (item.getAcceleration().y == 0.0f) {
+			//	texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(sf::Vector2i(2, 15));
+			//	m_pDroppedItemsMesh->addItem(shadow, texCoords, position);
+			//}
 		}
 		else if (data.meshType == BlockMeshType::Cactus) {
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texBottomCoord);
@@ -179,8 +204,14 @@ void DroppedItemsBuilder::buildMesh()
 
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
 			m_pDroppedItemsMesh->addItem(cactusFaces::backFace, texCoords, position);
-		}
 
+
+
+			//if (item.getAcceleration().y == 0.0f) {
+			//	texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(sf::Vector2i(1, 15));
+			//	m_pDroppedItemsMesh->addItem(shadow, texCoords, position);
+			//}
+		}
 		if (item.getAcceleration().y == 0.0f) {
 			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(sf::Vector2i(0, 15));
 			m_pDroppedItemsMesh->addItem(shadow, texCoords, position);

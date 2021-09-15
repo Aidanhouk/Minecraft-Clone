@@ -47,11 +47,11 @@ void Model::bindVAO() const
 
 void Model::addData(const Mesh &mesh)
 {
-    genVAO();
+	genVAO();
 
-    addVBO(3, mesh.vertexPositions);
+	addVBO(3, mesh.vertexPositions);
 	addVBO(2, mesh.textureCoords);
-    addEBO(mesh.indices);
+	addEBO(mesh.indices);
 }
 
 void Model::addSnowfallData(const SnowfallMesh & mesh)
@@ -61,6 +61,14 @@ void Model::addSnowfallData(const SnowfallMesh & mesh)
 	addVBO(3, mesh.vertexPositions);
 	addVBO(2, mesh.textureCoords);
 	addVBO(2, mesh.directions);
+	addEBO(mesh.indices);
+}
+
+void Model::addDeliatedBlockData(const Mesh & mesh)
+{
+	genVAO();
+
+	addVBO(3, mesh.vertexPositions);
 	addEBO(mesh.indices);
 }
 

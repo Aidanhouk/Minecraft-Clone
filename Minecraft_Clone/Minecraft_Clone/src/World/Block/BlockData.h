@@ -28,15 +28,16 @@ struct BlockDataHolder : public NonCopyable {
 
     bool isOpaque;
     bool isCollidable;
+	float hardness;
 };
 
 class BlockData : public NonCopyable {
-  public:
+public:
     BlockData(const std::string &fileName);
 
     const BlockDataHolder &getBlockData() const;
 
-  private:
+private:
     BlockDataHolder m_data;
 };
 
