@@ -3,20 +3,20 @@
 Developed using C++, OpenGL, SFML.
 
 The game without source code:
-https://drive.google.com/file/d/1-PTF6SZ0lhkfWGERtZoRq3qJFrXEGPqq/view?usp=sharing
+https://drive.google.com/file/d/1ORYQqxhr3d-L2c2IEK3LIS8HJ--oFI4w/view?usp=sharing
 
-Video: https://youtu.be/Cn06O_pCu_w
+Video: https://youtu.be/m6ZodlOEYH4
 
 Implemented features:
 - World generation
 - Biomes
 - Collision detection
-- Block breaking/placing
+- Breaking and placing blocks
 - Items dropping
 - Postprocessing (bloom, fxaa, motion blur)
-- Day and night cycle
+- Day & night cycle
 - Health and damage system
-- Swimming and oxygen system
+- Swimming and breathing
 - HUD: inventory, toolbar, health and oxygen bars
 - Snowfall and rain
 - And much more

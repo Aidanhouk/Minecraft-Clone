@@ -14,7 +14,7 @@ class DroppedItemsManager
 public:
 	void addItem(const ItemStack& itemstack, const glm::vec3& pos);
 	void addItem(const ItemStack& itemstack, const glm::vec3& pos, const glm::vec3& rotation);
-	void blockBrokenUpdate(const glm::vec3& pos);
+	void blockBrokenUpdate(const glm::vec3& pos, World &world);
 
 	std::vector<DroppedItem>& getDroppedItems() { return m_items; }
 

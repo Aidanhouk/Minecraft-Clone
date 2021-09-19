@@ -15,12 +15,13 @@ class World;
 class RenderMaster;
 class Application;
 class DroppedItemsManager;
+class Hand;
 
 class Player : public Entity {
 public:
 	Player(const Config &config, Application &app);
 	
-	void handleInput(const sf::RenderWindow &window, Keyboard &keyboard);
+	void handleInput(const sf::RenderWindow &window, Keyboard &keyboard, Hand &hand, World &world);
 	void mouseScrollEvent(int delta);
 	
 	void update(float dt, World &wolrd);
@@ -40,10 +41,10 @@ private:
 	void collide(World &world, const glm::vec3 &vel);
 	void movementInWater(World &world);
 	
-	void keyboardInput(Keyboard &keyboard);
+	void keyboardInput(Keyboard &keyboard, World &world);
 	void mouseInput(const sf::RenderWindow &window);
 	
-	void jump();
+	void jump(World &world);
 
 	inline void parametersUpdate();
 	
@@ -51,13 +52,13 @@ private:
 	bool m_isOnGround = false;
 	bool m_isFlying = false;
 	bool m_isMoving = false;
-	// technically not underwater
-	bool m_isUnderwater = false;
+	/// does not represent actual swimming
 	bool m_isSwimming = false;
 	bool m_isOnIce = false;
 	
 	int m_hp = 20;
 	int m_oxygen = 20;
+	sf::Clock m_regenerationTimer;
 	
 	Inventory m_Inventory;
 	sf::Text m_playerInfo;

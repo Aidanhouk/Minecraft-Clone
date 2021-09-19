@@ -4,6 +4,7 @@
 #include "../Entity.h"
 
 #include "../Config.h"
+#include "RenderSettings.h"
 
 glm::mat4 makeModelMatrix(const Entity &entity)
 {
@@ -33,5 +34,5 @@ glm::mat4 makeViewMatrix(const Camera &camera)
 
 glm::mat4 makeProjectionMatrix(const Config &config)
 {
-    return glm::perspective(glm::radians((float)config.fov), (float)config.windowX / (float)config.windowY, 0.1f, 2000.0f);
+    return glm::perspective(glm::radians((float)config.fov), (float)g_renderSettings.resolutionX / (float)g_renderSettings.resolutionY, 0.1f, 2000.0f);
 }

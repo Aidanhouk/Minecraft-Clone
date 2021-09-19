@@ -1,5 +1,8 @@
 render_distance 8
-window_size 2560 1440
+fullscreen 1
+resolution 0 0
+(0 0 - auto-detect)
+mouse_sensitivity 5.0
 fov 70
 gamma 1.0
 contrast 1.0

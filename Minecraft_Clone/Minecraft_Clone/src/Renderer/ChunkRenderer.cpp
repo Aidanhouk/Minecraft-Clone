@@ -19,6 +19,7 @@ void ChunkRenderer::render(const Camera &camera)
 
     glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 
     m_shader.useProgram();
     BlockDatabase::get().textureAtlas.bindTexture();

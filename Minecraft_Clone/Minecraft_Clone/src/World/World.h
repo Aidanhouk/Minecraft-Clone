@@ -19,6 +19,7 @@
 class RenderMaster;
 class Camera;
 class Player;
+class World;
 
 struct Entity;
 
@@ -47,7 +48,7 @@ public:
     }
 
 	void addDroppedItem(const ItemStack& itemStack, const glm::vec3& pos);
-	void blockBroken(const glm::vec3& pos);
+	void blockBroken(const glm::vec3& pos, World &world);
 	void checkForDroppedItems(const glm::vec3& pos);
 private:
     void loadChunks(const Camera &camera);

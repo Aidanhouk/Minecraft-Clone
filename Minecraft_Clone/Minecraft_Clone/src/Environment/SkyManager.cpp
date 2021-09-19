@@ -161,8 +161,6 @@ void SkyManager::render(const Camera& camera)
 		else if (g_info.weather == Weather::Snowfall)
 			snowfall.Render(camera, playerPos);
 	}
-
-	glDisable(GL_BLEND);
 	
 	g_info.cam = (Camera*)&camera;
 }

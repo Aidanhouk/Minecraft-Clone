@@ -44,19 +44,31 @@ void loadConfig(Config &config)
         while (configFile >> key) {
             if (key == "render_distance") {
                 configFile >> config.renderDistance;
-                std::cout << "Config: Render Distance: "
+                std::cout << "Config: Render distance: "
                           << config.renderDistance << '\n';
             }
             else if (key == "fullscreen") {
                 configFile >> config.isFullscreen;
-                std::cout << "Config: Full screen mode: " << std::boolalpha
+                std::cout << "Config: Fullscreen mode: " << std::boolalpha
                           << config.isFullscreen << '\n';
             }
-            else if (key == "window_size") {
-                configFile >> config.windowX >> config.windowY;
-                std::cout << "Config: Window Size: " << config.windowX << " x "
-                          << config.windowY << '\n';
-            }
+			else if (key == "resolution") {
+				configFile >> config.windowX >> config.windowY;
+				if (config.windowX == 0 || config.windowY == 0) {
+					config.customResolution = false;
+					std::cout << "Config: Resolution: screen resolution\n";
+				}
+				else {
+					config.customResolution = true;
+					std::cout << "Config: Resolution: " << config.windowX << " x "
+						<< config.windowY << '\n';
+				}
+			}
+			else if (key == "mouse_sensitivity") {
+				configFile >> config.mouse_sensitivity;
+				std::cout << "Config: Mouse sensitivity: "
+					<< config.mouse_sensitivity << '\n';
+			}
             else if (key == "fov") {
 				int fov;
 				configFile >> fov;
@@ -65,7 +77,7 @@ void loadConfig(Config &config)
 				else if (fov > 115)
 					fov = 115;
 				config.fov = fov;
-                std::cout << "Config: Field of Vision: " << config.fov << '\n';
+                std::cout << "Config: Field of view: " << config.fov << '\n';
 			}
 			else if (key == "gamma") {
 				configFile >> config.gamma;

@@ -96,7 +96,7 @@ void PostProcessRender::finalize()
 	m_shader.loadSaturation(g_Config.saturation);
 	m_shader.loadValue(g_Config.value);
 
-	m_shader.loadResolution(glm::vec2(g_Config.windowX, g_Config.windowY));
+	m_shader.loadResolution(glm::vec2(g_renderSettings.resolutionX, g_renderSettings.resolutionY));
 	m_shader.loadUnderwater(p_info.underwater);
 	m_shader.loadDarkScreen(p_info.darkScreen);
 	

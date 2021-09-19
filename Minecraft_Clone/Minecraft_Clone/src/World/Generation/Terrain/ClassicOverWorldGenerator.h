@@ -24,14 +24,6 @@ class Chunk;
 class ClassicOverWorldGenerator : public TerrainGenerator {
 public:
 	ClassicOverWorldGenerator();
-	//~ClassicOverWorldGenerator() {
-	//	std::cout << "\n";
-	//	
-	//	for (int i = 0; i < m_ARR.size(); ++i) {
-	//		std::cout << i << " " << m_ARR[i] << "\n";
-	//	}
-	//	std::cout << "\n";
-	//}
 	
 	void generateTerrainFor(Chunk &chunk) override;
 	int getMinimumSpawnHeight() const noexcept override;
@@ -43,7 +35,7 @@ private:
 	void getHeightIn(int xMin, int zMin, int xMax, int zMax);
 	void getHeightMap();
 	void getBiomeMap();
-	
+
 	const Biome &getBiome(int x, int z) const;
 	
 	Array2D<int, CHUNK_SIZE> m_heightMap;

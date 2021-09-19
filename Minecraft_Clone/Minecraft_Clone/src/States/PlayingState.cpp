@@ -6,6 +6,7 @@
 #include "../World/Event/PlayerDigEvent.h"
 #include "Maths/glm.h"
 #include "Player/PlayerInfo.h"
+#include "World/Generation/Biome/Biome.h"
 
 #include <iostream>
 
@@ -17,6 +18,25 @@ StatePlaying::StatePlaying(Application &app, const Config &config)
     , m_world(app.getCamera(), config, m_player)
 {
     app.getCamera().hookEntity(m_player);
+
+	m_font.loadFromFile("Res/Fonts/MinecraftRegular.otf");
+
+	m_startText.setFont(m_font);
+	m_startText.setCharacterSize(app.getWindow().getSize().x / 25);
+	m_startText.setString("Click mouse to start");
+	m_startText.setOrigin(m_startText.getGlobalBounds().width / 2,
+		m_startText.getGlobalBounds().height / 2);
+	m_startText.setPosition(app.getWindow().getSize().x / 2,
+		app.getWindow().getSize().y / 3);
+
+	m_deathText.setFont(m_font);
+	m_deathText.setFillColor(sf::Color::Red);
+	m_deathText.setCharacterSize(app.getWindow().getSize().x / 25);
+	m_deathText.setString("YOU DIED");
+	m_deathText.setOrigin(m_deathText.getGlobalBounds().width / 2,
+		m_deathText.getGlobalBounds().height / 2);
+	m_deathText.setPosition(app.getWindow().getSize().x / 2,
+		app.getWindow().getSize().y / 3);
 
 	m_chTexture.loadFromFile("Res/Textures/Interface/crosshair.png");
 	m_crosshair.setTexture(&m_chTexture);
@@ -50,7 +70,10 @@ StatePlaying::~StatePlaying()
 
 void StatePlaying::handleInput()
 {
-	m_player.handleInput(m_pApplication->getWindow(), m_keyboard);
+	if (p_info.gameState == GameState::DIED)
+		return;
+
+	m_player.handleInput(m_pApplication->getWindow(), m_keyboard, m_hand, m_world);
 
 	if (p_info.interfaceCursor)
 		return;
@@ -82,6 +105,7 @@ void StatePlaying::handleInput()
 		}
 		if (blockId != BlockId::Air && blockId != BlockId::Water) {
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				m_hand._break();
 				/// if the block has been broken
 				if (m_blockBreaker._break(ray.getEnd(), block.getData().hardness)) {
 					m_world.addEvent<PlayerDigEvent>(sf::Mouse::Left, ray.getEnd(), m_player);
@@ -104,7 +128,16 @@ void StatePlaying::handleInput()
 							&& m_player.position.z > floor(lastPosition.z) - 0.3f
 							&& m_player.position.y < ceil(lastPosition.y) + 1
 							&& m_player.position.y > floor(lastPosition.y) - 1
-							)) {
+							)
+							&& m_player.getHeldItems().getNumInStack() != 0
+							/// Refactor this later
+							|| m_player.getHeldItems().getMaterial().id == Material::Dandelion
+							|| m_player.getHeldItems().getMaterial().id == Material::DeadShrub
+							|| m_player.getHeldItems().getMaterial().id == Material::Rose
+							|| m_player.getHeldItems().getMaterial().id == Material::SugarCane
+							|| m_player.getHeldItems().getMaterial().id == Material::TallGrass
+							) {
+							m_hand.swing();
 							m_world.addEvent<PlayerDigEvent>(sf::Mouse::Right, lastPosition, m_player);
 							m_placeBlockTimer.restart();
 						}
@@ -114,9 +147,18 @@ void StatePlaying::handleInput()
 		}
 		else {
 			m_blockBreaker.stopBreaking();
+
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				m_hand.swing();
+				m_hand.leftMouseHold();
+			}
+			else { // right mouse clicked
+				m_hand.leftMouseUnhold();
+			}
 		}
 	}
 	else {
+		m_hand.leftMouseUnhold();
 		m_blockBreaker.stopBreaking();
 	}
 	for (Ray ray({ m_player.position.x, m_player.position.y + 0.57f, m_player.position.z }, m_player.rotation);
@@ -157,27 +199,38 @@ void StatePlaying::update(float deltaTime)
 
 void StatePlaying::render(RenderMaster &renderer)
 {
-    static sf::Clock dt;
-
     static bool drawGUI = true;
     static ToggleKey drawKey(sf::Keyboard::F3);
-
-	renderer.drawSFML(m_crosshair);
-
     if (drawKey.isKeyPressed()) {
         drawGUI = !drawGUI;
     }
-
     if (drawGUI) {
         m_fpsCounter.draw(renderer);
         m_player.drawGUI(renderer);
     }
 
+	switch (p_info.gameState)
+	{
+	case GameState::NOT_STARTED:
+		renderer.drawSFML(m_startText);
+		break;
+	case GameState::DIED:
+		renderer.drawSFML(m_deathText);
+		break;
+	default:
+		break;
+	}
+
+	renderer.drawSFML(m_crosshair);
+
 	m_player.drawInventory(renderer);
 
-    m_world.renderWorld(renderer, m_pApplication->getCamera());
+	m_hand.setMeshToDraw();
+	renderer.setHandModel(m_hand.getModel());
 
 	renderer.drawBreakingBlock();
+
+    m_world.renderWorld(renderer, m_pApplication->getCamera());
 }
 
 void StatePlaying::onOpen()

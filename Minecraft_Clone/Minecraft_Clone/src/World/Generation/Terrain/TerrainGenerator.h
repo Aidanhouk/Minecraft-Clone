@@ -4,6 +4,7 @@
 enum class BiomeId;
 
 class Chunk;
+struct Biome;
 
 class TerrainGenerator {
 public:

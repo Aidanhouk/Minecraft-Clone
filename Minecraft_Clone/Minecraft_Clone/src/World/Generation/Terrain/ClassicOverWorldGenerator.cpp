@@ -28,21 +28,21 @@ ClassicOverWorldGenerator::ClassicOverWorldGenerator()
 
 void ClassicOverWorldGenerator::setUpNoise()
 {
-    std::cout << "Seed: " << seed << '\n';
-    static bool noiseGen = false;
-    if (!noiseGen) {
-        std::cout << "making noise\n";
-        noiseGen = true;
-
-        NoiseParameters biomeParmams;
-        biomeParmams.octaves = 5;
-        biomeParmams.amplitude = 120;
-        biomeParmams.smoothness = 1035;
-        biomeParmams.heightOffset = 0;
-        biomeParmams.roughness = 0.75;
-
-        m_biomeNoiseGen.setParameters(biomeParmams);
-    }
+	//std::cout << "Seed: " << seed << '\n';
+	static bool noiseGen = false;
+	if (!noiseGen) {
+	    //std::cout << "making noise\n";
+	    noiseGen = true;
+	
+	    NoiseParameters biomeParmams;
+	    biomeParmams.octaves = 5;
+	    biomeParmams.amplitude = 120;
+	    biomeParmams.smoothness = 1035;
+	    biomeParmams.heightOffset = 0;
+	    biomeParmams.roughness = 0.75;
+	
+	    m_biomeNoiseGen.setParameters(biomeParmams);
+	}
 }
 
 void ClassicOverWorldGenerator::generateTerrainFor(Chunk &chunk)
@@ -209,7 +209,6 @@ void ClassicOverWorldGenerator::setBlocks(int maxHeight)
 const Biome &ClassicOverWorldGenerator::getBiome(int x, int z) const
 {
     int biomeValue = m_biomeMap.get(x, z);
-	//++m_ARR[biomeValue];
 
     if (biomeValue > 200) {
         return m_oceanBiome;

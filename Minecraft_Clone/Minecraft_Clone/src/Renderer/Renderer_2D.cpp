@@ -10,7 +10,7 @@ void Renderer_2D::setMeshToDraw(const IconsMesh & iconsMesh)
 	m_mesh = &iconsMesh.getModel().getRenderInfo();
 }
 
-void Renderer_2D::render(const Camera &camera)
+void Renderer_2D::render()
 {
 	glEnable(GL_BLEND);
 	glDisable(GL_CULL_FACE);

@@ -16,7 +16,7 @@ public:
 	void setRandomAcceleration();
 	void setAcceleration(float x, float y);
 	void move(World &world, float dt);
-	void startMoving() { m_acceleration.y = -0.01f; }
+	void startFalling(World &world);
 	void collisionMove(World &world);
 	void setItemStackNumber(int number);
 
@@ -24,7 +24,7 @@ public:
 	ItemStack& getItemStack() { return m_itemStack; }
 	glm::vec3 getAcceleration() const { return m_acceleration; }
 
-	bool shouldMove() const { return m_acceleration.y != 0.0f; }
+	bool shouldMove() const;
 	bool canBeGrabbed() const;
 private:
 	ItemStack m_itemStack;

@@ -35,7 +35,7 @@ void PlayerDigEvent::dig(World &world)
 				ItemStack(material, 1),
 				glm::vec3(floor(x) + 0.5f, floor(y) + 0.5f, floor(z) + 0.5f)
 			);
-			world.blockBroken(glm::vec3(floor(x), floor(y), floor(z)));
+			world.blockBroken(glm::vec3(floor(x), floor(y), floor(z)), world);
 			breakBlocksAbove(world, glm::vec3(x, y + 1, z));
             world.updateChunk(x, y, z);
 			if (material.id == Material::Ice && y <= WATER_LEVEL + 1)
@@ -45,23 +45,16 @@ void PlayerDigEvent::dig(World &world)
             break;
         }
 
-        case sf::Mouse::Button::Right: {
-            auto &stack = m_pPlayer->getHeldItems();
-            auto &material = stack.getMaterial();
+		case sf::Mouse::Button::Right: {
+			auto &stack = m_pPlayer->getHeldItems();
+			auto &material = stack.getMaterial();
 
-            if (material.id == Material::ID::Nothing) {
-                return;
-            }
-            else {
-				//if (ChunkBlock((BlockId)material.id).getData().isCollidable) {
-					world.checkForDroppedItems(glm::vec3(floor(x), floor(y), floor(z)));
-				//}
-				m_pPlayer->removeHeldItem(1);
-                world.updateChunk(x, y, z);
-                world.setBlock(x, y, z, material.toBlockID());
-                break;
-            }
-        }
+			world.checkForDroppedItems(glm::vec3(floor(x), floor(y), floor(z)));
+			m_pPlayer->removeHeldItem(1);
+			world.updateChunk(x, y, z);
+			world.setBlock(x, y, z, material.toBlockID());
+			break;
+		}
         default:
             break;
     }
@@ -82,7 +75,7 @@ void PlayerDigEvent::breakBlocksAbove(World & world, const glm::vec3 &pos)
 			ItemStack(Material::toMaterial((BlockId)block.id), 1),
 			glm::vec3(floor(pos.x) + 0.5f, floor(y) + 0.5f, floor(pos.z) + 0.5f)
 		);
-		world.blockBroken(glm::vec3(floor(pos.x), floor(y), floor(pos.z)));
+		world.blockBroken(glm::vec3(floor(pos.x), floor(y), floor(pos.z)), world);
 
 		world.setBlock(pos.x, y, pos.z, 0);
 		/// Should update chunk each time beacause of the multithreading

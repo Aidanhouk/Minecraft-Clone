@@ -15,19 +15,20 @@ void DroppedItemsManager::addItem(const ItemStack & itemstack, const glm::vec3 &
 
 void DroppedItemsManager::addItem(const ItemStack & itemstack, const glm::vec3 & pos, const glm::vec3& rotation)
 {
-	m_items.emplace_back(itemstack, glm::vec3(pos.x, pos.y + 0.5f, pos.z));
+	m_items.emplace_back(itemstack, glm::vec3(pos.x, pos.y + 0.6f, pos.z));
 	updateMesh();
 	m_items.back().setAcceleration(rotation.x, rotation.y);
 }
 
-void DroppedItemsManager::blockBrokenUpdate(const glm::vec3 & pos)
+void DroppedItemsManager::blockBrokenUpdate(const glm::vec3 & pos, World &world)
 {
 	for (auto & item : m_items) {
-		if (floor(item.position.x) == pos.x &&
-			floor(item.position.z) == pos.z &&
-			floor(item.position.y) - 1 == pos.y) {
-			item.startMoving();
-		}
+		item.startFalling(world);
+		//if (floor(item.position.x) == pos.x &&
+		//	floor(item.position.z) == pos.z &&
+		//	floor(item.position.y) - 1 == pos.y) {
+		//	item.startMoving();
+		//}
 	}
 }
 
@@ -99,10 +100,8 @@ void DroppedItemsManager::itemsMove(World &world, float dt)
 {
 	bool shouldUpdateMesh = false;
 	for (auto &item : m_items) {
-		if (item.shouldMove()) {
 			item.move(world, dt);
 			shouldUpdateMesh = true;
-		}
 	}
 	if (shouldUpdateMesh)
 		updateMesh();

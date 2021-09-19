@@ -11,7 +11,7 @@ class IconsMesh;
 class Renderer_2D {
 public:
 	void setMeshToDraw(const IconsMesh &iconsMesh);
-	void render(const Camera &camera);
+	void render();
 private:
 	const RenderInfo * m_mesh;
 

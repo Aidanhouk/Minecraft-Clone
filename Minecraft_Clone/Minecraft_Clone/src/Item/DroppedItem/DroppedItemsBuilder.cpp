@@ -116,10 +116,10 @@ namespace cactusFaces {
 namespace {
 
 	const std::array<GLfloat, 12> shadow{
-		-pos, -1.9 * pos, -pos,
-		+pos, -1.9 * pos, -pos,
-		+pos, -1.9 * pos, +pos,
-		-pos, -1.9 * pos, +pos,
+		-pos, -1.7 * pos, -pos,
+		+pos, -1.7 * pos, -pos,
+		+pos, -1.7 * pos, +pos,
+		-pos, -1.7 * pos, +pos,
 	};
 } // namespace
 

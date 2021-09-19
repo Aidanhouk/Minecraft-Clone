@@ -17,30 +17,18 @@ bool BlockBreaker::_break(glm::ivec3 blockPosition, float hardness)
 		m_startBreakingTimer.restart();
 	}
 	else {
-			 if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.1 * hardness)
-			p_info.breakingStage = 1;
-		else if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.2 * hardness)
-			p_info.breakingStage = 2;
-		else if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.3 * hardness)
-			p_info.breakingStage = 3;
-		else if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.4 * hardness)
-			p_info.breakingStage = 4;
-		else if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.5 * hardness)
-			p_info.breakingStage = 5;
-		else if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.6 * hardness)
-			p_info.breakingStage = 6;
-		else if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.7 * hardness)
-			p_info.breakingStage = 7;
-		else if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.8 * hardness)
-			p_info.breakingStage = 8;
-		else if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.9 * hardness)
-			p_info.breakingStage = 9;
-		else if (m_startBreakingTimer.getElapsedTime().asSeconds() < 1.0 * hardness)
-			p_info.breakingStage = 10;
-		else {
-				 stopBreaking();
-				 return true;
-			 }
+		bool animationChanged = false;
+		for (int i = 1; i < 11; ++i) {
+			if (m_startBreakingTimer.getElapsedTime().asSeconds() < 0.1 * i * hardness) {
+				p_info.breakingStage = i;
+				animationChanged = true;
+				break;
+			}
+		}
+		if (!animationChanged) {
+			stopBreaking();
+			return true;
+		}
 	}
 
 	return false;

@@ -12,6 +12,7 @@
 #include "WaterRenderer.h"
 #include "Renderer_2D.h"
 #include "DroppedItemsRenderer.h"
+#include "HandRenderer.h"
 
 #include "../States/PlayingState.h"
 #include "../PostProcess/Framebuffer.h"
@@ -31,6 +32,7 @@ public:
 	void drawIcons(const IconsMesh &iconsMesh);
 	void drawDroppedItems(const DroppedItemsMesh &droppedItemsMesh);
 	void drawBreakingBlock();
+	void setHandModel(Model & model);
 
     void finishRender(sf::RenderWindow &window, const Camera &camera);
 
@@ -44,6 +46,7 @@ private:
     FloraRenderer		m_floraRenderer;
 
 	DroppedItemsRenderer	m_droppedItemsRenderer;
+	HandRenderer		m_handRenderer;
 
     SFMLRenderer		m_sfmlRenderer;
 	Renderer_2D			m_2D_Renderer;

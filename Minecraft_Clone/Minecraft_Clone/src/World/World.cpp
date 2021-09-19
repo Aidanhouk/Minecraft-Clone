@@ -77,9 +77,9 @@ void World::addDroppedItem(const ItemStack & itemStack, const glm::vec3 & pos)
 	m_droppedItemManager.addItem(itemStack, pos);
 }
 
-void World::blockBroken(const glm::vec3 & pos)
+void World::blockBroken(const glm::vec3 & pos, World &world)
 {
-	m_droppedItemManager.blockBrokenUpdate(pos);
+	m_droppedItemManager.blockBrokenUpdate(pos, world);
 }
 
 void World::checkForDroppedItems(const glm::vec3 & pos)
@@ -260,7 +260,7 @@ void World::updateChunks()
 void World::setSpawnPoint()
 {
     sf::Clock timer;
-    std::cout << "Searching for spawn...\n";
+   // std::cout << "Searching for spawn...\n";
     int attempts = 0;
     int chunkX = -1;
     int chunkZ = -1;
@@ -297,7 +297,7 @@ void World::setSpawnPoint()
         //   break;
     }
 
-    std::cout << "Spawn found! Attempts: " << attempts
-              << " Time Taken: " << timer.getElapsedTime().asSeconds()
-              << " seconds\n";
+    //std::cout << "Spawn found! Attempts: " << attempts
+    //          << " Time Taken: " << timer.getElapsedTime().asSeconds()
+    //          << " seconds\n";
 }

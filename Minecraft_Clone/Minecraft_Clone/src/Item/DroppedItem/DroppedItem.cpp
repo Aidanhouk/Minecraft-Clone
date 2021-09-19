@@ -28,7 +28,6 @@ DroppedItem& DroppedItem::operator=(const DroppedItem &item)
 void DroppedItem::setRandomAcceleration()
 {
 	m_acceleration.y = 4.0f;
-
 	Random rand;
 	do {
 		m_acceleration.x = (float)rand.intInRange(-10, 10) / 10.0f;
@@ -78,7 +77,7 @@ void DroppedItem::move(World &world, float dt)
 
 		m_acceleration.y -= 15.0f * dt / 5.0f;
 	}
-	else {
+	else if (m_acceleration.y != 0.0f) {
 		position.x += m_acceleration.x * dt;
 		position.z += m_acceleration.z * dt;
 		position.y += m_acceleration.y * dt;
@@ -87,7 +86,7 @@ void DroppedItem::move(World &world, float dt)
 	}
 
 	/// If the dropped block hasn't collided any other block
-	if (m_acceleration.x != 0.0f && m_acceleration.z != 0.0f) {
+	if (m_acceleration.x != 0.0f || m_acceleration.z != 0.0f) {
 
 		for (int x = position.x - box.dimensions.x; x < position.x + box.dimensions.x; ++x) {
 			for (int y = position.y - box.dimensions.y; y < position.y + box.dimensions.y; ++y) {
@@ -112,12 +111,26 @@ void DroppedItem::move(World &world, float dt)
 		if (blockBelow != 0 && blockBelow.getData().isCollidable) {
 			m_acceleration.y = 0.0f;
 		}
+		else if (m_acceleration.y == 0.0f)
+			m_acceleration.y = -0.1f;
 
 		auto blockAbove = world.getBlock(position.x, position.y + 0.6f * box.dimensions.y, position.z);
 		if (blockAbove != 0 && blockAbove.getData().isCollidable) {
 			position.y -= m_acceleration.y * dt;
 			m_acceleration.y = -0.01f;
 		}
+	}
+}
+
+void DroppedItem::startFalling(World & world)
+{
+	if (m_acceleration.x == 0.0f && m_acceleration.z == 0.0f) {
+		auto blockBelow = world.getBlock(position.x, position.y - box.dimensions.y, position.z);
+		if (blockBelow != 0 && blockBelow.getData().isCollidable) {
+			m_acceleration.y = 0.0f;
+		}
+		else if (m_acceleration.y == 0.0f)
+			m_acceleration.y = -0.1f;
 	}
 }
 
@@ -156,6 +169,12 @@ void DroppedItem::collisionMove(World &world)
 void DroppedItem::setItemStackNumber(int number)
 {
 	m_itemStack = ItemStack(m_itemStack.getMaterial(), number);
+}
+
+bool DroppedItem::shouldMove() const
+{
+	//return m_acceleration.y != 0.0f;
+	return (m_acceleration.x != 0.0f || m_acceleration.z != 0.0f);
 }
 
 bool DroppedItem::canBeGrabbed() const

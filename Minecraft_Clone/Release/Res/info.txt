@@ -1,26 +1,18 @@
 
-============WELCOME TO MINECRAFT============
+======== WELCOME TO MINECRAFT-CLONE =========
 
 Implemented features:
--World generation
--Biomes
+-World generation & biomes
 -Collision detection
--Block breaking and placing
+-Breaking and placing blocks
 -Day & night cycle
 -Post processing
 -Health and damage system
--Swimming and oxygen system
+-Swimming and breathing
 -Inventory
 -Items dropping
 -Snow and rain
 
-Features are missing:
--Chunks saving
--Caves
--Crafting
--Mobs
-
 Please view 'controls.txt for controls!
-When the world is loaded click mouse to make the window active!
 
-============Press enter to begin ============
+=========== Press enter to begin ============

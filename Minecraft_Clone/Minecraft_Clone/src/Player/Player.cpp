@@ -12,6 +12,8 @@
 #include "../RenderSettings.h"
 #include "PlayerInfo.h"
 #include "GlobalInfo.h"
+#include "Hand.h"
+#include "Application.h"
 
 #include "World/Generation/Terrain/ClassicOverWorldGenerator.h"
 
@@ -41,8 +43,8 @@ Player::Player(const Config &config, Application &app)
 
 	m_playerInfo.setFont(m_font);
 	m_playerInfo.setOutlineColor(sf::Color::Black);
-	m_playerInfo.setCharacterSize(25);
-	m_playerInfo.setPosition(0.0f, 50.0f);
+	m_playerInfo.setCharacterSize(app.getWindow().getSize().x / 100);
+	m_playerInfo.setPosition(0.0f, 50.0f * app.getWindow().getSize().x / 2560);
 }
 
 int Player::addItem(const Material &material, int number)
@@ -60,9 +62,9 @@ ItemStack &Player::getHeldItems()
     return m_Inventory.getHeldItems();
 }
 
-void Player::handleInput(const sf::RenderWindow &window, Keyboard &keyboard)
+void Player::handleInput(const sf::RenderWindow &window, Keyboard &keyboard, Hand &hand, World &world)
 {
-	keyboardInput(keyboard);
+	keyboardInput(keyboard, world);
 	mouseInput(window);
 
 	p_info.position = position;
@@ -89,6 +91,10 @@ void Player::handleInput(const sf::RenderWindow &window, Keyboard &keyboard)
 	}
 
 	if (m_throwItemKey.isKeyPressed()) {
+		if (m_Inventory.getHeldItems().getNumInStack() > 0) {
+			hand.swing();
+			hand.leftMouseHold();
+		}
 		m_Inventory.throwItem(1);
 		m_Inventory.removeHeldItem(1);
 	}
@@ -124,7 +130,7 @@ void Player::handleInput(const sf::RenderWindow &window, Keyboard &keyboard)
 
 void Player::mouseScrollEvent(int delta)
 {
-	if (p_info.interfaceCursor)
+	if (p_info.interfaceCursor || p_info.gameState != GameState::PLAYING)
 		return;
 	/// Wheel down = next item
 	if (delta < 0)
@@ -136,12 +142,19 @@ void Player::mouseScrollEvent(int delta)
 
 void Player::update(float dt, World &world)
 {
+	if (m_regenerationTimer.getElapsedTime().asSeconds() > 5
+		&& m_hp < 20 && m_hp >= 1) {
+		++m_hp;
+		m_regenerationTimer.restart();
+		parametersUpdate();
+	}
+
     velocity += m_acceleration;
     m_acceleration = {0, 0, 0};
 
     if (!m_isFlying) {
         if (!m_isOnGround) {
-			if (m_isUnderwater) {
+			if (m_isSwimming) {
 				/// -3.0 is a drowning speed
 				if (velocity.y < -3.1f) {
 					velocity.y += 80 * dt;
@@ -217,7 +230,9 @@ void Player::collide(World &world, const glm::vec3 &vel)
 						if (lastHP != m_hp)
 							parametersUpdate();
 						///@TODO proccess death
-						//if (m_hp <= 0)
+						if (m_hp <= 0) {
+							p_info.gameState = GameState::DIED;
+						}
 					}
 
 					if (vel.y > 0) {
@@ -233,7 +248,9 @@ void Player::collide(World &world, const glm::vec3 &vel)
 							if (lastHP != m_hp)
 								parametersUpdate();
 							///@TODO proccess death
-							//if (m_hp <= 0)
+							if (m_hp <= 0) {
+								p_info.gameState = GameState::DIED;
+							}
 						}
 						m_isOnGround = true;
 						position.y = y + box.dimensions.y + 1;
@@ -262,8 +279,8 @@ void Player::collide(World &world, const glm::vec3 &vel)
 void Player::movementInWater(World & world)
 {
 	bool breath = true;
-	if (world.getBlock(position.x, position.y, position.z).getData().id == BlockId::Water) {
-		m_isUnderwater = true;
+	if (world.getBlock(position.x, position.y, position.z).getData().id == BlockId::Water
+		&& position.y <= WATER_LEVEL + 1) {
 		m_isSwimming = true;
 		/// Underwater, bad vision
 		if (position.y < WATER_LEVEL + 0.3f) {
@@ -287,7 +304,9 @@ void Player::movementInWater(World & world)
 					if (lastHP != m_hp)
 						parametersUpdate();
 					///@TODO proccess death
-					//if (m_hp <= 0)
+					if (m_hp <= 0) {
+						p_info.gameState = GameState::DIED;
+					}
 				}
 			}
 		}
@@ -296,10 +315,11 @@ void Player::movementInWater(World & world)
 		}
 	}
 	else {
-		m_isUnderwater = false;
 		p_info.underwater = false;
-		if (world.getBlock(position.x, position.y - 2, position.z).getData().id == BlockId::Water)
+		if (world.getBlock(position.x, position.y - 1, position.z).getData().id == BlockId::Water
+			&& position.y <= WATER_LEVEL + 1.7f) {
 			m_isSwimming = true;
+		}
 		else {
 			m_isSwimming = false;
 		}
@@ -313,7 +333,7 @@ void Player::movementInWater(World & world)
 	}
 }
 
-void Player::keyboardInput(Keyboard &keyboard)
+void Player::keyboardInput(Keyboard &keyboard, World &world)
 {
 	static float const m_SPEED = 0.16f;
 	static bool isRunning = false;
@@ -334,7 +354,8 @@ void Player::keyboardInput(Keyboard &keyboard)
 			else
 				speed *= 2;
 		}
-		if (!m_isFlying && (m_isUnderwater || m_isSwimming))
+		if (!m_isFlying && (m_isSwimming ||
+			world.getBlock(position.x, (std::ceil)(position.y - 2.2f), position.z).getData().id == BlockId::Water))
 			speed *= 0.5f;
 	    m_acceleration.x += -glm::cos(glm::radians(rotation.y + 90)) * speed;
 	    m_acceleration.z += -glm::sin(glm::radians(rotation.y + 90)) * speed;
@@ -344,7 +365,7 @@ void Player::keyboardInput(Keyboard &keyboard)
 	if (keyboard.isKeyDown(sf::Keyboard::S)) {
 		m_isMoving = true;
 		float speed = m_SPEED;
-		if (!m_isFlying && (m_isUnderwater || m_isSwimming))
+		if (!m_isFlying && (m_isSwimming))
 			speed *= 0.5f;
 	    m_acceleration.x += glm::cos(glm::radians(rotation.y + 90)) * speed;
 	    m_acceleration.z += glm::sin(glm::radians(rotation.y + 90)) * speed;
@@ -352,7 +373,7 @@ void Player::keyboardInput(Keyboard &keyboard)
 	if (keyboard.isKeyDown(sf::Keyboard::A)) {
 		m_isMoving = true;
 		float speed = m_SPEED;
-		if (!m_isFlying && (m_isUnderwater || m_isSwimming))
+		if (!m_isFlying && (m_isSwimming))
 			speed *= 0.5f;
 	    m_acceleration.x += -glm::cos(glm::radians(rotation.y)) * speed;
 	    m_acceleration.z += -glm::sin(glm::radians(rotation.y)) * speed;
@@ -360,7 +381,7 @@ void Player::keyboardInput(Keyboard &keyboard)
 	if (keyboard.isKeyDown(sf::Keyboard::D)) {
 		m_isMoving = true;
 		float speed = m_SPEED;
-		if (!m_isFlying && (m_isUnderwater || m_isSwimming))
+		if (!m_isFlying && (m_isSwimming))
 			speed *= 0.5f;
 	    m_acceleration.x += glm::cos(glm::radians(rotation.y)) * speed;
 	    m_acceleration.z += glm::sin(glm::radians(rotation.y)) * speed;
@@ -383,7 +404,7 @@ void Player::keyboardInput(Keyboard &keyboard)
 	}
 	
 	if (keyboard.isKeyDown(sf::Keyboard::Space)) {
-		jump();
+		jump(world);
 	}
 	else if (keyboard.isKeyDown(sf::Keyboard::LShift) && m_isFlying) {
 	    m_acceleration.y -= 0.6;
@@ -402,6 +423,15 @@ void Player::keyboardInput(Keyboard &keyboard)
 
 void Player::mouseInput(const sf::RenderWindow &window)
 {
+	if (p_info.gameState == GameState::NOT_STARTED) {
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
+			|| sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+			p_info.gameState = GameState::PLAYING;
+		}
+		if (p_info.gameState == GameState::NOT_STARTED)
+			return;
+	}
+
 	static sf::Vector2i lastMousePosition = sf::Mouse::getPosition(window);
 	
 	static bool useMouse = true;
@@ -417,8 +447,24 @@ void Player::mouseInput(const sf::RenderWindow &window)
 	
 	auto change = sf::Mouse::getPosition() - lastMousePosition;
 	
-	rotation.y += change.x * 0.05f;
-	rotation.x += change.y * 0.05f;
+	rotation.y += change.x * 0.01f * g_Config.mouse_sensitivity;
+	rotation.x += change.y * 0.01f * g_Config.mouse_sensitivity;
+	
+	/// @TODO fix this
+	if (g_Config.isFullscreen == false) {
+		if (g_renderSettings.resolutionX == 2560) {
+			rotation.y -= 328 * 0.01f * g_Config.mouse_sensitivity;
+			rotation.x -= 211 * 0.01f * g_Config.mouse_sensitivity;
+		}
+		else if (g_renderSettings.resolutionX == 1920) {
+			rotation.y -= 328 * 0.01f * g_Config.mouse_sensitivity;
+			rotation.x -= 211 * 0.01f * g_Config.mouse_sensitivity;
+		}
+		else if (g_renderSettings.resolutionX == 1366) {
+			rotation.y -= 605 * 0.01f * g_Config.mouse_sensitivity;
+			rotation.x -= 367 * 0.01f * g_Config.mouse_sensitivity;
+		}
+	}
 
 	/// if degree > 87.1 then the ray which detects the block player aiming at, doesn't work correctly
 	static float const BOUND = 87.1f;
@@ -457,10 +503,10 @@ void Player::mouseInput(const sf::RenderWindow &window)
 	}
 }
 
-void Player::jump()
+void Player::jump(World &world)
 {
 	if (!m_isFlying) {
-		if (m_isUnderwater) {
+		if (m_isSwimming) {
 			m_isOnGround = false;
 			if (velocity.y > -4.6)
 				velocity.y = 5.0f;
@@ -468,6 +514,10 @@ void Player::jump()
 		else if (m_isOnGround) {
 			m_isOnGround = false;
 			m_acceleration.y += 10.0f;
+			if (world.getBlock(position.x, position.y - 2, position.z).getData().id == BlockId::Ice
+				|| world.getBlock(position.x, position.y - 3, position.z).getData().id == BlockId::Ice) {
+				m_isOnIce = true;
+			}
 		}
 	}
 	else {

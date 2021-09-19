@@ -2,9 +2,11 @@
 #define CONFIG_H_INCLUDED
 
 struct Config {
+	bool customResolution = false;
     int windowX = 1920;
     int windowY = 1080;
     bool isFullscreen = true;
+	float mouse_sensitivity = 5.0f;
     int renderDistance = 8;
     int fov = 70;
 	float gamma = 1.0f;

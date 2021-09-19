@@ -16,19 +16,32 @@ Context::Context(const Config &config)
 	settings.minorVersion = 3;
 	settings.depthBits = 24;
 	settings.stencilBits = 8;
-	//settings.attributeFlags = sf::ContextSettings::Core;
-	//This is no longer necessary due to the Mac Support update.
-
+	
 	if (config.isFullscreen) {
-		window.create(sf::VideoMode::getDesktopMode(), "Minecraft-Clone", sf::Style::Fullscreen, settings);
-		g_renderSettings.resolutionX = sf::VideoMode::getDesktopMode().width;
-		g_renderSettings.resolutionY = sf::VideoMode::getDesktopMode().height;
+		if (config.customResolution) {
+			sf::VideoMode winMode(config.windowX, config.windowY);
+			window.create(winMode, "Minecraft-Clone", sf::Style::Fullscreen, settings);
+			g_renderSettings.resolutionX = config.windowX;
+			g_renderSettings.resolutionY = config.windowY;
+		}
+		else {
+			window.create(sf::VideoMode::getDesktopMode(), "Minecraft-Clone", sf::Style::Fullscreen, settings);
+			g_renderSettings.resolutionX = sf::VideoMode::getDesktopMode().width;
+			g_renderSettings.resolutionY = sf::VideoMode::getDesktopMode().height;
+		}
 	}
 	else {
-		sf::VideoMode winMode(config.windowX, config.windowY);
-		window.create(winMode, "Minecraft-Clone", sf::Style::Close, settings);
-		g_renderSettings.resolutionX = config.windowX;
-		g_renderSettings.resolutionY = config.windowY;
+		if (config.customResolution) {
+			sf::VideoMode winMode(config.windowX, config.windowY);
+			window.create(winMode, "Minecraft-Clone", sf::Style::Close, settings);
+			g_renderSettings.resolutionX = config.windowX;
+			g_renderSettings.resolutionY = config.windowY;
+		}
+		else {
+			window.create(sf::VideoMode::getDesktopMode(), "Minecraft-Clone", sf::Style::Close, settings);
+			g_renderSettings.resolutionX = sf::VideoMode::getDesktopMode().width;
+			g_renderSettings.resolutionY = sf::VideoMode::getDesktopMode().height;
+		}
 	}
 
 	if (glewInit() != GLEW_OK) {
@@ -45,9 +58,9 @@ Context::Context(const Config &config)
 
 	g_window = &window;
 
-    glViewport(0, 0, window.getSize().x, window.getSize().y);
+	glViewport(0, 0, window.getSize().x, window.getSize().y);
 
     glCullFace(GL_BACK);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glLineWidth(4);
+	glLineWidth(4 * g_renderSettings.resolutionX / 2560);
 }

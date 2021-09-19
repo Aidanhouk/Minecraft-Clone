@@ -53,6 +53,7 @@
     <ClCompile Include="src\Maths\Vector2XZ.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Physics\AABB.cpp" />
+    <ClCompile Include="src\Player\Hand.cpp" />
     <ClCompile Include="src\Player\MovementFOV.cpp" />
     <ClCompile Include="src\player\Player.cpp" />
     <ClCompile Include="src\Player\PlayerInfo.cpp" />
@@ -72,6 +73,7 @@
     <ClCompile Include="src\Renderer\AimedBlock\BreakBlockRenderer.cpp" />
     <ClCompile Include="src\Renderer\AimedBlock\DelineateBlockRenderer.cpp" />
     <ClCompile Include="src\Renderer\DroppedItemsRenderer.cpp" />
+    <ClCompile Include="src\Renderer\HandRenderer.cpp" />
     <ClCompile Include="src\Renderer\Renderer_2D.cpp" />
     <ClCompile Include="src\renderer\ChunkRenderer.cpp" />
     <ClCompile Include="src\renderer\FloraRenderer.cpp" />
@@ -90,6 +92,7 @@
     <ClCompile Include="src\Shaders\Environment\SnowShader.cpp" />
     <ClCompile Include="src\Shaders\FloraShader.cpp" />
     <ClCompile Include="src\Shaders\DroppedItemShader.cpp" />
+    <ClCompile Include="src\Shaders\HandShader.cpp" />
     <ClCompile Include="src\Shaders\PostProcessShader.cpp" />
     <ClCompile Include="src\Shaders\Environment\ProcSkyShader.cpp" />
     <ClCompile Include="src\Shaders\Shader.cpp" />
@@ -173,6 +176,7 @@
     <ClInclude Include="src\other\NonMovable.h" />
     <ClInclude Include="src\other\Singleton.h" />
     <ClInclude Include="src\Physics\AABB.h" />
+    <ClInclude Include="src\Player\Hand.h" />
     <ClInclude Include="src\Player\MovementFOV.h" />
     <ClInclude Include="src\player\Player.h" />
     <ClInclude Include="src\Player\PlayerInfo.h" />
@@ -192,6 +196,7 @@
     <ClInclude Include="src\Renderer\AimedBlock\BreakBlockRenderer.h" />
     <ClInclude Include="src\Renderer\AimedBlock\DelineateBlockRenderer.h" />
     <ClInclude Include="src\Renderer\DroppedItemsRenderer.h" />
+    <ClInclude Include="src\Renderer\HandRenderer.h" />
     <ClInclude Include="src\Renderer\Renderer_2D.h" />
     <ClInclude Include="src\renderer\ChunkRenderer.h" />
     <ClInclude Include="src\renderer\FloraRenderer.h" />
@@ -211,6 +216,7 @@
     <ClInclude Include="src\Shaders\Environment\RainShader.h" />
     <ClInclude Include="src\Shaders\FloraShader.h" />
     <ClInclude Include="src\Shaders\DroppedItemShader.h" />
+    <ClInclude Include="src\Shaders\HandShader.h" />
     <ClInclude Include="src\Shaders\PostProcessShader.h" />
     <ClInclude Include="src\Shaders\Environment\ProcSkyShader.h" />
     <ClInclude Include="src\Shaders\Shader.h" />
