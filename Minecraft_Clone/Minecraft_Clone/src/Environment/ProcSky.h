@@ -12,7 +12,7 @@ class ProcSky
 public:
     ProcSky();
 
-    void Render(const Camera& camera);
+    void render(const Camera& camera);
 private:
     ProcSkyShader m_shader;
     Model m_skybox;

@@ -63,7 +63,7 @@ SkyManager::SkyManager()
 
 }
 
-void SkyManager::TickUpdate(unsigned int tickTime)
+void SkyManager::tickUpdate(unsigned int tickTime)
 {
     //Day Time Management
     dayTime += tickTime - m_prevTime;
@@ -123,16 +123,22 @@ unsigned int SkyManager::getTime()
     return dayTime;
 }
 
-void SkyManager::Update(glm::vec3 position)
+void SkyManager::update(glm::vec3 position)
 {
     playerPos = position;
+}
+
+void SkyManager::renderSkyBox(const Camera& camera)
+{
+	//glDisable(GL_CULL_FACE);
+	skyBox.render(camera);
 }
 
 void SkyManager::render(const Camera& camera)
 {
 	glDisable(GL_CULL_FACE);
 	
-	skyBox.Render(camera);
+	skyBox.render(camera);
 	
 	glEnable(GL_BLEND);
 	m_shader.useProgram();

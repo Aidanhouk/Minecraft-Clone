@@ -72,7 +72,7 @@ ProcSky::ProcSky()
     m_skybox.addEBO(indices);
 }
 
-void ProcSky::Render(const Camera& camera)
+void ProcSky::render(const Camera& camera)
 {
     m_shader.useProgram();
     m_skybox.bindVAO();
@@ -80,6 +80,7 @@ void ProcSky::Render(const Camera& camera)
 	m_shader.loadViewMatrix(camera.getViewMatrix());
 	m_shader.loadProjectionMatrix(camera.getProjMatrix());
     m_shader.loadTime(g_info.dayTime);
+	m_shader.loadLight(g_info.lighting);
 
     GL::drawElements(m_skybox.getIndicesCount());
 }

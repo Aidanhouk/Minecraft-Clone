@@ -4,13 +4,11 @@ out vec4 outColour;
 in  vec2 passTextureCoord;
 
 uniform sampler2D texSampler;
-vec4 color;
 uniform float lighting;
 
 void main()
 {
-    color = texture(texSampler, passTextureCoord);
-    //Lighting Calculations
-    outColour = vec4(color.rgb * lighting, color.a * 0.6);
+    vec4 colour = texture(texSampler, passTextureCoord);
+    outColour = vec4(colour.rgb * lighting, colour.a * 0.6);
     if (outColour.a == 0) discard;
 }

@@ -194,7 +194,7 @@ void StatePlaying::update(float deltaTime)
     m_player.update(deltaTime, m_world);
     m_world.update(m_player, deltaTime);
 
-	m_sky->Update(m_player.position);
+	m_sky->update(m_player.position);
 }
 
 void StatePlaying::render(RenderMaster &renderer)

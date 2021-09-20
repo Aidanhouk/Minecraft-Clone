@@ -20,12 +20,13 @@ class SkyManager : public TickObject
 public:
 	SkyManager();
 	
-	void TickUpdate(unsigned int tickTime);
-	void Update(glm::vec3 playerPosition);
+	void tickUpdate(unsigned int tickTime);
+	void update(glm::vec3 playerPosition);
 	
 	void setTime(unsigned int time);
 	unsigned int getTime();
 	
+	void renderSkyBox(const Camera& camera);
 	void render(const Camera& camera);
 private:
 	unsigned int dayTime;

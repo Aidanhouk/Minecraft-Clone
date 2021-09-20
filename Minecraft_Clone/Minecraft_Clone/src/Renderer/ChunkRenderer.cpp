@@ -17,7 +17,8 @@ void ChunkRenderer::render(const Camera &camera)
         return;
     }
 
-    glDisable(GL_BLEND);
+	glDisable(GL_BLEND);
+	//glEnable(GL_BLEND);
     glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 

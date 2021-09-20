@@ -8,7 +8,12 @@ ProcSkyShader::ProcSkyShader()
 
 void ProcSkyShader::loadTime(float tick)
 {
-    loadFloat(m_day, tick);
+	loadFloat(m_day, tick);
+}
+
+void ProcSkyShader::loadLight(float light)
+{
+	loadFloat(m_light, light);
 }
 
 void ProcSkyShader::loadViewMatrix(glm::mat4 viewMatrix)
@@ -28,7 +33,8 @@ void ProcSkyShader::loadProjectionMatrix(const glm::mat4& proj)
 void ProcSkyShader::getUniforms()
 {
     BasicShader::getUniforms();
-    m_day = glGetUniformLocation(m_id, "dayTime"); //Useful
+    m_day = glGetUniformLocation(m_id, "dayTime");
+	m_light = glGetUniformLocation(m_id, "light");
     m_locationProjection    = glGetUniformLocation(m_id, "projectionMatrix");
     m_locationView = glGetUniformLocation(m_id, "viewMatrix");
 }

@@ -4,19 +4,24 @@ out vec4 outColour;
 
 in  vec2 passTextureCoord;
 in float passCardinalLight;
-//in float visibility;
+in float visibility;
 
 uniform sampler2D texSampler;
 uniform float lighting;
-
-vec4 color;
+//uniform vec3 skyColour;
+vec3 skyColour;
 
 void main()
 {
-	color = texture(texSampler, passTextureCoord);
-	//Lighting Calculations
-	outColour = vec4(color.rgb * lighting * passCardinalLight, color.a);    
-	//outColour = vec4(mix(vec3(0.5f, 0.5f, 0.6f) * (lighting*0.8), outColour.rgb, visibility), outColour.a);
+	vec4 colour = texture(texSampler, passTextureCoord);
+	if (colour.a == 0) discard;
+	
+	//skyColour = vec3(0.5, 0.5, 0.5) * lighting;
+	//outColour = vec4(colour.rgb * lighting * passCardinalLight, colour.a);
+	//outColour = mix(vec4(skyColour, 1.0), outColour, visibility);
+
+	//outColour = vec4(colour.rgb * lighting * passCardinalLight, colour.a * visibility);
+
+	outColour = vec4(colour.rgb * lighting * passCardinalLight, colour.a);
 	outColour.xyz += lighting * vec3(0.04, 0.03, 0.02);
-	if (outColour.a == 0) discard;
 }

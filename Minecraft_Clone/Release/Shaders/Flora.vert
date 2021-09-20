@@ -6,16 +6,16 @@ layout(location = 2) in float inCardinalLight;
 
 out vec2 passTextureCoord;
 out float passCardinalLight;
-//out float visibility;
+out float visibility;
 
-uniform mat4 projViewMatrix;
-//uniform mat4 projMatrix;
+//uniform mat4 projViewMatrix;
+uniform mat4 projMatrix;
 uniform mat4 viewMatrix;
 uniform float dayTime;
 uniform float globalTime;
 
-//const float density = 0.005;
-//const float gradient = 1.8;
+const float density = 0.015;
+const float gradient = 10.0;
 
 void getDirectional(float pl){
     if(pl == 0.5){ //bottom
@@ -71,12 +71,12 @@ vec4 getWorldPos()
 
 void main()
 {
-	gl_Position = projViewMatrix * getWorldPos();
+	vec4 positionRelativeToCam = viewMatrix * getWorldPos();
+	gl_Position = projMatrix * positionRelativeToCam;
 	passTextureCoord = inTextureCoord;
 	getDirectional(inCardinalLight);
-	
-	//vec4 positionRelative = viewMatrix * vec4(inVertexPosition, 1.0);
-	//float distance = length(positionRelative.xyz);
-	//visibility = exp(-pow((distance*density), gradient));
-	//visibility = clamp(visibility, 0, 1);
+
+	//float distance = length(positionRelativeToCam.xyz);
+	//visibility = exp(-pow((distance * density), gradient));
+	//visibility = clamp(visibility, 0.0, 1.0);
 }

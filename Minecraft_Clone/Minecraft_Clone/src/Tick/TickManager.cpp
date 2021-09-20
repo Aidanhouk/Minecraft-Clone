@@ -24,7 +24,7 @@ void TickManager::run()
 		if ((time.asMilliseconds() / 50) > (int)m_tickTime) {
 			if (!m_tickObjects.empty()) {
 				for (auto t : m_tickObjects) {
-					t->TickUpdate(m_tickTime); ////
+					t->tickUpdate(m_tickTime); ////
 				}
 			}
 		}

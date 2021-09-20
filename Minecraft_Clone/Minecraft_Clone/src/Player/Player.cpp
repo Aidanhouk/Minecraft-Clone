@@ -185,8 +185,9 @@ void Player::update(float dt, World &world)
 	static double timePassed = 0.0;
 	timePassed += dt;
 	
-	if (world.getBlock(position.x, position.y - 2, position.z).getData().id == BlockId::Ice
-		|| world.getBlock(position.x, position.y - 3, position.z).getData().id == BlockId::Ice) {
+	if ((world.getBlock(position.x, position.y - 2, position.z).getData().id == BlockId::Ice
+		|| world.getBlock(position.x, position.y - 3, position.z).getData().id == BlockId::Ice)
+		&& !m_isFlying) {
 		m_isOnIce = true;
 
 		if (timePassed > 1.0 / 50.0) {
@@ -317,7 +318,7 @@ void Player::movementInWater(World & world)
 	else {
 		p_info.underwater = false;
 		if (world.getBlock(position.x, position.y - 1, position.z).getData().id == BlockId::Water
-			&& position.y <= WATER_LEVEL + 1.7f) {
+			&& position.y <= WATER_LEVEL + 1.85f) {
 			m_isSwimming = true;
 		}
 		else {
