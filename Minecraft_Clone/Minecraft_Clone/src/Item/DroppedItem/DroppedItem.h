@@ -15,7 +15,7 @@ public:
 
 	void setRandomAcceleration();
 	void setAcceleration(float x, float y);
-	void move(World &world, float dt);
+	bool move(World &world, float dt);
 	void startFalling(World &world);
 	void collisionMove(World &world);
 	void setItemStackNumber(int number);
@@ -24,6 +24,7 @@ public:
 	ItemStack& getItemStack() { return m_itemStack; }
 	glm::vec3 getAcceleration() const { return m_acceleration; }
 
+	bool isMoving() const;
 	bool shouldMove() const;
 	bool canBeGrabbed() const;
 private:
@@ -31,6 +32,8 @@ private:
 
 	sf::Clock m_existingTime;
 	sf::Clock m_unableToGrabTime;
+
+	bool m_isInWater;
 
 	glm::vec3 m_acceleration;
 };

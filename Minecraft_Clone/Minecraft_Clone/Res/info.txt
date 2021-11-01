@@ -1,18 +1,24 @@
-
 ======== WELCOME TO MINECRAFT-CLONE =========
 
 Implemented features:
--World generation & biomes
+-Procedural world generation
+-Biomes
+-Caves
 -Collision detection
 -Breaking and placing blocks
--Day & night cycle
--Post processing
--Health and damage system
--Swimming and breathing
+-Items can be dropped
 -Inventory
--Items dropping
+-Damage, hunger and breathing systems
+-Eating
+-Creating 3D mesh out of 2D texture
+-Swimming
+-Sneaking
+-Post processing
+-Day & night cycle
 -Snow and rain
+-Fog
+-Surround sound and music!
 
-Please view 'controls.txt for controls!
+Please view 'controls.txt' for controls!
 
 =========== Press enter to begin ============

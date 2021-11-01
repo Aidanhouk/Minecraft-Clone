@@ -7,7 +7,19 @@
 void StructureBuilder::build(Chunk &chunk)
 {
     for (auto &block : m_blocks) {
-        chunk.setBlock(block.x, block.y, block.z, block.id);
+		switch (block.id)
+		{
+		case BlockId::BirchLeaf:
+		case BlockId::OakLeaf:
+		case BlockId::PalmLeaf:
+		case BlockId::SpruceLeaf:
+			if (chunk.getBlock(block.x, block.y, block.z) == 0)
+				chunk.setBlock(block.x, block.y, block.z, block.id);
+			break;
+		default:
+			chunk.setBlock(block.x, block.y, block.z, block.id);
+			break;
+		}
     }
 }
 

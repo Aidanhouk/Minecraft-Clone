@@ -1,0 +1,29 @@
+Name
+TundraGrass
+
+Id
+23
+
+TexTop
+0 2
+
+TexSide
+1 2
+
+TexBottom
+2 0
+
+Opaque
+1
+
+MeshType
+0
+
+ShaderType
+0
+
+Collidable
+1
+
+Hardness
+0.9

@@ -19,7 +19,6 @@ const vec3 zenithColorSunRise = vec3(0.45, 0.5, 0.7);
 const vec3 horizonColorSunRise = vec3(0.9, 0.45, 0.15);
 
 const vec3 zenithColorMoonRise = vec3(0.45, 0.5, 0.7);
-//const vec3 horizonColorMoonRise = vec3(0.9, 0.45, 0.15);
 const vec3 horizonColorMoonRise = vec3(0.5, 0.45, 0.6);
 
 vec3 getColor(float time, vec4 vertex){
@@ -104,6 +103,6 @@ vec3 getColor(float time, vec4 vertex){
 
 void main(){
 	gl_Position = projectionMatrix * viewMatrix * vec4(inVertexPosition.xyz, 1.0);
-	passColor = getColor(dayTime, inVertexPosition);
-	//passColor = vec3(0.5, 0.5, 0.5) * light;
+	//passColor = getColor(dayTime, inVertexPosition);
+	passColor = getColor(dayTime, inVertexPosition) * light;
 }

@@ -1,5 +1,4 @@
-#ifndef CHUNKBLOCK_H_INCLUDED
-#define CHUNKBLOCK_H_INCLUDED
+#pragma once
 
 #include "BlockId.h"
 
@@ -7,25 +6,21 @@ struct BlockDataHolder;
 class BlockType;
 
 struct ChunkBlock {
-    ChunkBlock() = default;
+	ChunkBlock() = default;
 
-    ChunkBlock(Block_t id);
-    ChunkBlock(BlockId id);
+	ChunkBlock(Block_t id);
+	ChunkBlock(BlockId id);
 
-    const BlockDataHolder &getData() const;
-    const BlockType &getType() const;
+	const BlockDataHolder &getData() const;
+	const BlockType &getType() const;
 
-    bool operator==(ChunkBlock other) const
-    {
-        return id == other.id;
-    }
+	const Block_t getId() const
+	{
+		return id;
+	}
 
-    bool operator!=(ChunkBlock other) const
-    {
-        return id != other.id;
-    }
+	bool operator==(ChunkBlock other) const;
+	bool operator!=(ChunkBlock other) const;
 
-    Block_t id = 0;
+	Block_t id = 0;
 };
-
-#endif // CHUNKBLOCK_H_INCLUDED

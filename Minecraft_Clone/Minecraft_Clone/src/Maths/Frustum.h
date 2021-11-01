@@ -1,5 +1,4 @@
-#ifndef FRUSTUM_H_INCLUDED
-#define FRUSTUM_H_INCLUDED
+#pragma once
 
 #include <array>
 
@@ -23,5 +22,3 @@ class ViewFrustum {
   private:
     std::array<Plane, 6> m_planes;
 };
-
-#endif // FRUSTUM_H_INCLUDED

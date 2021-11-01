@@ -1,9 +1,7 @@
-#ifndef ANTIALIASING_H
-#define ANTIALIASING_H
+#pragma once
 
 #include "ImageRenderer.h"
 #include "fxaa.h"
-#include "../RenderSettings.h"
 
 class Antialiasing{
 public:
@@ -14,5 +12,3 @@ public:
 private:
     FXAAShader fxaa;
 };
-
-#endif

@@ -7,19 +7,50 @@
 #include "../Generation/Terrain/TerrainGenerator.h"
 #include "../World.h"
 
-Chunk::Chunk(World &world, const sf::Vector2i &location)
+#include <iostream>
+
+Chunk::Chunk(const sf::Vector2i &location, World* world)
     : m_location(location)
-    , m_pWorld(&world)
+    , m_pWorld(world)
 {
     m_highestBlocks.setAll(0);
 }
 
+Chunk::Chunk(Chunk && x)
+	:m_isLoaded{ x.m_isLoaded },
+	m_pWorld{ x.m_pWorld },
+	m_location{ x.m_location },
+	m_highestBlocks{ std::move(x.m_highestBlocks) },
+	m_chunksSection{ std::move(x.m_chunksSection) }
+{
+	x.m_pWorld = nullptr;
+}
+
+Chunk & Chunk::operator=(Chunk && x)
+{
+	if (&x == this)
+		return *this;
+
+	m_isLoaded = x.m_isLoaded;
+
+	m_pWorld = x.m_pWorld;
+	x.m_pWorld = nullptr;
+
+	m_location = x.m_location;
+
+	m_highestBlocks = std::move(x.m_highestBlocks);
+
+	m_chunksSection = std::move(x.m_chunksSection);
+
+	return *this;
+}
+
 bool Chunk::makeMesh(const Camera &camera)
 {
-    for (auto &chunk : m_chunksSection) {
-        if (!chunk.hasMesh() &&
-            camera.getFrustum().isBoxInFrustum(chunk.m_aabb)) {
-            chunk.makeMesh();
+    for (auto &chunkSection : m_chunksSection) {
+        if (!chunkSection.hasMesh() &&
+            camera.getFrustum().isBoxInFrustum(chunkSection.m_aabb)) {
+			chunkSection.makeMesh();
             return true;
         }
     }
@@ -28,29 +59,35 @@ bool Chunk::makeMesh(const Camera &camera)
 
 void Chunk::setBlock(int x, int y, int z, ChunkBlock block)
 {
-    addSectionsBlockTarget(y);
-    if (outOfBound(x, y, z))
-        return;
+	addSectionsBlockTarget(y);
 
-    int bY = y % CHUNK_SIZE;
-	m_chunksSection[y / CHUNK_SIZE].setBlock(x, bY, z, block);
+	if (outOfBound(x, y, z)) {
+		auto location = toWorldPosition(x, z);
+		if (location.x < 0 || location.y < 0)
+			return;
+
+		m_pWorld->addUnloadedBlock(location.x, y, location.y, block);
+		return;
+	}
+	
+	m_chunksSection[y / CHUNK_SIZE].setBlock(x, y % CHUNK_SIZE, z, block);
 
 	// if the highest block was destroyed
-    if (y == m_highestBlocks.get(x, z)) {
-		// it does nothing
-        auto highBlock = getBlock(x, y--, z);
-        while (!highBlock.getData().isOpaque) {
-            highBlock = getBlock(x, y--, z);
-        }
-    }
+	if (y == m_highestBlocks.get(x, z)) {
+	    auto highBlock = getBlock(x, y--, z);
+	    while (!highBlock.getData().isOpaque && y >= 0) {
+	        highBlock = getBlock(x, y--, z);
+	    }
+	}
 	// if placed block is the highest now
-    else if (y > m_highestBlocks.get(x, z)) {
-        m_highestBlocks.get(x, z) = y;
-    }
+	else if (y > m_highestBlocks.get(x, z)) {
+	    m_highestBlocks.get(x, z) = y;
+	}
 
-    //if (m_isLoaded) {
-    //    // m_pWorld->updateChunk(x, y, z);
-    //}
+	//if (hasLoaded()) {
+	//	auto location = toWorldPosition(x, z);
+	//	m_pWorld->updateChunk(location.x, y, location.y);
+	//}
 }
 
 // Chunk block to SECTION BLOCK positions
@@ -91,37 +128,41 @@ bool Chunk::outOfBound(int x, int y, int z) const noexcept
     return false;
 }
 
+sf::Vector2i Chunk::toWorldPosition(int x, int z) const
+{
+	return {
+		m_location.x * CHUNK_SIZE + x,
+		m_location.y * CHUNK_SIZE + z };
+}
+
 void Chunk::drawChunks(RenderMaster &renderer, const Camera &camera)
 {
-    for (auto &chunk : m_chunksSection) {
-        if (chunk.hasMesh()) {
-            if (!chunk.hasBuffered()) {
-                chunk.bufferMesh();
-            }
+	for (auto &chunkSection : m_chunksSection) {
+		if (chunkSection.hasMesh()) {
+			if (!chunkSection.hasBuffered()) {
+				chunkSection.bufferMesh();
+			}
 
-            if (camera.getFrustum().isBoxInFrustum(chunk.m_aabb))
-                renderer.addChunkToRender(chunk);
-        }
-    }
+			if (camera.getFrustum().isBoxInFrustum(chunkSection.m_aabb))
+				renderer.addChunkToRender(chunkSection);
+		}
+	}
 }
 
 bool Chunk::hasLoaded() const noexcept
 {
-    return m_isLoaded;
+	return m_isLoaded;
 }
 
 void Chunk::load(TerrainGenerator &generator)
 {
-    if (hasLoaded())
-        return;
-
-    generator.generateTerrainFor(*this);
-    m_isLoaded = true;
+	generator.generateTerrainFor(*this);
+	m_isLoaded = true;
 }
 
 ChunkSection &Chunk::getSection(int index)
 {
-    static ChunkSection errorSection({444, 444, 444}, *m_pWorld);
+    static ChunkSection errorSection({444, 444, 444}, m_pWorld);
 
     if (index >= (int)m_chunksSection.size() || index < 0)
         return errorSection;
@@ -136,13 +177,6 @@ void Chunk::deleteMeshes()
     }
 }
 
-void Chunk::addSection()
-{
-    int y = m_chunksSection.size();
-	m_chunksSection.emplace_back(sf::Vector3i(m_location.x, y, m_location.y),
-                          *m_pWorld);
-}
-
 void Chunk::addSectionsBlockTarget(int blockY)
 {
     int index = blockY / CHUNK_SIZE;
@@ -154,4 +188,10 @@ void Chunk::addSectionsIndexTarget(int index)
     while ((int)m_chunksSection.size() < index + 1) {
         addSection();
     }
+}
+
+void Chunk::addSection()
+{
+	int y = m_chunksSection.size();
+	m_chunksSection.emplace_back(sf::Vector3i(m_location.x, y, m_location.y), m_pWorld);
 }

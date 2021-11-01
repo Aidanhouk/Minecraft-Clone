@@ -1,14 +1,14 @@
-/// @ref gtx_polar_coordinates
-/// @file glm/gtx/polar_coordinates.hpp
-///
-/// @see core (dependence)
-///
-/// @defgroup gtx_polar_coordinates GLM_GTX_polar_coordinates
-/// @ingroup gtx
-///
-/// Include <glm/gtx/polar_coordinates.hpp> to use the features of this extension.
-///
-/// Conversion from Euclidean space to polar space and revert.
+// @ref gtx_polar_coordinates
+// @file glm/gtx/polar_coordinates.hpp
+//
+// @see core (dependence)
+//
+// @defgroup gtx_polar_coordinates GLM_GTX_polar_coordinates
+// @ingroup gtx
+//
+// Include <glm/gtx/polar_coordinates.hpp> to use the features of this extension.
+//
+// Conversion from Euclidean space to polar space and revert.
 
 #pragma once
 
@@ -25,24 +25,24 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_polar_coordinates
-	/// @{
+	// @addtogroup gtx_polar_coordinates
+	// @{
 
-	/// Convert Euclidean to Polar coordinates, x is the latitude, y the longitude and z the xz distance.
-	///
-	/// @see gtx_polar_coordinates
+	// Convert Euclidean to Polar coordinates, x is the latitude, y the longitude and z the xz distance.
+	//
+	// @see gtx_polar_coordinates
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL vec<3, T, Q> polar(
 		vec<3, T, Q> const& euclidean);
 
-	/// Convert Polar to Euclidean coordinates.
-	///
-	/// @see gtx_polar_coordinates
+	// Convert Polar to Euclidean coordinates.
+	//
+	// @see gtx_polar_coordinates
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL vec<3, T, Q> euclidean(
 		vec<2, T, Q> const& polar);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "polar_coordinates.inl"

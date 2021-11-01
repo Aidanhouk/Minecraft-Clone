@@ -1,5 +1,4 @@
-#ifndef FLORARENDERER_H_INCLUDED
-#define FLORARENDERER_H_INCLUDED
+#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -20,5 +19,3 @@ class FloraRenderer {
 
     FloraShader m_shader;
 };
-
-#endif // FLORARENDERER_H_INCLUDED

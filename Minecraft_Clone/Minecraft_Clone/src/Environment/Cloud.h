@@ -1,5 +1,4 @@
-#ifndef CLOUD_H
-#define CLOUD_H
+#pragma once
 
 #include "../Shaders/Environment/CloudShader.h"
 #include "../Model.h"
@@ -21,5 +20,3 @@ private:
     glm::vec3 m_oldPos;
     float m_movement;
 };
-
-#endif

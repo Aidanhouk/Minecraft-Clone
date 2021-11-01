@@ -4,79 +4,118 @@
 #include <iostream>
 
 #include "../../../Maths/GeneralMaths.h"
-#include "../../../Util/Random.h"
 #include "../../Chunk/Chunk.h"
-
 #include "../Structures/TreeGenerator.h"
+#include "../Structures/ClusterGenerator.h"
+#include "../Caves/CavesGenerator.h"
+#include "../Caves/WormCave.h"
+#include "World/Block/BlockDatabase.h"
+#include "../Seed.h"
+
+#include <array>
 
 namespace {
-	const int seed = RandomSingleton::get().intInRange(424, 325322);
+	bool outOfBounds(int x, int z)
+	{
+		return x < 0 || x >= CHUNK_SIZE || z < 0 || z >= CHUNK_SIZE;
+	}
 }
 
-NoiseGenerator ClassicOverWorldGenerator::m_biomeNoiseGen(seed * 2);
+NoiseGenerator ClassicOverWorldGenerator::m_biomeNoiseGen(g_Seed);
 
 ClassicOverWorldGenerator::ClassicOverWorldGenerator()
-    : m_valleyBiome(seed)
-    , m_tundraBiome(seed)
-    , m_desertBiome(seed)
-    , m_oceanBiome(seed)
-    , m_forestBiome(seed)
-	, m_mountaineBiome(seed)
+	: m_valleyBiome(g_Seed)
+	, m_tundraBiome(g_Seed)
+	, m_desertBiome(g_Seed)
+	, m_oceanBiome(g_Seed)
+	, m_forestBiome(g_Seed)
+	, m_mountainsBiome(g_Seed)
 {
-    setUpNoise();
+	std::cout << "Seed " << g_Seed << "\n";
+	setUpNoise();
 }
 
 void ClassicOverWorldGenerator::setUpNoise()
 {
-	//std::cout << "Seed: " << seed << '\n';
 	static bool noiseGen = false;
 	if (!noiseGen) {
-	    //std::cout << "making noise\n";
-	    noiseGen = true;
-	
-	    NoiseParameters biomeParmams;
-	    biomeParmams.octaves = 5;
-	    biomeParmams.amplitude = 120;
-	    biomeParmams.smoothness = 1035;
-	    biomeParmams.heightOffset = 0;
-	    biomeParmams.roughness = 0.75;
-	
-	    m_biomeNoiseGen.setParameters(biomeParmams);
+		noiseGen = true;
+
+		NoiseParameters biomeParmams;
+		biomeParmams.octaves = 5;
+		biomeParmams.amplitude = 1000;
+		biomeParmams.smoothness = 2000;
+		biomeParmams.heightOffset = 0;
+		biomeParmams.roughness = 0.75;
+
+		m_biomeNoiseGen.setParameters(biomeParmams);
 	}
 }
 
 void ClassicOverWorldGenerator::generateTerrainFor(Chunk &chunk)
 {
-    m_pChunk = &chunk;
+	m_pChunk = &chunk;
 
-    auto location = chunk.getLocation();
-    m_random.setSeed((location.x ^ location.y) << 2);
+	auto location = chunk.getLocation();
+	m_random.setSeed((location.x ^ location.y) << 2);
 
-    getBiomeMap();
-    getHeightMap();
+	getBiomeMap();
+	getHeightMap();
 
-    auto maxHeight = m_heightMap.getMaxValue();
-    setBlocks(std::max(maxHeight, WATER_LEVEL));
+	auto maxHeight = m_heightMap.getMaxValue();
+	setBlocks(std::max(maxHeight, WATER_LEVEL));
 }
 
 int ClassicOverWorldGenerator::getMinimumSpawnHeight() const noexcept
 {
-    return WATER_LEVEL;
+	return WATER_LEVEL;
+}
+
+BiomeId ClassicOverWorldGenerator::getBiomeId(Chunk & chunk, int x, int z)
+{
+	auto location = chunk.getLocation();
+	double height = m_biomeNoiseGen.getHeight(x % CHUNK_SIZE, z % CHUNK_SIZE, location.x, location.y);
+	int biomeValue = static_cast<int>(height);
+	return getBiome(biomeValue).getBiomeId();
+}
+
+void ClassicOverWorldGenerator::getBiomeMap()
+{
+	auto location = m_pChunk->getLocation();
+
+	for (int x = 0; x < CHUNK_SIZE + 1; ++x) {
+		for (int z = 0; z < CHUNK_SIZE + 1; ++z) {
+			double h = m_biomeNoiseGen.getHeight(x, z, location.x, location.y);
+			m_biomeMap.get(x, z) = static_cast<int>(h);
+		}
+	}
+}
+
+void ClassicOverWorldGenerator::getHeightMap()
+{
+	getHeightIn(0, 0, CHUNK_SIZE, CHUNK_SIZE);
+	return;
+	constexpr static auto HALF_CHUNK = CHUNK_SIZE / 2;
+	constexpr static auto CHUNK = CHUNK_SIZE;
+
+	getHeightIn(0, 0, HALF_CHUNK, HALF_CHUNK);
+	getHeightIn(HALF_CHUNK, 0, CHUNK, HALF_CHUNK);
+	getHeightIn(0, HALF_CHUNK, HALF_CHUNK, CHUNK);
+	getHeightIn(HALF_CHUNK, HALF_CHUNK, CHUNK, CHUNK);
 }
 
 void ClassicOverWorldGenerator::getHeightIn(int xMin, int zMin, int xMax, int zMax)
 {
-    auto getHeightAt = [&](int x, int z) {
-        const Biome &biome = getBiome(x, z);
+	auto getHeightAt = [&](int x, int z) {
+		const Biome &biome = getBiome(x, z);
 
-        return biome.getHeight(x, z,
-			m_pChunk->getLocation().x, m_pChunk->getLocation().y);
-    };
+		return biome.getHeight(x, z, m_pChunk->getLocation().x, m_pChunk->getLocation().y);
+	};
 
-    float bottomLeft = static_cast<float>(getHeightAt(xMin, zMin));
-    float bottomRight = static_cast<float>(getHeightAt(xMax, zMin));
-    float topLeft = static_cast<float>(getHeightAt(xMin, zMax));
-    float topRight = static_cast<float>(getHeightAt(xMax, zMax));
+	float bottomLeft = static_cast<float>(getHeightAt(xMin, zMin));
+	float bottomRight = static_cast<float>(getHeightAt(xMax, zMin));
+	float topLeft = static_cast<float>(getHeightAt(xMin, zMax));
+	float topRight = static_cast<float>(getHeightAt(xMax, zMax));
 
 	for (int x = xMin; x < xMax; ++x) {
 		for (int z = zMin; z < zMax; ++z) {
@@ -96,139 +135,209 @@ void ClassicOverWorldGenerator::getHeightIn(int xMin, int zMin, int xMax, int zM
 	}
 }
 
-void ClassicOverWorldGenerator::getHeightMap()
-{
-    constexpr static auto HALF_CHUNK = CHUNK_SIZE / 2;
-    constexpr static auto CHUNK = CHUNK_SIZE;
-
-    getHeightIn(0, 0, HALF_CHUNK, HALF_CHUNK);
-    getHeightIn(HALF_CHUNK, 0, CHUNK, HALF_CHUNK);
-    getHeightIn(0, HALF_CHUNK, HALF_CHUNK, CHUNK);
-    getHeightIn(HALF_CHUNK, HALF_CHUNK, CHUNK, CHUNK);
-}
-
-void ClassicOverWorldGenerator::getBiomeMap()
-{
-    auto location = m_pChunk->getLocation();
-
-	for (int x = 0; x < CHUNK_SIZE + 1; ++x) {
-		for (int z = 0; z < CHUNK_SIZE + 1; ++z) {
-			double h = m_biomeNoiseGen.getHeight(x, z, location.x + 10, location.y + 10);
-			m_biomeMap.get(x, z) = static_cast<int>(h);
-		}
-	}
-}
-
 void ClassicOverWorldGenerator::setBlocks(int maxHeight)
 {
-    std::vector<sf::Vector3i> trees;
-    std::vector<sf::Vector3i> plants;
+	std::vector<sf::Vector3i> trees;
+	std::vector<sf::Vector3i> plants;
+	std::vector<sf::Vector3i> beachPlants;
 
-    for (int y = 0; y < maxHeight + 1; y++)
-        for (int x = 0; x < CHUNK_SIZE; x++)
-            for (int z = 0; z < CHUNK_SIZE; z++) {
-                int height = m_heightMap.get(x, z);
-                auto &biome = getBiome(x, z);
+	for (int y = 0; y < maxHeight + 1; ++y) {
+		for (int x = 0; x < CHUNK_SIZE; ++x) {
+			for (int z = 0; z < CHUNK_SIZE; ++z) {
 
-                if (y > height) {
-                    if (y <= WATER_LEVEL) {
-						/// refactor this
-						if (biome.getBiomeId() == BiomeId::TundraBiome
-							|| biome.getBiomeId() == BiomeId::MountainBiome) {
-							if (y == WATER_LEVEL)
-								m_pChunk->setBlock(x, y, z, BlockId::Ice);
-							else
-								m_pChunk->setBlock(x, y, z, BlockId::Water);
-						}
-						else
-							m_pChunk->setBlock(x, y, z, BlockId::Water);
-                    }
-                    continue;
-                }
-                else if (y == height) {
+				int height = m_heightMap.get(x, z);
+				auto &biome = getBiome(x, z);
+
+				if (y > height) {
+					if (y < WATER_LEVEL) {
+						if (m_pChunk->getBlock(x, y, z) == 0)
+							m_pChunk->setBlock(x, y, z, biome.getWaterBlock(m_random));
+					}
+					else if (y == WATER_LEVEL)
+						if (m_pChunk->getBlock(x, y, z) == 0)
+							m_pChunk->setBlock(x, y, z, biome.getWaterSurfaceBlock(m_random));
+				}
+				else if (y == height) {
 					if (y >= WATER_LEVEL) {
-						if (y == WATER_LEVEL) {
-							m_pChunk->setBlock(x, y, z, biome.getBeachBlock(m_random));
+
+						if (m_pChunk->getBlock(x, y, z) == 0) {
+							// following code gets rid of straight lines of collidable blocks on water surface
+							if (y == WATER_LEVEL) {
+								int numberOfAdjBlocksOnSurface = -1;
+
+								for (int xx = x - 1; xx <= x + 1; ++xx)
+									for (int zz = z - 1; zz <= z + 1; ++zz)
+										if (!outOfBounds(xx, zz))
+											if (m_heightMap.get(xx, zz) >= WATER_LEVEL)
+												++numberOfAdjBlocksOnSurface;
+
+								if (numberOfAdjBlocksOnSurface >= 3)
+									m_pChunk->setBlock(x, y, z, getBiome(x, z).getTopBlock(m_random, y));
+								else
+									m_pChunk->setBlock(x, y, z, getBiome(x, z).getWaterSurfaceBlock(m_random));
+							}
+							else
+								m_pChunk->setBlock(x, y, z, getBiome(x, z).getTopBlock(m_random, y));
 						}
 
-						if (m_random.intInRange(0, biome.getTreeFrequency()) == 5) {
+						if (x == (CHUNK_SIZE / 2) && z == (CHUNK_SIZE / 2)) {
+							if (m_random.intInRange(0, biome.getFlowerClusterFrequency()) == 0) {
+								getBiome(x, z).makeFlowerCluster(m_random, *m_pChunk, x, z, m_heightMap);
+							}
+						}
+
+						if (m_random.intInRange(0, biome.getTreeFrequency()) == 0) {
 							trees.emplace_back(x, y + 1, z);
 						}
-						if (m_random.intInRange(0, biome.getPlantFrequency()) == 5) {
+						else if (m_random.intInRange(0, biome.getPlantFrequency()) == 0) {
 							plants.emplace_back(x, y + 1, z);
 						}
-
-						m_pChunk->setBlock(x, y, z, getBiome(x, z).getTopBlock(m_random));
+						else if (y == WATER_LEVEL && m_random.intInRange(0, biome.getBeachPlantFrequency()) == 0) {
+							beachPlants.emplace_back(x, y + 1, z);
+						}
 					}
-                    else {
-                        m_pChunk->setBlock(x, y, z, biome.getUnderWaterBlock(m_random));
-						/// place underwater plant
+					else {
+						if (m_random.intInRange(0, 100) <= 0)
+							getBiome(x, z).makeUnderwaterCluster(m_random, *m_pChunk, x, z, m_heightMap);
+						if (m_pChunk->getBlock(x, y, z) == 0)
+							m_pChunk->setBlock(x, y, z, biome.getUnderWaterBlock(m_random));
+						// place underwater plant
 						//if (m_random.intInRange(0, biome.getPlantFrequency()) ==
 						//	5) {
 						//	plants.emplace_back(x, y + 1, z);
 						//}
-                    }
-                }
-                else if (y > height - 3) {
-					if (y < WATER_LEVEL + 2) {
-						m_pChunk->setBlock(x, y, z, biome.getUnderBeachBlock(m_random));
 					}
-					else {
+				}
+				else if (y >= height - 3) {
+					if (m_pChunk->getBlock(x, y, z) == 0)
 						m_pChunk->setBlock(x, y, z, getBiome(x, z).getUnderGroundBlock(m_random));
+				}
+				else if (y == 0) {
+					m_pChunk->setBlock(x, y, z, BlockId::Bedrock);
+				}
+				else if (y == 1) {
+					if (m_pChunk->getBlock(x, y, z) == 0) {
+						int rand = m_random.intInRange(0, 2);
+						if (rand == 0)
+							m_pChunk->setBlock(x, y, z, BlockId::Stone);
+						else
+							m_pChunk->setBlock(x, y, z, BlockId::Bedrock);
 					}
-                }
-                else {
-                    m_pChunk->setBlock(x, y, z, BlockId::Stone);
-                }
-            }
+				}
+				else if (y == 2) {
+					if (m_pChunk->getBlock(x, y, z) == 0) {
+						int rand = m_random.intInRange(0, 2);
+						if (rand == 0)
+							m_pChunk->setBlock(x, y, z, BlockId::Bedrock);
+						else
+							m_pChunk->setBlock(x, y, z, BlockId::Stone);
+					}
+				}
+				else {
+					if (m_pChunk->getBlock(x, y, z).getData().id == BlockId::Air) {
+						m_pChunk->setBlock(x, y, z, BlockId::Stone);
+					}
+				}
+			}
+		}
+	}
 
-    for (auto &plant : plants) {
-        int x = plant.x;
-        int z = plant.z;
+	ClusterGenerator::makeOreClusters(*m_pChunk, m_random, m_heightMap);
+	
+	Caves::createCaves(*m_pChunk, m_random, m_heightMap);
 
-        auto block = getBiome(x, z).getPlant(m_random);
-        m_pChunk->setBlock(x, plant.y, z, block);
-    }
+	for (auto &plant : plants) {
+		int x = plant.x;
+		int z = plant.z;
+		int y = plant.y;
 
-    for (auto &tree : trees) {
-        int x = tree.x;
-        int z = tree.z;
+		if (m_pChunk->getBlock(x, y, z) != 0)
+			continue;
+		auto block = getBiome(x, z).getPlant(m_random);
+
+		if (BlockDatabase::canPlaceOnBlock(block.getData().id, m_pChunk->getBlock(x, y - 1, z).getData().id))
+			m_pChunk->setBlock(x, y, z, block);
+	}
+
+	for (auto &tree : trees) {
+		int x = tree.x;
+		int z = tree.z;
 		int y = tree.y;
 
-		if (tree.y - 1 == WATER_LEVEL) {
-			getBiome(x, z).makeBeachPlant(m_random, *m_pChunk, x, y, z);
+		if (m_pChunk->getBlock(x, y, z) != 0)
 			continue;
-		}
+		if (m_pChunk->getBlock(x, y - 1, z).getData().id == BlockId::Water ||
+			m_pChunk->getBlock(x, y - 1, z).getData().id == BlockId::Ice)
+			continue;
 
-		/// doesn't create trees close to chunk edges otherwise leaves won't be created
-		if (x > 1 && x < CHUNK_SIZE - 2 && z > 1 && z < CHUNK_SIZE - 2)
+		// doesn't create trees close to chunk edges otherwise leaves won't be created
+		//if (x > 1 && x < CHUNK_SIZE - 2 && z > 1 && z < CHUNK_SIZE - 2)
 			getBiome(x, z).makeTree(m_random, *m_pChunk, x, y, z);
-    }
+	}
+
+	for (auto &beachPlant : beachPlants) {
+		int x = beachPlant.x;
+		int z = beachPlant.z;
+		int y = beachPlant.y;
+
+		if (m_pChunk->getBlock(x, y, z) != 0)
+			continue;
+		if (m_pChunk->getBlock(x, y - 1, z).getData().id == BlockId::Water ||
+			m_pChunk->getBlock(x, y - 1, z).getData().id == BlockId::Ice)
+			continue;
+
+		getBiome(x, z).makeBeachPlant(m_random, *m_pChunk, x, z, m_heightMap);
+	}
 }
 
-const Biome &ClassicOverWorldGenerator::getBiome(int x, int z) const
+const Biome &ClassicOverWorldGenerator::getBiome(int chunkX, int chunkZ) const
 {
-    int biomeValue = m_biomeMap.get(x, z);
+	int biomeValue = m_biomeMap.get(chunkX, chunkZ);
 
-    if (biomeValue > 200) {
-        return m_oceanBiome;
-    }
-	else if (biomeValue > 175) {
-		return m_forestBiome;
+	if (biomeValue < 750) {
+		return m_oceanBiome;
 	}
-    else if (biomeValue > 165) {
-		return m_tundraBiome;
-    }
-	else if (biomeValue > 155) {
-		return m_mountaineBiome;
+	else if (biomeValue < 950) {
+		return m_desertBiome;
 	}
-	else if (biomeValue > 145) {
-		return m_tundraBiome;
-	}
-	else if (biomeValue > 120) {
+	else if (biomeValue < 1050) {
 		return m_valleyBiome;
 	}
-    else {
-        return m_desertBiome;
-    }
+	else if (biomeValue < 1250) {
+		return m_forestBiome;
+	}
+	else if (biomeValue < 1450) {
+		return m_mountainsBiome;
+	}
+	else if (biomeValue < 1850) {
+		return m_tundraBiome;
+	}
+	else {
+		return m_valleyBiome;
+	}
+}
+
+const Biome & ClassicOverWorldGenerator::getBiome(int biomeValue) const
+{
+	if (biomeValue < 750) {
+		return m_oceanBiome;
+	}
+	else if (biomeValue < 950) {
+		return m_desertBiome;
+	}
+	else if (biomeValue < 1050) {
+		return m_valleyBiome;
+	}
+	else if (biomeValue < 1250) {
+		return m_forestBiome;
+	}
+	else if (biomeValue < 1450) {
+		return m_mountainsBiome;
+	}
+	else if (biomeValue < 1850) {
+		return m_tundraBiome;
+	}
+	else {
+		return m_valleyBiome;
+	}
 }

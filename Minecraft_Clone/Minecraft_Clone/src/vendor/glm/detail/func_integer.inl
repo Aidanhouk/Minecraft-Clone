@@ -1,4 +1,4 @@
-/// @ref core
+// @ref core
 
 #include "_vectorize.hpp"
 #if(GLM_ARCH & GLM_ARCH_X86 && GLM_COMPILER & GLM_COMPILER_VC)

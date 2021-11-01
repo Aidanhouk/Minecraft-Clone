@@ -1,22 +1,25 @@
-#ifndef ITEMSTACK_H_INCLUDED
-#define ITEMSTACK_H_INCLUDED
+#pragma once
 
-#include "Material.h"
+#include "World/Block/BlockId.h"
+
+const BlockId EMPTY_SLOT_ID = BlockId::Air;
 
 class ItemStack {
 public:
-    ItemStack(const Material &material, int amount);
+    ItemStack(BlockId blockId, int amount);
 	ItemStack() {}
 
+	// returns leftover
     int add(int amount);
     void remove(int number);
 
+	void setData(BlockId blockId, int number);
+	void clear();
+
+    BlockId getBlockId() const;
     int getNumInStack() const;
-
-    const Material &getMaterial() const;
+	int getMaxStackSize() const;
 private:
-    const Material *m_pMaterial = &Material::NOTHING;
-    int m_numInStack = 0;
+    BlockId m_blockId;
+    int m_numInStack;
 };
-
-#endif // ITEMSTACK_H_INCLUDED

@@ -1,15 +1,15 @@
-/// @ref gtx_normal
-/// @file glm/gtx/normal.hpp
-///
-/// @see core (dependence)
-/// @see gtx_extented_min_max (dependence)
-///
-/// @defgroup gtx_normal GLM_GTX_normal
-/// @ingroup gtx
-///
-/// Include <glm/gtx/normal.hpp> to use the features of this extension.
-///
-/// Compute the normal of a triangle.
+// @ref gtx_normal
+// @file glm/gtx/normal.hpp
+//
+// @see core (dependence)
+// @see gtx_extented_min_max (dependence)
+//
+// @defgroup gtx_normal GLM_GTX_normal
+// @ingroup gtx
+//
+// Include <glm/gtx/normal.hpp> to use the features of this extension.
+//
+// Compute the normal of a triangle.
 
 #pragma once
 
@@ -26,16 +26,16 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_normal
-	/// @{
+	// @addtogroup gtx_normal
+	// @{
 
-	/// Computes triangle normal from triangle points.
-	///
-	/// @see gtx_normal
+	// Computes triangle normal from triangle points.
+	//
+	// @see gtx_normal
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL vec<3, T, Q> triangleNormal(vec<3, T, Q> const& p1, vec<3, T, Q> const& p2, vec<3, T, Q> const& p3);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "normal.inl"

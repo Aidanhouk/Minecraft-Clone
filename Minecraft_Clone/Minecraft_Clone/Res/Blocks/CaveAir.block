@@ -1,0 +1,29 @@
+Name
+CaveAir
+
+Id
+54
+
+TexTop
+0 0
+
+TexSide
+0 0
+
+TexBottom
+0 0
+
+Opaque
+0
+
+MeshType
+0
+
+ShaderType
+0
+
+Collidable
+0
+
+Hardness
+0

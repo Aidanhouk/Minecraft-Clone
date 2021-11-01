@@ -1,15 +1,15 @@
-/// @ref gtx_perpendicular
-/// @file glm/gtx/perpendicular.hpp
-///
-/// @see core (dependence)
-/// @see gtx_projection (dependence)
-///
-/// @defgroup gtx_perpendicular GLM_GTX_perpendicular
-/// @ingroup gtx
-///
-/// Include <glm/gtx/perpendicular.hpp> to use the features of this extension.
-///
-/// Perpendicular of a vector from other one
+// @ref gtx_perpendicular
+// @file glm/gtx/perpendicular.hpp
+//
+// @see core (dependence)
+// @see gtx_projection (dependence)
+//
+// @defgroup gtx_perpendicular GLM_GTX_perpendicular
+// @ingroup gtx
+//
+// Include <glm/gtx/perpendicular.hpp> to use the features of this extension.
+//
+// Perpendicular of a vector from other one
 
 #pragma once
 
@@ -27,15 +27,15 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_perpendicular
-	/// @{
+	// @addtogroup gtx_perpendicular
+	// @{
 
 	//! Projects x a perpendicular axis of Normal.
 	//! From GLM_GTX_perpendicular extension.
 	template<typename genType>
 	GLM_FUNC_DECL genType perp(genType const& x, genType const& Normal);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "perpendicular.inl"

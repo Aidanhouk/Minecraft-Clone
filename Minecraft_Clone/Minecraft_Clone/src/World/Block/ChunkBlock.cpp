@@ -21,3 +21,16 @@ const BlockType &ChunkBlock::getType() const
 {
     return BlockDatabase::get().getBlock((BlockId)id);
 }
+
+bool ChunkBlock::operator==(ChunkBlock other) const
+{
+	if (id == (Block_t)BlockId::CaveAir)
+		return (other.id == id || other.id == 0);
+
+	return id == other.id;
+}
+
+bool ChunkBlock::operator!=(ChunkBlock other) const
+{
+	return !(*this == other);
+}

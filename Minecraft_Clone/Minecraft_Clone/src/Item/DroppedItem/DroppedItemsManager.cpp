@@ -3,6 +3,8 @@
 #include "Renderer/RenderMaster.h"
 #include "Camera.h"
 #include "DroppedItemsBuilder.h"
+#include "Audio/SoundMaster.h"
+#include "Audio/SoundFunctions.h"
 
 #include <iostream>
 
@@ -23,20 +25,17 @@ void DroppedItemsManager::addItem(const ItemStack & itemstack, const glm::vec3 &
 void DroppedItemsManager::blockBrokenUpdate(const glm::vec3 & pos, World &world)
 {
 	for (auto & item : m_items) {
-		item.startFalling(world);
-		//if (floor(item.position.x) == pos.x &&
-		//	floor(item.position.z) == pos.z &&
-		//	floor(item.position.y) - 1 == pos.y) {
-		//	item.startMoving();
-		//}
+		if (item.position == pos)
+			item.startFalling(world);
 	}
 }
 
 void DroppedItemsManager::update(Player &player, World &world, float dt)
 {
-	//checkItemsLifetime();
+	checkItemsLifetime();
 	checkIfPlayerCanGrabItem(player);
 	itemsMove(world, dt);
+	lookForSameItemsNearby(world);
 }
 
 void DroppedItemsManager::addToRender(RenderMaster & renderer)
@@ -60,38 +59,101 @@ void DroppedItemsManager::checkForDroppedItems(const glm::vec3 pos, World &world
 			item.collisionMove(world);
 		}
 	}
-	updateMesh();
+	updateMesh(&world);
 }
 
-void DroppedItemsManager::updateMesh()
+void DroppedItemsManager::updateMesh(World *world)
 {
 	m_droppedItemsMesh.deleteData();
-	DroppedItemsBuilder(*this, m_droppedItemsMesh).buildMesh();
+	DroppedItemsBuilder(*this, m_droppedItemsMesh).buildMesh(world);
 }
 
 void DroppedItemsManager::checkItemsLifetime()
 {
-	/// @TODO
+	const static float ITEM_LIFETIME = 60.0f * 5;
+
+	for (auto item = m_items.begin(); item != m_items.end(); ++item) {
+		if (item->getExistingTime() > ITEM_LIFETIME) {
+			m_items.erase(item);
+			updateMesh();
+			break;
+		}
+	}
 }
 
 void DroppedItemsManager::checkIfPlayerCanGrabItem(Player & player)
 {
 	int leftover = 0;
 	for (auto item = m_items.begin(); item != m_items.end(); ++item) {
-		if (glm::abs(item->position.x - player.position.x) <= 1.2f
-			&& glm::abs(item->position.z - player.position.z) <= 1.2f
-			&& (glm::abs(item->position.y - player.position.y) <= 1.0f)) {
+
+		float diffX = item->position.x - player.position.x;
+		float diffY = item->position.y - player.position.y;
+		float diffZ = item->position.z - player.position.z;
+
+		if (glm::abs(diffX) <= 1.2f
+			&& glm::abs(diffY) <= 1.2f
+			&& (glm::abs(diffZ) <= 1.0f)) {
 			
 			if (!item->canBeGrabbed())
 				return;
 
-			leftover = player.addItem(item->getItemStack().getMaterial(), item->getItemStack().getNumInStack());
+			leftover = player.addItem(item->getItemStack().getBlockId(), item->getItemStack().getNumInStack());
 			if (leftover)
 				item->setItemStackNumber(leftover);
 			else
 				m_items.erase(item);
+
+			//sf::Vector3f diffXYZ{ diffX, diffY, diffZ };
+			//sf::Vector3f soundPosition = calculateSoundPosition(diffXYZ, player.rotation.y);
+			//
+			//g_SoundMaster.play(SoundId::Plop, soundPosition);
+			g_SoundMaster.play(SoundId::Plop);
 			updateMesh();
 			break;
+		}
+	}
+}
+
+void DroppedItemsManager::lookForSameItemsNearby(World &world)
+{
+	for (auto item1 = m_items.begin(); item1 != m_items.end(); ++item1) {
+		if (item1->isMoving())
+			continue;
+
+		float item1X = item1->position.x;
+		float item1Y = item1->position.y;
+		float item1Z = item1->position.z;
+
+		for (auto item2 = m_items.begin(); item2 != m_items.end(); ++item2) {
+			if (item2->isMoving())
+				continue;
+
+			float item2X = item2->position.x;
+			float item2Y = item2->position.y;
+			float item2Z = item2->position.z;
+
+			if (std::abs(item1X - item2X) <= 2.0f &&
+				std::abs(item1Y - item2Y) <= 2.0f &&
+				std::abs(item1Z - item2Z) <= 2.0f)
+			{
+				if (item1->getItemStack().getBlockId() ==
+					item2->getItemStack().getBlockId()
+					&& item1 != item2)
+				{
+					int item1Number = item1->getItemStack().getNumInStack();
+					int item2Number = item2->getItemStack().getNumInStack();
+					item2->setItemStackNumber(item1Number + item2Number);
+					item2->position.y += 0.2f; // item won't be drawn if not change it's position
+					// these are not necessary
+					//item1->position.x += (item2X - item1X) / 2.0f;
+					//item1->position.z += (item2Z - item1Z) / 2.0f;
+					//item1->collisionMove(world);
+
+					m_items.erase(item1);
+					updateMesh();
+					return;
+				}
+			}
 		}
 	}
 }
@@ -99,10 +161,15 @@ void DroppedItemsManager::checkIfPlayerCanGrabItem(Player & player)
 void DroppedItemsManager::itemsMove(World &world, float dt)
 {
 	bool shouldUpdateMesh = false;
-	for (auto &item : m_items) {
-			item.move(world, dt);
+	for (auto item = m_items.begin(); item != m_items.end(); ++item) {
+		//if (item->position.y < 0) {
+		//	m_items.erase(item);
+		//	shouldUpdateMesh = true;
+		//	break;
+		//}
+		if (item->move(world, dt))
 			shouldUpdateMesh = true;
 	}
 	if (shouldUpdateMesh)
-		updateMesh();
+		updateMesh(&world);
 }

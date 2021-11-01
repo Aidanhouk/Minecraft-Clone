@@ -1,0 +1,23 @@
+Name
+Fern
+
+Id
+24
+
+TexAll
+6 2
+
+Opaque
+0
+
+MeshType
+1
+
+ShaderType
+2
+
+Collidable
+0
+
+Hardness
+0.05

@@ -1,4 +1,4 @@
-/// @ref gtx_vector_query
+// @ref gtx_vector_query
 
 #include <cassert>
 

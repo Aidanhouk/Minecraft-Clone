@@ -1,11 +1,13 @@
-render_distance 8
+render_distance 12
 fullscreen 1
-resolution 0 0
-(0 0 - auto-detect)
-mouse_sensitivity 5.0
+resolution 0 0 (leave 0 0 for auto-detection)
 fov 70
 gamma 1.0
 contrast 1.0
 saturation 1.2
 brightness 1.0
 post_process 1
+
+mouse_sensitivity 5.0
+
+music_volume 50

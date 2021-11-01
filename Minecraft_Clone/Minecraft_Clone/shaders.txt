@@ -1,4 +1,4 @@
 fxaa 0
-bloom 0
+bloom 1
 motion_blur 0
 anisotropic_filtration 0

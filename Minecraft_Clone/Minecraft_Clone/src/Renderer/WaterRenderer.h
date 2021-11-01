@@ -1,5 +1,4 @@
-#ifndef WATERRENDERER_H_INCLUDED
-#define WATERRENDERER_H_INCLUDED
+#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -20,5 +19,3 @@ private:
 
     WaterShader m_shader;
 };
-
-#endif // WATERRENDERER_H_INCLUDED

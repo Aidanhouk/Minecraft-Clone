@@ -1,5 +1,4 @@
-#ifndef MOTION_BLUR_H
-#define MOTION_BLUR_H
+#pragma once
 
 #include "../Shaders/BasicShader.h"
 
@@ -17,5 +16,3 @@ private:
     void getUniforms();
     GLuint t1, t2, m_prev, m_curr, m_res;
 };
-
-#endif

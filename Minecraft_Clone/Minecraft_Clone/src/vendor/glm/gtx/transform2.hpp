@@ -1,15 +1,15 @@
-/// @ref gtx_transform2
-/// @file glm/gtx/transform2.hpp
-///
-/// @see core (dependence)
-/// @see gtx_transform (dependence)
-///
-/// @defgroup gtx_transform2 GLM_GTX_transform2
-/// @ingroup gtx
-///
-/// Include <glm/gtx/transform2.hpp> to use the features of this extension.
-///
-/// Add extra transformation matrices
+// @ref gtx_transform2
+// @file glm/gtx/transform2.hpp
+//
+// @see core (dependence)
+// @see gtx_transform (dependence)
+//
+// @defgroup gtx_transform2 GLM_GTX_transform2
+// @ingroup gtx
+//
+// Include <glm/gtx/transform2.hpp> to use the features of this extension.
+//
+// Add extra transformation matrices
 
 #pragma once
 
@@ -27,8 +27,8 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_transform2
-	/// @{
+	// @addtogroup gtx_transform2
+	// @{
 
 	//! Transforms a matrix with a shearing on X axis.
 	//! From GLM_GTX_transform2 extension.
@@ -83,7 +83,7 @@ namespace glm
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL mat<4, 4, T, Q> scaleBias(mat<4, 4, T, Q> const& m, T scale, T bias);
 
-	/// @}
+	// @}
 }// namespace glm
 
 #include "transform2.inl"

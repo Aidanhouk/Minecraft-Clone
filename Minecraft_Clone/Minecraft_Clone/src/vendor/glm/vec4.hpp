@@ -1,5 +1,5 @@
-/// @ref core
-/// @file glm/vec4.hpp
+// @ref core
+// @file glm/vec4.hpp
 
 #pragma once
 #include "./ext/vector_bool4.hpp"

@@ -1,14 +1,14 @@
-/// @ref gtx_raw_data
-/// @file glm/gtx/raw_data.hpp
-///
-/// @see core (dependence)
-///
-/// @defgroup gtx_raw_data GLM_GTX_raw_data
-/// @ingroup gtx
-///
-/// Include <glm/gtx/raw_data.hpp> to use the features of this extension.
-///
-/// Projection of a vector to other one
+// @ref gtx_raw_data
+// @file glm/gtx/raw_data.hpp
+//
+// @see core (dependence)
+//
+// @defgroup gtx_raw_data GLM_GTX_raw_data
+// @ingroup gtx
+//
+// Include <glm/gtx/raw_data.hpp> to use the features of this extension.
+//
+// Projection of a vector to other one
 
 #pragma once
 
@@ -26,8 +26,8 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_raw_data
-	/// @{
+	// @addtogroup gtx_raw_data
+	// @{
 
 	//! Type for byte numbers.
 	//! From GLM_GTX_raw_data extension.
@@ -45,7 +45,7 @@ namespace glm
 	//! From GLM_GTX_raw_data extension.
 	typedef detail::uint64		qword;
 
-	/// @}
+	// @}
 }// namespace glm
 
 #include "raw_data.inl"

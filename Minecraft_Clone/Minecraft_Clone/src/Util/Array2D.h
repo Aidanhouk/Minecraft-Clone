@@ -1,12 +1,12 @@
-#ifndef ARRAY2D_H_INCLUDED
-#define ARRAY2D_H_INCLUDED
+#pragma once
 
 #include <algorithm>
 #include <array>
 
-template <typename T, int WIDTH> class Array2D {
+template <typename T, int WIDTH>
+class Array2D
+{
 	using Array = std::array<T, WIDTH * WIDTH>;
-	
 public:
 	T &get(int x, int z)
 	{
@@ -31,5 +31,3 @@ public:
 private:
 	Array m_array;
 };
-
-#endif // ARRAY2D_H_INCLUDED

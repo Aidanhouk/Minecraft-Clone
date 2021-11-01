@@ -10,7 +10,7 @@ class BreakBlockRenderer {
 public:
 	void render(const Camera &camera);
 
-	void setMeshToDraw();
+	void addMeshToDraw();
 private:
 
 	BreakBlockShader m_breakBlockShader;

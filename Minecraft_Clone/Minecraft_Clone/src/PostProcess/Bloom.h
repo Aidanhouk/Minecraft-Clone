@@ -1,11 +1,9 @@
-#ifndef BLOOM_H
-#define BLOOM_H
+#pragma once
 
 #include "Mask.h"
 #include "Combine.h"
 #include "ImageRenderer.h"
 #include "GaussianBlur.h"
-#include "../RenderSettings.h"
 
 class Bloom{
 public:
@@ -19,5 +17,3 @@ private:
     MaskShader m_shader;
     CombineShader c_shader;
 };
-
-#endif

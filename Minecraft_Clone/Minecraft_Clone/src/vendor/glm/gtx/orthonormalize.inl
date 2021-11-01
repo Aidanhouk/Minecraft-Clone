@@ -1,4 +1,4 @@
-/// @ref gtx_orthonormalize
+// @ref gtx_orthonormalize
 
 namespace glm
 {

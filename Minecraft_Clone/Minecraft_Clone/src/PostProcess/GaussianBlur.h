@@ -1,5 +1,4 @@
-#ifndef GAUSSIAN_BLUR_H
-#define GAUSSIAN_BLUR_H
+#pragma once
 
 #include "HorizontalGaussian.h"
 #include "VerticalGaussian.h"
@@ -15,5 +14,3 @@ private:
     GaussianH gh_shader;
     GaussianV gv_shader;
 };
-
-#endif

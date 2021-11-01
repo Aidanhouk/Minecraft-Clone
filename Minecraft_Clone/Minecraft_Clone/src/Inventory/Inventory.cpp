@@ -7,18 +7,24 @@
 #include "ItemIcons/ItemIconsBuilder.h"
 #include "PlayerParametersIcons/ParametersBuilder.h"
 #include "Item/DroppedItem/DroppedItemsManager.h"
+#include "Item/Material.h"
+#include "Input/Keyboard.h"
 
 #include <iostream>
 
 Inventory::Inventory(Player &player, Application &app)
-	: m_pPlayer{ &player }
+	: m_pPlayer{ &player },
+	m_updateIcons{ true }
 {
-	m_inventoryTexture.loadFromFile("Res/Textures/Interface/inventory.png");
+	//m_slots[7].item.setData(BlockId::DiamondSword, 1);
+	m_slots[8].item.setData(BlockId::Apple, 5);
+
+	m_inventoryTexture.loadFromFile("Res/Textures/Interface/inventoryInterface.png");
 	m_inventory.setTexture(&m_inventoryTexture);
 	m_toolbarTexture.loadFromFile("Res/Textures/Interface/toolbar.png");
 	m_toolbar.setTexture(&m_toolbarTexture);
-	m_heldItemTexture.loadFromFile("Res/Textures/Interface/toolbarHeldItem.png");
-	m_heldItemFrame.setTexture(&m_heldItemTexture);
+	m_heldItemFrameTexture.loadFromFile("Res/Textures/Interface/toolbarHeldItem.png");
+	m_heldItemFrame.setTexture(&m_heldItemFrameTexture);
 
 	setInterfacePositions(app);
 
@@ -29,10 +35,7 @@ Inventory::Inventory(Player &player, Application &app)
 	m_itemTextBackground.setTexture(&m_itemTextBackgroundTexture);
 	setTextSettings(app);
 
-	m_clickTimer.restart();
-
 	m_grabbedItemDrawer.setSizes(m_invSlotSize);
-	updateIcons();
 }
 
 void Inventory::setInterfacePositions(const Application &app)
@@ -61,7 +64,7 @@ void Inventory::setInterfacePositions(const Application &app)
 		app.getWindow().getSize().x / 2,
 		app.getWindow().getSize().y);
 
-	aspectRatio = (float)m_heldItemTexture.getSize().y / (float)m_heldItemTexture.getSize().x;
+	aspectRatio = (float)m_heldItemFrameTexture.getSize().y / (float)m_heldItemFrameTexture.getSize().x;
 	m_toolSlotSize = m_invSlotSize;
 	m_toolDistanceBetweenSlots = inventoryWidth / 9;
 	m_heldItemFrame.setSize({
@@ -133,7 +136,7 @@ void Inventory::setTextSettings(const Application &app)
 	m_toolbarItemText.setCharacterSize(40 * app.getWindow().getSize().x / 2560.0f);
 	m_toolbarItemText.setPosition(
 		app.getWindow().getSize().x / 2,
-		app.getWindow().getSize().y * 0.895f);
+		app.getWindow().getSize().y * 0.865f);
 
 	updateToolbarText();
 }
@@ -142,35 +145,35 @@ void Inventory::setTextSettings(const Application &app)
 
 ItemStack & Inventory::getHeldItems()
 {
-	return m_slots[m_heldItem].item;
+	return m_slots[m_heldItemIndex].item;
 }
 
-int Inventory::addItems(const Material & material, int number, int callNumber)
+int Inventory::addItems(BlockId blockId, int number, int callNumber)
 {
 	for (auto &itemSlot : m_slots) {
-		if (material.id == itemSlot.item.getMaterial().id &&
-			itemSlot.item.getNumInStack() < itemSlot.item.getMaterial().maxStackSize) {
+		if (blockId == itemSlot.item.getBlockId() &&
+			itemSlot.item.getNumInStack() < itemSlot.item.getMaxStackSize()) {
 			
 			int leftOver = itemSlot.item.add(number);
 			if (leftOver > 0)
-				addItems(material, leftOver, callNumber + 1);
+				addItems(blockId, leftOver, callNumber + 1);
 			else
 				updateToolbarText();
 
 			if (callNumber == 1)
-				updateIcons();
+				shouldUpdateIcons();
 			return 0;
 		}
 	}
 	for (int i = 0; i < m_slots.size(); ++i) {
 		if (isSlotEmpty(&m_slots[i])) {
 
-			m_slots[i].item = { material, number };
-			if (i == m_heldItem)
+			m_slots[i].item = { blockId, number };
+			if (i == m_heldItemIndex)
 				updateToolbarText();
 
 			if (callNumber == 1)
-				updateIcons();
+				shouldUpdateIcons();
 			return 0;
 		}
 	}
@@ -179,31 +182,32 @@ int Inventory::addItems(const Material & material, int number, int callNumber)
 
 void Inventory::removeHeldItem(int number)
 {
-	if (isSlotEmpty(&m_slots[m_heldItem]))
+	if (isSlotEmpty(&m_slots[m_heldItemIndex]))
 		return;
-	m_slots[m_heldItem].item.remove(number);
-	updateIcons();
+	m_slots[m_heldItemIndex].item.remove(number);
+	shouldUpdateIcons();
 	updateToolbarText();
 }
 
 void Inventory::throwItem(int number, ItemSlot *thrownSlot)
 {
-	if (thrownSlot) {
-		auto thrownItemStack = ItemStack(thrownSlot->item.getMaterial(), number);
-		m_pDroppedItemsManager->addItem(thrownItemStack,
-			m_pPlayer->position, m_pPlayer->rotation);
-	}
-	else {
-		if (isSlotEmpty(&m_slots[m_heldItem]))
-			return;
-		m_pDroppedItemsManager->addItem({ m_slots[m_heldItem].item.getMaterial(), 1 },
-			m_pPlayer->position, m_pPlayer->rotation);
-	}
+	auto thrownItemStack = ItemStack(thrownSlot->item.getBlockId(), number);
+	m_pDroppedItemsManager->addItem(std::move(thrownItemStack),
+		m_pPlayer->position, m_pPlayer->rotation);
+}
+
+void Inventory::throwItem(int number)
+{
+	if (isSlotEmpty(&m_slots[m_heldItemIndex]))
+		return;
+	auto thrownItemStack = ItemStack(m_slots[m_heldItemIndex].item.getBlockId(), 1);
+	m_pDroppedItemsManager->addItem(std::move(thrownItemStack),
+		m_pPlayer->position, m_pPlayer->rotation);
 }
 
 void Inventory::setHeldItem(int heldItem)
 {
-	m_heldItem = heldItem;
+	m_heldItemIndex = heldItem;
 
 	updateHeldItemFrame();
 	updateToolbarText();
@@ -211,10 +215,10 @@ void Inventory::setHeldItem(int heldItem)
 
 void Inventory::nextItem()
 {
-	if (m_heldItem == 8)
-		m_heldItem = 0;
+	if (m_heldItemIndex == 8)
+		m_heldItemIndex = 0;
 	else
-		++m_heldItem;
+		++m_heldItemIndex;
 
 	updateHeldItemFrame();
 	updateToolbarText();
@@ -222,10 +226,10 @@ void Inventory::nextItem()
 
 void Inventory::previousItem()
 {
-	if (m_heldItem == 0)
-		m_heldItem = 8;
+	if (m_heldItemIndex == 0)
+		m_heldItemIndex = 8;
 	else
-		--m_heldItem;
+		--m_heldItemIndex;
 
 	updateHeldItemFrame();
 	updateToolbarText();
@@ -237,16 +241,15 @@ void Inventory::updateHeldItemFrame()
 
 		m_toolbar.getGlobalBounds().left
 		+ m_toolDistanceBetweenSlots * 0.063f
-		+ m_heldItem * m_toolDistanceBetweenSlots,
+		+ m_heldItemIndex * m_toolDistanceBetweenSlots,
 
 		m_heldItemFrame.getPosition().y);
 }
 
 void Inventory::updateToolbarText()
 {
-	m_toolbarItemText.setString(
-		m_slots[m_heldItem].item.getMaterial().name
-	);
+	auto & material = Material::toMaterial(m_slots[m_heldItemIndex].item.getBlockId());
+	m_toolbarItemText.setString(material.name);
 	m_toolbarItemText.setOrigin(
 		m_toolbarItemText.getGlobalBounds().width / 2,
 		m_toolbarItemText.getGlobalBounds().height);
@@ -257,9 +260,8 @@ void Inventory::updateInventoryText(sf::Vector2i &mousePos)
 	if (!m_pPointedSlot)
 		return;
 
-	m_inventoryItemText.setString(
-		m_pPointedSlot->item.getMaterial().name
-	);
+	auto & material = Material::toMaterial(m_pPointedSlot->item.getBlockId());
+	m_inventoryItemText.setString(material.name);
 	m_inventoryItemText.setPosition(
 		mousePos.x + 15 * m_invPixelSize, mousePos.y - 22 * m_invPixelSize
 	);
@@ -351,12 +353,20 @@ int Inventory::getPointedSlotColumn(int mousePosX)
 	}
 }
 
+void Inventory::shouldUpdateIcons()
+{
+	m_updateIcons = true;
+}
+
 void Inventory::updateIcons()
 {
-	m_iconsMesh.deleteData();
-	ItemIconsBuilder(*this, m_iconsMesh).buildMesh();
-	if (!m_isOpened)
-		ParametersBuilder(*this, m_iconsMesh, *m_pPlayer).buildMesh();
+	if (m_updateIcons) {
+		m_iconsMesh.deleteData();
+		ItemIconsBuilder(*this, m_iconsMesh).buildMesh();
+		if (!m_isOpened)
+			ParametersBuilder(*this, m_iconsMesh, *m_pPlayer).buildMesh();
+		m_updateIcons = false;
+	}
 }
 
 void Inventory::updateGrabbedItemIcon()
@@ -368,7 +378,12 @@ void Inventory::updateGrabbedItemIcon()
 
 bool Inventory::isSlotEmpty(ItemSlot * slot)
 {
-	return (slot->item.getMaterial().id == Material::ID::Nothing);
+	return (slot->item.getBlockId() == EMPTY_SLOT_ID);
+}
+
+bool Inventory::isGrabbedSlotEmpty()
+{
+	return m_grabbedSlot.item.getBlockId() == EMPTY_SLOT_ID;
 }
 
 void Inventory::showOrHideInventory()
@@ -376,53 +391,50 @@ void Inventory::showOrHideInventory()
 	m_isOpened = !m_isOpened;
 
 	if (m_isOpened) {
-		p_info.darkScreen = true;
-		p_info.canMove = false;
-		p_info.interfaceCursor = true;
-		g_window->setMouseCursorVisible(true);
+		g_PlayerInfo.darkScreen = true;
+		g_PlayerInfo.canMove = false;
+		g_PlayerInfo.inventoryCursor = true;
+		g_Window->setMouseCursorVisible(true);
 		sf::Mouse::setPosition(sf::Vector2i(m_inventory.getPosition().x, m_inventory.getPosition().y));
 	}
 	else {
-		p_info.darkScreen = false;
-		p_info.canMove = true;
-		p_info.interfaceCursor = false;
-		g_window->setMouseCursorVisible(false);
+		g_PlayerInfo.darkScreen = false;
+		g_PlayerInfo.canMove = true;
+		g_PlayerInfo.inventoryCursor = false;
+		g_Window->setMouseCursorVisible(false);
 
 		m_pPointedSlot = nullptr;
-		if (!isSlotEmpty(&m_grabbedSlot)) {
+		if (!isGrabbedSlotEmpty()) {
 			throwItem(m_grabbedSlot.item.getNumInStack(), &m_grabbedSlot);
-			m_grabbedSlot = ItemSlot();
+			m_grabbedSlot.item.clear();
 		}
 	}
 
-	updateIcons();
+	shouldUpdateIcons();
 }
 
-void Inventory::mouseInput(const sf::RenderWindow & window)
+void Inventory::mouseInput(const sf::RenderWindow & window, Mouse &mouse)
 {
 	auto mouseCoords = sf::Mouse::getPosition(window);
 	m_pPointedSlot = getPointedSlot(mouseCoords);
 
-	if (!isSlotEmpty(&m_grabbedSlot)) {
+	if (!isGrabbedSlotEmpty()) {
 		m_grabbedSlot.position = mouseCoords;
 		updateGrabbedItemIcon();
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			if (m_clickTimer.getElapsedTime().asSeconds() <= 0.3f)
-				return;
+		if (mouse.toggle(sf::Mouse::Left)) {
 
 			if (m_pPointedSlot) {
-				m_clickTimer.restart();
 
 				if (isSlotEmpty(m_pPointedSlot)) {
 					std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
 				}
 				else {
-					/// if the same material
-					if (m_pPointedSlot->item.getMaterial().id == m_grabbedSlot.item.getMaterial().id) {
+					// if the same material
+					if (m_pPointedSlot->item.getBlockId() == m_grabbedSlot.item.getBlockId()) {
 						int sum = m_pPointedSlot->item.getNumInStack() + m_grabbedSlot.item.getNumInStack();
-						if (sum > m_pPointedSlot->item.getMaterial().maxStackSize) {
-							int toAdd = m_pPointedSlot->item.getMaterial().maxStackSize - m_pPointedSlot->item.getNumInStack();
+						if (sum > m_pPointedSlot->item.getMaxStackSize()) {
+							int toAdd = m_pPointedSlot->item.getMaxStackSize() - m_pPointedSlot->item.getNumInStack();
 							m_pPointedSlot->item.add(toAdd);
 							m_grabbedSlot.item.remove(toAdd);
 						}
@@ -431,7 +443,7 @@ void Inventory::mouseInput(const sf::RenderWindow & window)
 							m_pPointedSlot->item.add(toAdd);
 							m_grabbedSlot.item.remove(toAdd);
 							if (m_grabbedSlot.item.getNumInStack() == 0)
-								m_grabbedSlot = ItemSlot();
+								m_grabbedSlot.item.clear();
 						}
 					}
 					else {
@@ -439,43 +451,38 @@ void Inventory::mouseInput(const sf::RenderWindow & window)
 					}
 				}
 
-				updateIcons();
+				shouldUpdateIcons();
 			}
-			/// throw itemstack behind interface borders
+			// throw itemstack behind interface borders
 			else if (mouseCoords.x < m_inventory.getGlobalBounds().left ||
 				mouseCoords.x > m_inventory.getGlobalBounds().left + m_inventory.getSize().x ||
 				mouseCoords.y < m_inventory.getGlobalBounds().top ||
 				mouseCoords.y > m_inventory.getGlobalBounds().top + m_inventory.getSize().y)
 			{
-				m_clickTimer.restart();
-
 				throwItem(m_grabbedSlot.item.getNumInStack(), &m_grabbedSlot);
-				m_grabbedSlot = ItemSlot();
+				m_grabbedSlot.item.clear();
 				updateGrabbedItemIcon();
 			}
 		}
 
 
 
-		else if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-			if (m_clickTimer.getElapsedTime().asSeconds() <= 0.3f)
-				return;
+		else if (mouse.toggle(sf::Mouse::Right)) {
 
 			if (m_pPointedSlot) {
-				m_clickTimer.restart();
 
 				if (isSlotEmpty(m_pPointedSlot)) {
-					m_pPointedSlot->item = ItemStack(m_grabbedSlot.item.getMaterial(), 1);
+					m_pPointedSlot->item.setData(m_grabbedSlot.item.getBlockId(), 1);
 					m_grabbedSlot.item.remove(1);
 				}
 				else {
-					/// if the same material
-					if (m_pPointedSlot->item.getMaterial().id == m_grabbedSlot.item.getMaterial().id) {
-						if (m_pPointedSlot->item.getNumInStack() != m_pPointedSlot->item.getMaterial().maxStackSize) {
+					// if the same material
+					if (m_pPointedSlot->item.getBlockId() == m_grabbedSlot.item.getBlockId()) {
+						if (m_pPointedSlot->item.getNumInStack() != m_pPointedSlot->item.getMaxStackSize()) {
 							m_pPointedSlot->item.add(1);
 							m_grabbedSlot.item.remove(1);
 							if (m_grabbedSlot.item.getNumInStack() == 0)
-								m_grabbedSlot = ItemSlot();
+								m_grabbedSlot.item.clear();
 						}
 					}
 					else {
@@ -483,53 +490,45 @@ void Inventory::mouseInput(const sf::RenderWindow & window)
 					}
 				}
 
-				updateIcons();
+				shouldUpdateIcons();
 			}
-			/// throw 1 item behind interface borders
+			// throw 1 item behind interface borders
 			else if (mouseCoords.x < m_inventory.getGlobalBounds().left ||
 				mouseCoords.x > m_inventory.getGlobalBounds().left + m_inventory.getSize().x ||
 				mouseCoords.y < m_inventory.getGlobalBounds().top ||
 				mouseCoords.y > m_inventory.getGlobalBounds().top + m_inventory.getSize().y)
 			{
-				m_clickTimer.restart();
-
 				throwItem(1, &m_grabbedSlot);
 				m_grabbedSlot.item.remove(1);
 				if (m_grabbedSlot.item.getNumInStack() == 0)
-					m_grabbedSlot = ItemSlot();
+					m_grabbedSlot.item.clear();
 				updateGrabbedItemIcon();
 			}
 		}
 	}
-	/// grab item
+	// grab item
 	else {
 		if (!m_pPointedSlot)
 			return;
 		if (isSlotEmpty(m_pPointedSlot))
 			return;
 		updateInventoryText(mouseCoords);
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			if (m_clickTimer.getElapsedTime().asSeconds() > 0.3f) {
-				m_clickTimer.restart();
-				std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-				m_grabbedSlot.position = mouseCoords;
-			}
+		if (mouse.toggle(sf::Mouse::Left)) {
+			std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
+			m_grabbedSlot.position = mouseCoords;
 		}
-		else if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-			if (m_clickTimer.getElapsedTime().asSeconds() > 0.3f) {
-				m_clickTimer.restart();
-				int leftStack = m_pPointedSlot->item.getNumInStack() / 2;
-				int grabbedStack = m_pPointedSlot->item.getNumInStack() - leftStack;
+		else if (mouse.toggle(sf::Mouse::Right)) {
+			int leftStack = m_pPointedSlot->item.getNumInStack() / 2;
+			int grabbedStack = m_pPointedSlot->item.getNumInStack() - leftStack;
 
-				m_grabbedSlot.item = ItemStack(m_pPointedSlot->item.getMaterial(), grabbedStack);
-				m_grabbedSlot.position = mouseCoords;
+			m_grabbedSlot.item.setData(m_pPointedSlot->item.getBlockId(), grabbedStack);
+			m_grabbedSlot.position = mouseCoords;
 
-				m_pPointedSlot->item.remove(grabbedStack);
-				if (m_pPointedSlot->item.getNumInStack() == 0)
-					m_pPointedSlot->item = ItemStack();
-			}
+			m_pPointedSlot->item.remove(grabbedStack);
+			if (m_pPointedSlot->item.getNumInStack() == 0)
+				m_pPointedSlot->item.clear();
 		}
-		updateIcons();
+		shouldUpdateIcons();
 		updateGrabbedItemIcon();
 	}
 }
@@ -538,7 +537,7 @@ void Inventory::draw(RenderMaster & master)
 {
 	if (m_isOpened) {
 		master.drawSFML(m_inventory);
-		if (isSlotEmpty(&m_grabbedSlot)) {
+		if (isGrabbedSlotEmpty()) {
 			if (m_pPointedSlot)
 				if (!isSlotEmpty(m_pPointedSlot)) {
 					master.drawSFMLOverInterface(m_itemTextBackground);
@@ -552,7 +551,7 @@ void Inventory::draw(RenderMaster & master)
 	else {
 		master.drawSFML(m_toolbar);
 		master.drawSFML(m_heldItemFrame);
-		if (!isSlotEmpty(&m_slots[m_heldItem]))
+		if (!isSlotEmpty(&m_slots[m_heldItemIndex]))
 			master.drawSFML(m_toolbarItemText);
 	}
 

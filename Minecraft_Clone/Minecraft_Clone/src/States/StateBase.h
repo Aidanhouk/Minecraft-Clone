@@ -1,5 +1,4 @@
-#ifndef STATEBASE_H_INCLUDED
-#define STATEBASE_H_INCLUDED
+#pragma once
 
 #include <SFML/Graphics.hpp>
 
@@ -27,5 +26,3 @@ public:
 protected:
 	Application *m_pApplication;
 };
-
-#endif // STATEBASE_H_INCLUDED

@@ -1,15 +1,15 @@
-/// @ref gtx_intersect
-/// @file glm/gtx/intersect.hpp
-///
-/// @see core (dependence)
-/// @see gtx_closest_point (dependence)
-///
-/// @defgroup gtx_intersect GLM_GTX_intersect
-/// @ingroup gtx
-///
-/// Include <glm/gtx/intersect.hpp> to use the features of this extension.
-///
-/// Add intersection functions
+// @ref gtx_intersect
+// @file glm/gtx/intersect.hpp
+//
+// @see core (dependence)
+// @see gtx_closest_point (dependence)
+//
+// @defgroup gtx_intersect GLM_GTX_intersect
+// @ingroup gtx
+//
+// Include <glm/gtx/intersect.hpp> to use the features of this extension.
+//
+// Add intersection functions
 
 #pragma once
 
@@ -31,8 +31,8 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_intersect
-	/// @{
+	// @addtogroup gtx_intersect
+	// @{
 
 	//! Compute the intersection of a ray and a plane.
 	//! Ray direction and plane normal must be unit length.
@@ -44,7 +44,7 @@ namespace glm
 		typename genType::value_type & intersectionDistance);
 
 	//! Compute the intersection of a ray and a triangle.
-	/// Based om Tomas Möller implementation http://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/raytri/
+	// Based om Tomas Möller implementation http://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/raytri/
 	//! From GLM_GTX_intersect extension.
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL bool intersectRayTriangle(
@@ -86,7 +86,7 @@ namespace glm
 		genType & intersectionPosition1, genType & intersectionNormal1,
 		genType & intersectionPosition2 = genType(), genType & intersectionNormal2 = genType());
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "intersect.inl"

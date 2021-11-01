@@ -24,10 +24,11 @@ void WaterRenderer::render(const Camera &camera)
 	m_shader.loadProjectionViewMatrix(camera.getProjectionViewMatrix());
 	m_shader.loadProjectionMatrix(camera.getProjMatrix());
 	m_shader.loadViewMatrix(camera.getViewMatrix());
-	m_shader.loadTime(g_info.elapsedTime);
-	m_shader.loadDTime(g_info.dayTime);
-	
-	m_shader.loadLighting(g_info.lighting);
+	m_shader.loadTime(g_Info.elapsedTime);
+	m_shader.loadDTime(g_Info.dayTime);
+	m_shader.loadLighting(g_Info.lighting);
+	m_shader.loadFog(g_Info.fog);
+	m_shader.loadFogDensity(g_Config.fogDensity);
 	
 	for (auto mesh : m_chunks) {
 	    GL::bindVAO(mesh->vao);

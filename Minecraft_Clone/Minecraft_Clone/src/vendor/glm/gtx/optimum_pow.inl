@@ -1,4 +1,4 @@
-/// @ref gtx_optimum_pow
+// @ref gtx_optimum_pow
 
 namespace glm
 {

@@ -44,12 +44,9 @@ void PostProcessShader::loadUnderwater(bool underwater)
 		loadFloat(m_underwater, 1.0f);
 }
 
-void PostProcessShader::loadDarkScreen(bool darkScreen)
+void PostProcessShader::loadDarkScreen(float darkScreen)
 {
-	if (darkScreen)
-		loadFloat(m_darkScreen, 0.4f);
-	else
-		loadFloat(m_darkScreen, 1.0f);
+	loadFloat(m_darkScreen, darkScreen);
 }
 
 void PostProcessShader::getUniforms()

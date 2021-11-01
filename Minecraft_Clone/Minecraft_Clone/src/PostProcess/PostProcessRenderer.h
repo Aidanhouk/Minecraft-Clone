@@ -1,5 +1,4 @@
-#ifndef POST_PROCESS_RENDERER_H
-#define POST_PROCESS_RENDERER_H
+#pragma once
 
 #include <vector>
 
@@ -25,7 +24,6 @@ public:
 	void render(const Camera& camera, FrameBufferObject& fbo);
 private:
 	void begin();
-	void end();
 	void finalize();
 	std::vector<glm::vec3> m_quads;
 
@@ -35,5 +33,3 @@ private:
 	Antialiasing antialias;
 	MBlur mblur;
 };
-
-#endif

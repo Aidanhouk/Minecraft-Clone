@@ -13,8 +13,16 @@
 
 #include <iostream>
 
-const std::array<sf::Vector2i, 4> ParametersTexturePositions{
-	sf::Vector2i{0, 18}, sf::Vector2i{9, 18}, sf::Vector2i{18, 18}, sf::Vector2i{27, 18},
+const std::array<sf::Vector2i, ParameterType::NUMBER_OF_TYPES + 1> ParametersTexturePositions{
+	sf::Vector2i{0 * 9, 18},
+	sf::Vector2i{1 * 9, 18},
+	sf::Vector2i{2 * 9, 18},
+	sf::Vector2i{3 * 9, 18},
+	sf::Vector2i{4 * 9, 18},
+	sf::Vector2i{5 * 9, 18},
+	sf::Vector2i{6 * 9, 18},
+
+	sf::Vector2i{7 * 9, 18},
 };
 
 ParametersBuilder::ParametersBuilder(Inventory &inventory, IconsMesh &itemIconsMesh, Player &player)
@@ -26,6 +34,9 @@ ParametersBuilder::ParametersBuilder(Inventory &inventory, IconsMesh &itemIconsM
 
 void ParametersBuilder::buildMesh()
 {
+	if (m_pPlayer->isInCreativeMove())
+		return;
+
 	int hp = m_pPlayer->getHP();
 	if (hp < 0)
 		hp = 0;
@@ -43,9 +54,30 @@ void ParametersBuilder::buildMesh()
 	for (int i = 0; i < emptyHearts; ++i)
 		buildIcon(EmptyHeart, iconNumber++);
 
+
+
+	int hunger = m_pPlayer->getHunger();
+	if (hunger < 0)
+		hunger = 0;
+
+	int fullHungerIcons = hunger >> 1;
+	bool halfHungerIcon = hunger % 2;
+	int emptyHungerIcons = (20 - hunger) >> 1;
+
+	for (int i = 0; i < emptyHungerIcons; ++i)
+		buildIcon(EmptyHunger, iconNumber++);
+	if (halfHungerIcon)
+		buildIcon(HalfHunger, iconNumber++);
+	for (int i = 0; i < fullHungerIcons; ++i)
+		buildIcon(FullHunger, iconNumber++);
+
+
+
 	int oxygen = m_pPlayer->getOxygen();
-	if (p_info.underwater || oxygen < 20) {
+	if (g_PlayerInfo.underwater || oxygen < 20) {
 		int bubbles = oxygen / 2.0f + 0.5f;
+		for (int i = 0; i < 10 - bubbles; ++i)
+			buildIcon(NUMBER_OF_TYPES, iconNumber++);
 		for (int i = 0; i < bubbles; ++i)
 			buildIcon(FullBubble, iconNumber++);
 	}
@@ -53,25 +85,42 @@ void ParametersBuilder::buildMesh()
 
 void ParametersBuilder::buildIcon(ParameterType parameterType, int number)
 {
-	static const float RESX = g_renderSettings.resolutionX;
-	static const float RESY = g_renderSettings.resolutionY;
+	static const float RESX = g_RenderSettings.resolutionX;
+	static const float RESY = g_RenderSettings.resolutionY;
 
-	static const float INVENTORY_START = RESX * 0.36f;
-	static const float ICON_SIZE = (RESX - 2 * INVENTORY_START) / 20.0f;
+	static const float INVENTORY_START_X = RESX * 0.36f;
+	static const float INVENTORY_START_Y = RESY * 0.062f;
+	static const float ICON_SIZE = (RESX - 2 * INVENTORY_START_X) / 20.0f;
 	static const float BIAS = ICON_SIZE / 9.0f;
 	float bias = BIAS * number;
-	
-	static const float BUBBLES_START = 993 * RESX / 2560.0f;
 
-	int start = INVENTORY_START;
-	if (number > 9)
-		start = BUBBLES_START;
+	static const float HUNGER_START_X = RESX * 0.388f;
+
+	static const float OXYGEN_START_X = HUNGER_START_X - 9 * ICON_SIZE;
+	static const float OXYGEN_START_Y = INVENTORY_START_Y + ICON_SIZE * 1.2f;
+	
+	int startX, startY;
+	// Health
+	if (number < 10) {
+		startX = INVENTORY_START_X;
+		startY = INVENTORY_START_Y;
+	}
+	// Hunger
+	else if (number < 20) {
+		startX = HUNGER_START_X;
+		startY = INVENTORY_START_Y;
+	}
+	// Bubbles
+	else {
+		startX = OXYGEN_START_X;
+		startY = OXYGEN_START_Y;
+	}
 
 	std::array<GLfloat, 12> vertexPos{
-		(start + ICON_SIZE * number - bias) / RESX,			(RESY * 0.062f) / RESY,				0.0f,
-		(start + ICON_SIZE * (number + 1) - bias) / RESX,	(RESY * 0.062f) / RESY,				0.0f,
-		(start + ICON_SIZE * (number + 1) - bias) / RESX,	(RESY * 0.062f + ICON_SIZE) / RESY,	0.0f,
-		(start + ICON_SIZE * number - bias) / RESX,			(RESY * 0.062f + ICON_SIZE) / RESY,	0.0f,
+		(startX + ICON_SIZE * number		- bias)	/ RESX,	(startY)				/ RESY,	0.0f,
+		(startX + ICON_SIZE * (number + 1)	- bias)	/ RESX,	(startY)				/ RESY,	0.0f,
+		(startX + ICON_SIZE * (number + 1)	- bias)	/ RESX,	(startY + ICON_SIZE)	/ RESY,	0.0f,
+		(startX + ICON_SIZE * number		- bias)	/ RESX,	(startY + ICON_SIZE)	/ RESY,	0.0f,
 	};
 
 	for (auto & vertex : vertexPos) {
@@ -87,8 +136,7 @@ void ParametersBuilder::buildIcon(ParameterType parameterType, int number)
 	};
 
 	for (auto & textureCoord : texCoords) {
-		// might change to textCoord /= IconDatabase::get().textureAtlas.getAtlasSize()
-		textureCoord /= 4096.0f;
+		textureCoord /= IconDatabase::get().textureAtlas.getAtlasSize();
 	}
 
 	m_pIconsMesh->addIcon(vertexPos, texCoords);

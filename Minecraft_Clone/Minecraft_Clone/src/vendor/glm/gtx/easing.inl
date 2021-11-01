@@ -1,4 +1,4 @@
-/// @ref gtx_easing
+// @ref gtx_easing
 
 #include <cmath>
 

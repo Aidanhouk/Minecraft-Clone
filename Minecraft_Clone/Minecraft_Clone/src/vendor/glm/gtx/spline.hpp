@@ -1,14 +1,14 @@
-/// @ref gtx_spline
-/// @file glm/gtx/spline.hpp
-///
-/// @see core (dependence)
-///
-/// @defgroup gtx_spline GLM_GTX_spline
-/// @ingroup gtx
-///
-/// Include <glm/gtx/spline.hpp> to use the features of this extension.
-///
-/// Spline functions
+// @ref gtx_spline
+// @file glm/gtx/spline.hpp
+//
+// @see core (dependence)
+//
+// @defgroup gtx_spline GLM_GTX_spline
+// @ingroup gtx
+//
+// Include <glm/gtx/spline.hpp> to use the features of this extension.
+//
+// Spline functions
 
 #pragma once
 
@@ -26,11 +26,11 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_spline
-	/// @{
+	// @addtogroup gtx_spline
+	// @{
 
-	/// Return a point from a catmull rom curve.
-	/// @see gtx_spline extension.
+	// Return a point from a catmull rom curve.
+	// @see gtx_spline extension.
 	template<typename genType>
 	GLM_FUNC_DECL genType catmullRom(
 		genType const& v1,
@@ -39,8 +39,8 @@ namespace glm
 		genType const& v4,
 		typename genType::value_type const& s);
 
-	/// Return a point from a hermite curve.
-	/// @see gtx_spline extension.
+	// Return a point from a hermite curve.
+	// @see gtx_spline extension.
 	template<typename genType>
 	GLM_FUNC_DECL genType hermite(
 		genType const& v1,
@@ -49,8 +49,8 @@ namespace glm
 		genType const& t2,
 		typename genType::value_type const& s);
 
-	/// Return a point from a cubic curve.
-	/// @see gtx_spline extension.
+	// Return a point from a cubic curve.
+	// @see gtx_spline extension.
 	template<typename genType>
 	GLM_FUNC_DECL genType cubic(
 		genType const& v1,
@@ -59,7 +59,7 @@ namespace glm
 		genType const& v4,
 		typename genType::value_type const& s);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "spline.inl"

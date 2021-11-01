@@ -1,5 +1,4 @@
-#ifndef SHADER_H_INCLUDED
-#define SHADER_H_INCLUDED
+#pragma once
 
 #include <string>
 
@@ -27,5 +26,3 @@ class Shader : NonCopyable {
     virtual void getUniforms() = 0;
     GLuint m_id;
 };
-
-#endif // SHADER_H_INCLUDED

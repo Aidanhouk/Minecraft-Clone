@@ -63,7 +63,7 @@ const std::vector<GLuint> indices{
 
 void BreakBlockRenderer::render(const Camera &camera)
 {
-	if (p_info.breakingStage == 0) {
+	if (g_PlayerInfo.breakingStage == 0) {
 		return;
 	}
 
@@ -73,9 +73,9 @@ void BreakBlockRenderer::render(const Camera &camera)
 	BlockDatabase::get().textureAtlas.bindTexture();
 	m_breakBlockShader.loadProjectionViewMatrix(camera.getProjectionViewMatrix());
 	m_breakBlockShader.loadModelMatrix(glm::translate(glm::mat4(1.0f),
-		glm::vec3(p_info.delineatedBlock.x, p_info.delineatedBlock.y, p_info.delineatedBlock.z)));
+		glm::vec3(g_PlayerInfo.delineatedBlock.x, g_PlayerInfo.delineatedBlock.y, g_PlayerInfo.delineatedBlock.z)));
 
-	m_breakBlockShader.loadLighting(g_info.lighting);
+	m_breakBlockShader.loadLighting(g_Info.lighting);
 
 	m_model.bindVAO();
 	GL::drawElements(m_model.getIndicesCount());
@@ -83,19 +83,19 @@ void BreakBlockRenderer::render(const Camera &camera)
 	m_model.deleteData();
 }
 
-void BreakBlockRenderer::setMeshToDraw()
+void BreakBlockRenderer::addMeshToDraw()
 {
-	if (p_info.breakingStage == 0) {
+	if (g_PlayerInfo.breakingStage == 0) {
 		return;
 	}
 	
-	std::array<GLfloat, 8> textureCoordsArray =
-		BlockDatabase::get().textureAtlas.getTextureCoords({ p_info.breakingStage - 1, 14 });
+	std::array<GLfloat, 8> texCoords;
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, { g_PlayerInfo.breakingStage - 1, 14 });
 
-	std::vector<GLfloat> textureCoords;
+	std::vector<GLfloat> texCoordsAll6Faces;
 	for (int i = 0; i < 6; ++i) {
-		textureCoords.insert(textureCoords.end(), textureCoordsArray.begin(), textureCoordsArray.end());
+		texCoordsAll6Faces.insert(texCoordsAll6Faces.end(), texCoords.begin(), texCoords.end());
 	}
 
-	m_model.addData({ vertexCoords, textureCoords, indices });
+	m_model.addData({ vertexCoords, texCoordsAll6Faces, indices });
 }

@@ -9,8 +9,10 @@ public:
 
 	void loadTime(float time);
 	void loadLighting(float light);
+	void loadVisibility(float visibility);
 private:
 	void getUniforms() override;
 	GLuint moveTime;
 	GLuint lighting;
+	GLfloat m_visibility;
 };

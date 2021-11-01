@@ -6,15 +6,15 @@
 
 FrameBufferObject::FrameBufferObject()
 {
-    init(g_renderSettings.resolutionX, g_renderSettings.resolutionY);
+    init(g_RenderSettings.resolutionX, g_RenderSettings.resolutionY);
 }
 
 FrameBufferObject::FrameBufferObject(int resolutionX, int resolutionY)
 {
 	if (resolutionX == 0 && resolutionY == 0) {
-		init(g_renderSettings.resolutionX, g_renderSettings.resolutionY);
-		width = g_renderSettings.resolutionX;
-		height = g_renderSettings.resolutionY;
+		init(g_RenderSettings.resolutionX, g_RenderSettings.resolutionY);
+		width = g_RenderSettings.resolutionX;
+		height = g_RenderSettings.resolutionY;
 	}
 	else {
 		init(resolutionX, resolutionY);

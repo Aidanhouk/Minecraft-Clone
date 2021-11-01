@@ -1,15 +1,15 @@
-/// @ref gtx_orthonormalize
-/// @file glm/gtx/orthonormalize.hpp
-///
-/// @see core (dependence)
-/// @see gtx_extented_min_max (dependence)
-///
-/// @defgroup gtx_orthonormalize GLM_GTX_orthonormalize
-/// @ingroup gtx
-///
-/// Include <glm/gtx/orthonormalize.hpp> to use the features of this extension.
-///
-/// Orthonormalize matrices.
+// @ref gtx_orthonormalize
+// @file glm/gtx/orthonormalize.hpp
+//
+// @see core (dependence)
+// @see gtx_extented_min_max (dependence)
+//
+// @defgroup gtx_orthonormalize GLM_GTX_orthonormalize
+// @ingroup gtx
+//
+// Include <glm/gtx/orthonormalize.hpp> to use the features of this extension.
+//
+// Orthonormalize matrices.
 
 #pragma once
 
@@ -28,22 +28,22 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_orthonormalize
-	/// @{
+	// @addtogroup gtx_orthonormalize
+	// @{
 
-	/// Returns the orthonormalized matrix of m.
-	///
-	/// @see gtx_orthonormalize
+	// Returns the orthonormalized matrix of m.
+	//
+	// @see gtx_orthonormalize
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL mat<3, 3, T, Q> orthonormalize(mat<3, 3, T, Q> const& m);
 
-	/// Orthonormalizes x according y.
-	///
-	/// @see gtx_orthonormalize
+	// Orthonormalizes x according y.
+	//
+	// @see gtx_orthonormalize
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL vec<3, T, Q> orthonormalize(vec<3, T, Q> const& x, vec<3, T, Q> const& y);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "orthonormalize.inl"

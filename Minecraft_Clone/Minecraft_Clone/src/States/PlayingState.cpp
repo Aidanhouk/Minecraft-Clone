@@ -7,36 +7,22 @@
 #include "Maths/glm.h"
 #include "Player/PlayerInfo.h"
 #include "World/Generation/Biome/Biome.h"
+#include "Item/Material.h"
+#include "Audio/SoundMaster.h"
+#include "Audio/SoundFunctions.h"
 
 #include <iostream>
 
 std::shared_ptr<SkyManager> m_sky;
 
 StatePlaying::StatePlaying(Application &app, const Config &config)
-    : StateBase(app)
+	: StateBase(app)
 	, m_player(config, app)
-    , m_world(app.getCamera(), config, m_player)
+	, m_world(app.getCamera(), config, m_player)
 {
-    app.getCamera().hookEntity(m_player);
+	app.getCamera().hookEntity(m_player);
 
-	m_font.loadFromFile("Res/Fonts/MinecraftRegular.otf");
-
-	m_startText.setFont(m_font);
-	m_startText.setCharacterSize(app.getWindow().getSize().x / 25);
-	m_startText.setString("Click mouse to start");
-	m_startText.setOrigin(m_startText.getGlobalBounds().width / 2,
-		m_startText.getGlobalBounds().height / 2);
-	m_startText.setPosition(app.getWindow().getSize().x / 2,
-		app.getWindow().getSize().y / 3);
-
-	m_deathText.setFont(m_font);
-	m_deathText.setFillColor(sf::Color::Red);
-	m_deathText.setCharacterSize(app.getWindow().getSize().x / 25);
-	m_deathText.setString("YOU DIED");
-	m_deathText.setOrigin(m_deathText.getGlobalBounds().width / 2,
-		m_deathText.getGlobalBounds().height / 2);
-	m_deathText.setPosition(app.getWindow().getSize().x / 2,
-		app.getWindow().getSize().y / 3);
+	setTextSettings(app);
 
 	m_chTexture.loadFromFile("Res/Textures/Interface/crosshair.png");
 	m_crosshair.setTexture(&m_chTexture);
@@ -52,39 +38,101 @@ StatePlaying::StatePlaying(Application &app, const Config &config)
 	m_sky = std::make_unique<SkyManager>();
 	m_tickManager->add(m_sky);
 
-	app.setPlayer(&m_player);
 	m_player.setDroppedItemsManager(&m_world.getDroppedItemsManager());
 
 	m_placeBlockTimer.restart();
 }
 
+void StatePlaying::setTextSettings(Application &app)
+{
+	m_font.loadFromFile("Res/Fonts/MinecraftRegular.otf");
+
+	m_startText.setFont(m_font);
+	m_startText.setCharacterSize(app.getWindow().getSize().x / 25);
+	m_startText.setString("Click mouse to start");
+	m_startText.setOrigin(
+		m_startText.getGlobalBounds().width / 2,
+		m_startText.getGlobalBounds().height / 2
+	);
+	m_startText.setPosition(
+		app.getWindow().getSize().x / 2,
+		app.getWindow().getSize().y / 5
+	);
+
+	m_pauseText.setFont(m_font);
+	m_pauseText.setCharacterSize(app.getWindow().getSize().x / 35);
+	m_pauseText.setString("\t   PAUSE\n\Enter to continue\n  Escape to exit");
+	m_pauseText.setOrigin(
+		m_pauseText.getGlobalBounds().width / 2,
+		m_pauseText.getGlobalBounds().height / 2
+	);
+	m_pauseText.setPosition(
+		app.getWindow().getSize().x / 2,
+		app.getWindow().getSize().y / 5
+	);
+
+	m_deathText.setFont(m_font);
+	m_deathText.setFillColor(sf::Color::Red);
+	m_deathText.setCharacterSize(app.getWindow().getSize().x / 25);
+	m_deathText.setString("YOU DIED");
+	m_deathText.setOrigin(
+		m_deathText.getGlobalBounds().width / 2,
+		m_deathText.getGlobalBounds().height / 2
+	);
+	m_deathText.setPosition(
+		app.getWindow().getSize().x / 2,
+		app.getWindow().getSize().y / 5
+	);
+}
+
 void StatePlaying::handleEvent(sf::Event e)
 {
-    m_keyboard.update(e);
+	m_keyboard.update(e);
+	m_mouse.update(e);
 }
 
 StatePlaying::~StatePlaying()
 {
-    m_tickThread->join();
+	m_tickThread->join();
 }
 
 void StatePlaying::handleInput()
 {
-	if (p_info.gameState == GameState::DIED)
+	if (g_PlayerInfo.gameState == GameState::DIED)
 		return;
 
-	m_player.handleInput(m_pApplication->getWindow(), m_keyboard, m_hand, m_world);
+	m_player.handleInput(m_pApplication->getWindow(), m_mouse, m_keyboard, m_hand, m_world);
 
-	if (p_info.interfaceCursor)
+	if (g_PlayerInfo.inventoryCursor)
 		return;
+
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+		if (m_keyboard.toggle(sf::Keyboard::Add)) {
+			++g_Config.renderDistance;
+			m_world.reloadChunks();
+		}
+		if (m_keyboard.toggle(sf::Keyboard::Subtract)) {
+			--g_Config.renderDistance;
+			if (g_Config.renderDistance < 4)
+				g_Config.renderDistance = 4;
+			m_world.reloadChunks();
+		}
+		if (m_keyboard.toggle(sf::Keyboard::C)) {
+			m_world.reloadChunks();
+		}
+	}
 
 	glm::vec3 lastPosition;
+
+	static sf::Clock eatingTimer;
+	BlockId heldItemId = m_player.getHeldItems().getBlockId();
+	ChunkBlock heldItem(heldItemId);
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 
 		ChunkBlock block;
-		BlockId blockId = BlockId::Air;
-		Ray ray({ m_player.position.x, m_player.position.y + 0.57f, m_player.position.z }, m_player.rotation);
+		Ray ray({ m_player.position.x, m_player.position.y + g_PlayerInfo.cameraPosition, m_player.position.z }
+		, m_player.rotation);
 
 		for (;
 			ray.getLength() < 5;
@@ -95,64 +143,79 @@ void StatePlaying::handleInput()
 			int z = (int)ray.getEnd().z;
 
 			block = m_world.getBlock(x, y, z);
-			blockId = (BlockId)block.id;
 
-			if (blockId != BlockId::Air && blockId != BlockId::Water) {
-				p_info.delineatedBlock = { 0, -1, 0 };
+			// found block
+			if (block != 0 && block.getData().id != BlockId::Water) {
+				//g_PlayerInfo.delineatedBlock = { 0, -1, 0 };
 				break;
 			}
 			lastPosition = ray.getEnd();
 		}
-		if (blockId != BlockId::Air && blockId != BlockId::Water) {
+		if (block != 0 && block.getData().id != BlockId::Water) {
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				m_hand._break();
-				/// if the block has been broken
-				if (m_blockBreaker._break(ray.getEnd(), block.getData().hardness)) {
-					m_world.addEvent<PlayerDigEvent>(sf::Mouse::Left, ray.getEnd(), m_player);
+				m_hand.leftMouseHold();
+				m_hand.hit();
+
+				eatingTimer.restart();
+				m_hand.stopEating();
+
+				if (g_PlayerInfo.player->isInCreativeMove()) {
+					m_blockBreaker._break(ray.getEnd(), 0.0f);
+
+					static sf::Clock creativeMoveBreak;
+					if (creativeMoveBreak.getElapsedTime().asSeconds() >= 0.21f) {
+						creativeMoveBreak.restart();
+						m_world.addEvent<PlayerDigEvent>(sf::Mouse::Left, ray.getEnd(), m_player, m_hand);
+					}
+				}
+				else {
+					if (m_makeHitSound) {
+						makeHitSound(block.getData().id);
+						m_makeHitSound = false;
+					}
+					// if block has been broken
+					if (m_blockBreaker._break(ray.getEnd(), block.getData().hardness)) {
+						m_world.addEvent<PlayerDigEvent>(sf::Mouse::Left, ray.getEnd(), m_player, m_hand);
+					}
 				}
 			}
-			/// right mouse clicked
-			else {
+			else { // right mouse clicked
+				m_hand.leftMouseUnhold();
 				m_blockBreaker.stopBreaking();
-				if (m_placeBlockTimer.getElapsedTime().asSeconds() >= 0.2f) {
-					/// There's a bug when you place a block it sometimes replaces another block.\
-						This hack doesn't let it happen. Should fix it later
-					auto positionToPlaceBlock = m_world.getBlock(lastPosition.x, lastPosition.y, lastPosition.z);
-					auto _id = (BlockId)positionToPlaceBlock.id;
-					if (_id == BlockId::Air || _id == BlockId::Water) {
-						/// Not placing block on player position thus no collision
+			
+				if (m_placeBlockTimer.getElapsedTime().asSeconds() >= 0.21f) {
+					auto & heldItemMaterial = Material::toMaterial(heldItemId);
+					if (m_player.getHeldItems().getNumInStack() != 0 && heldItemMaterial.isBlock) {
+						// Not placing block on player's position
 						if (!(
-							m_player.position.x < ceil(lastPosition.x) + 0.3f
-							&& m_player.position.x > floor(lastPosition.x) - 0.3f
-							&& m_player.position.z < ceil(lastPosition.z) + 0.3f
-							&& m_player.position.z > floor(lastPosition.z) - 0.3f
-							&& m_player.position.y < ceil(lastPosition.y) + 1
-							&& m_player.position.y > floor(lastPosition.y) - 1
-							)
-							&& m_player.getHeldItems().getNumInStack() != 0
-							/// Refactor this later
-							|| m_player.getHeldItems().getMaterial().id == Material::Dandelion
-							|| m_player.getHeldItems().getMaterial().id == Material::DeadShrub
-							|| m_player.getHeldItems().getMaterial().id == Material::Rose
-							|| m_player.getHeldItems().getMaterial().id == Material::SugarCane
-							|| m_player.getHeldItems().getMaterial().id == Material::TallGrass
+							m_player.position.x < ceil(lastPosition.x) + m_player.box.dimensions.x	&&
+							m_player.position.x > floor(lastPosition.x) - m_player.box.dimensions.x &&
+							m_player.position.z < ceil(lastPosition.z) + m_player.box.dimensions.z &&
+							m_player.position.z > floor(lastPosition.z) - m_player.box.dimensions.z &&
+							m_player.position.y < ceil(lastPosition.y) + m_player.box.dimensions.y &&
+							m_player.position.y > floor(lastPosition.y) - m_player.box.dimensions.y
+							) ||
+							!heldItem.getData().isCollidable
 							) {
-							m_hand.swing();
-							m_world.addEvent<PlayerDigEvent>(sf::Mouse::Right, lastPosition, m_player);
+							m_world.addEvent<PlayerDigEvent>(sf::Mouse::Right, lastPosition, m_player, m_hand);
 							m_placeBlockTimer.restart();
 						}
 					}
 				}
 			}
 		}
+		// block in front of player wasn't found
 		else {
 			m_blockBreaker.stopBreaking();
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				m_hand.swing();
 				m_hand.leftMouseHold();
+
+				eatingTimer.restart();
+				m_hand.stopEating();
 			}
-			else { // right mouse clicked
+			else {
 				m_hand.leftMouseUnhold();
 			}
 		}
@@ -161,7 +224,44 @@ void StatePlaying::handleInput()
 		m_hand.leftMouseUnhold();
 		m_blockBreaker.stopBreaking();
 	}
-	for (Ray ray({ m_player.position.x, m_player.position.y + 0.57f, m_player.position.z }, m_player.rotation);
+
+	static sf::Clock eatingPause;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+
+		if (heldItem.getData().itemType == ItemType::Food &&
+			m_player.canEat() && !m_player.isRunning() &&
+			eatingPause.getElapsedTime().asSeconds() > 0.15f) {
+
+			m_hand.rightMouseHold();
+			m_hand.eat();
+
+			// if player finished eating
+			if (eatingTimer.getElapsedTime().asSeconds() >= 1.61f) {
+				g_SoundMaster.play(SoundId::Burp);
+				m_player.eatFood(heldItem.getData().hunger, heldItem.getData().saturation);
+				m_player.removeHeldItem(1);
+
+				eatingTimer.restart();
+				m_hand.stopEating();
+
+				eatingPause.restart();
+			}
+		}
+		else {
+			eatingTimer.restart();
+			m_hand.stopEating();
+		}
+	}
+	else {
+		m_hand.rightMouseUnhold();
+		eatingTimer.restart();
+		m_hand.stopEating();
+	}
+
+
+
+	for (Ray ray({ m_player.position.x, m_player.position.y + g_PlayerInfo.cameraPosition, m_player.position.z }
+	, m_player.rotation);
 		ray.getLength() < 5;
 		ray.step(0.05f)) {
 		int x = (int)ray.getEnd().x;
@@ -169,14 +269,13 @@ void StatePlaying::handleInput()
 		int z = (int)ray.getEnd().z;
 
 		auto block = m_world.getBlock(x, y, z);
-		auto id = (BlockId)block.id;
 
-		if (id != BlockId::Air && id != BlockId::Water) {
-			p_info.delineatedBlock = { x, y, z };
+		if (block != 0 && block.getData().id != BlockId::Water) {
+			g_PlayerInfo.delineatedBlock = { x, y, z };
 			break;
 		}
 		else {
-			p_info.delineatedBlock = { 0, -1, 0 };
+			g_PlayerInfo.delineatedBlock = { 0, -1, 0 };
 		}
 
 		lastPosition = ray.getEnd();
@@ -185,34 +284,53 @@ void StatePlaying::handleInput()
 
 void StatePlaying::update(float deltaTime)
 {
-    if (m_player.position.x < 0)
-        m_player.position.x = 0;
-    if (m_player.position.z < 0)
-        m_player.position.z = 0;
+	m_fpsCounter.update();
+	m_player.update(deltaTime, m_world);
+	m_world.update(m_player, deltaTime);
+	m_makeHitSound = m_hand.update(m_player.getHeldItems().getBlockId());
 
-    m_fpsCounter.update();
-    m_player.update(deltaTime, m_world);
-    m_world.update(m_player, deltaTime);
-
-	m_sky->update(m_player.position);
+	if (g_Info.weather) {
+		static PrecipitationType precipitation;
+	
+		BiomeId biomeId = m_world.getBiomeId(m_player.position.x, m_player.position.z);
+		switch (biomeId)
+		{
+		case BiomeId::ValleyBiome:
+		case BiomeId::ForestBiome:
+		case BiomeId::OceanBiome:
+			precipitation = PrecipitationType::RAIN;
+			break;
+		case BiomeId::TundraBiome:
+		case BiomeId::MountainBiome:
+			precipitation = PrecipitationType::SNOW;
+			break;
+		case BiomeId::DesertBiome:
+		default:
+			precipitation = PrecipitationType::NONE;
+			break;
+		}
+	
+		m_sky->update(m_player.position, precipitation);
+	}
+	else {
+		m_sky->update(m_player.position, PrecipitationType::NONE);
+	}
 }
 
 void StatePlaying::render(RenderMaster &renderer)
 {
-    static bool drawGUI = true;
-    static ToggleKey drawKey(sf::Keyboard::F3);
-    if (drawKey.isKeyPressed()) {
-        drawGUI = !drawGUI;
-    }
-    if (drawGUI) {
-        m_fpsCounter.draw(renderer);
-        m_player.drawGUI(renderer);
-    }
+	if (g_PlayerInfo.FPS_HUD) {
+		m_fpsCounter.draw(renderer);
+		m_player.drawGUI(renderer);
+	}
 
-	switch (p_info.gameState)
+	switch (g_PlayerInfo.gameState)
 	{
 	case GameState::NOT_STARTED:
 		renderer.drawSFML(m_startText);
+		break;
+	case GameState::PAUSED:
+		renderer.drawSFML(m_pauseText);
 		break;
 	case GameState::DIED:
 		renderer.drawSFML(m_deathText);
@@ -225,15 +343,14 @@ void StatePlaying::render(RenderMaster &renderer)
 
 	m_player.drawInventory(renderer);
 
-	m_hand.setMeshToDraw();
-	renderer.setHandModel(m_hand.getModel());
+	m_hand.drawHand(renderer);
 
 	renderer.drawBreakingBlock();
 
-    m_world.renderWorld(renderer, m_pApplication->getCamera());
+	m_world.renderWorld(renderer, m_pApplication->getCamera());
 }
 
 void StatePlaying::onOpen()
 {
-    m_pApplication->turnOffMouse();
+	m_pApplication->turnOffMouse();
 }

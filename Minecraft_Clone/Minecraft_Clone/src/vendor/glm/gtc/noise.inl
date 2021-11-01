@@ -1,5 +1,5 @@
-/// @ref gtc_noise
-///
+// @ref gtc_noise
+//
 // Based on the work of Stefan Gustavson and Ashima Arts on "webgl-noise":
 // https://github.com/ashima/webgl-noise
 // Following Stefan Gustavson's paper "Simplex noise demystified":

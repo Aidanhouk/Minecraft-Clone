@@ -1,5 +1,4 @@
-#ifndef GLFUNCTIONS_H_INCLUDED
-#define GLFUNCTIONS_H_INCLUDED
+#pragma once
 
 #include "GL/glew.h"
 
@@ -12,5 +11,3 @@ namespace Enum {
 enum Texture { Tex2D = GL_TEXTURE_2D, TexCubeMap = GL_TEXTURE_CUBE_MAP };
 }
 } // namespace GL
-
-#endif // GLFUNCTIONS_H_INCLUDED

@@ -1,4 +1,4 @@
-/// @ref gtx_log_base
+// @ref gtx_log_base
 
 namespace glm
 {

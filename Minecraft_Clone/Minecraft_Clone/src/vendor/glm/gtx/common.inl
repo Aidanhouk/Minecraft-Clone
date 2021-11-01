@@ -1,4 +1,4 @@
-/// @ref gtx_common
+// @ref gtx_common
 
 #include <cmath>
 #include "../gtc/epsilon.hpp"

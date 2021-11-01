@@ -1,4 +1,4 @@
-/// @ref gtc_reciprocal
+// @ref gtc_reciprocal
 
 #include "../trigonometric.hpp"
 #include <limits>

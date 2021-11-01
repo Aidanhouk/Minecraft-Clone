@@ -1,5 +1,4 @@
-#ifndef MASK_H
-#define MASK_H
+#pragma once
 
 #include "../Shaders/BasicShader.h"
 
@@ -11,5 +10,3 @@ private:
     void getUniforms() override;
     GLuint m_luma;
 };
-
-#endif

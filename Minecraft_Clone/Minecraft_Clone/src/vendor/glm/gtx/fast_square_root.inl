@@ -1,4 +1,4 @@
-/// @ref gtx_fast_square_root
+// @ref gtx_fast_square_root
 
 namespace glm
 {

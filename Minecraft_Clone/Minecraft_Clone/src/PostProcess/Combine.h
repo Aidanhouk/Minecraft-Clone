@@ -1,5 +1,4 @@
-#ifndef COMBINE_H
-#define COMBINE_H
+#pragma once
 
 #include "../Shaders/BasicShader.h"
 
@@ -14,5 +13,3 @@ private:
     GLuint t1;
     GLuint t2;
 };
-
-#endif

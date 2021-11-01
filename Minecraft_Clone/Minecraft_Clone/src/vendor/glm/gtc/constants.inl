@@ -1,4 +1,4 @@
-/// @ref gtc_constants
+// @ref gtc_constants
 
 namespace glm
 {

@@ -1,16 +1,16 @@
-/// @ref gtx
-/// @file glm/gtx/scalar_multiplication.hpp
-/// @author Joshua Moerman
-///
-/// Include <glm/gtx/scalar_multiplication.hpp> to use the features of this extension.
-///
-/// Enables scalar multiplication for all types
-///
-/// Since GLSL is very strict about types, the following (often used) combinations do not work:
-///    double * vec4
-///    int * vec4
-///    vec4 / int
-/// So we'll fix that! Of course "float * vec4" should remain the same (hence the enable_if magic)
+// @ref gtx
+// @file glm/gtx/scalar_multiplication.hpp
+// @author Joshua Moerman
+//
+// Include <glm/gtx/scalar_multiplication.hpp> to use the features of this extension.
+//
+// Enables scalar multiplication for all types
+//
+// Since GLSL is very strict about types, the following (often used) combinations do not work:
+//    double * vec4
+//    int * vec4
+//    vec4 / int
+// So we'll fix that! Of course "float * vec4" should remain the same (hence the enable_if magic)
 
 #pragma once
 

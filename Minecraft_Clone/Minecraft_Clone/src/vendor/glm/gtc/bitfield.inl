@@ -1,4 +1,4 @@
-/// @ref gtc_bitfield
+// @ref gtc_bitfield
 
 #include "../simd/integer.h"
 

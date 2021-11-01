@@ -4,7 +4,7 @@
 
 #include "Config.h"
 
-extern sf::RenderWindow* g_window;
+extern sf::RenderWindow* g_Window;
 
 struct Context
 {

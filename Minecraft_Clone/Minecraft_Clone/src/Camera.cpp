@@ -1,6 +1,7 @@
 #include "Camera.h"
 
 #include "Maths/Matrix.h"
+#include "Player/PlayerInfo.h"
 
 #include <iostream>
 
@@ -15,7 +16,7 @@ void Camera::update() noexcept
 {
     position = {
 		m_pEntity->position.x,
-		m_pEntity->position.y + 0.6f,
+		m_pEntity->position.y + g_PlayerInfo.cameraPosition,
 		m_pEntity->position.z};
     rotation = m_pEntity->rotation;
 

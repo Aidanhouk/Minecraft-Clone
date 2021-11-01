@@ -1,14 +1,14 @@
-/// @ref gtx_matrix_operation
-/// @file glm/gtx/matrix_operation.hpp
-///
-/// @see core (dependence)
-///
-/// @defgroup gtx_matrix_operation GLM_GTX_matrix_operation
-/// @ingroup gtx
-///
-/// Include <glm/gtx/matrix_operation.hpp> to use the features of this extension.
-///
-/// Build diagonal matrices from vectors.
+// @ref gtx_matrix_operation
+// @file glm/gtx/matrix_operation.hpp
+//
+// @see core (dependence)
+//
+// @defgroup gtx_matrix_operation GLM_GTX_matrix_operation
+// @ingroup gtx
+//
+// Include <glm/gtx/matrix_operation.hpp> to use the features of this extension.
+//
+// Build diagonal matrices from vectors.
 
 #pragma once
 
@@ -25,8 +25,8 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_matrix_operation
-	/// @{
+	// @addtogroup gtx_matrix_operation
+	// @{
 
 	//! Build a diagonal matrix.
 	//! From GLM_GTX_matrix_operation extension.
@@ -82,22 +82,22 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, Q> diagonal4x4(
 		vec<4, T, Q> const& v);
 
-	/// Build an adjugate  matrix.
-	/// From GLM_GTX_matrix_operation extension.
+	// Build an adjugate  matrix.
+	// From GLM_GTX_matrix_operation extension.
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL mat<2, 2, T, Q> adjugate(mat<2, 2, T, Q> const& m);
 
-	/// Build an adjugate  matrix.
-	/// From GLM_GTX_matrix_operation extension.
+	// Build an adjugate  matrix.
+	// From GLM_GTX_matrix_operation extension.
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL mat<3, 3, T, Q> adjugate(mat<3, 3, T, Q> const& m);
 
-	/// Build an adjugate  matrix.
-	/// From GLM_GTX_matrix_operation extension.
+	// Build an adjugate  matrix.
+	// From GLM_GTX_matrix_operation extension.
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL mat<4, 4, T, Q> adjugate(mat<4, 4, T, Q> const& m);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "matrix_operation.inl"

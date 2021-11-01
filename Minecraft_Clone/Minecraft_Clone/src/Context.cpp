@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-sf::RenderWindow* g_window;
+sf::RenderWindow* g_Window;
 
 Context::Context(const Config &config)
 {
@@ -21,26 +21,26 @@ Context::Context(const Config &config)
 		if (config.customResolution) {
 			sf::VideoMode winMode(config.windowX, config.windowY);
 			window.create(winMode, "Minecraft-Clone", sf::Style::Fullscreen, settings);
-			g_renderSettings.resolutionX = config.windowX;
-			g_renderSettings.resolutionY = config.windowY;
+			g_RenderSettings.resolutionX = config.windowX;
+			g_RenderSettings.resolutionY = config.windowY;
 		}
 		else {
 			window.create(sf::VideoMode::getDesktopMode(), "Minecraft-Clone", sf::Style::Fullscreen, settings);
-			g_renderSettings.resolutionX = sf::VideoMode::getDesktopMode().width;
-			g_renderSettings.resolutionY = sf::VideoMode::getDesktopMode().height;
+			g_RenderSettings.resolutionX = sf::VideoMode::getDesktopMode().width;
+			g_RenderSettings.resolutionY = sf::VideoMode::getDesktopMode().height;
 		}
 	}
 	else {
 		if (config.customResolution) {
 			sf::VideoMode winMode(config.windowX, config.windowY);
 			window.create(winMode, "Minecraft-Clone", sf::Style::Close, settings);
-			g_renderSettings.resolutionX = config.windowX;
-			g_renderSettings.resolutionY = config.windowY;
+			g_RenderSettings.resolutionX = config.windowX;
+			g_RenderSettings.resolutionY = config.windowY;
 		}
 		else {
 			window.create(sf::VideoMode::getDesktopMode(), "Minecraft-Clone", sf::Style::Close, settings);
-			g_renderSettings.resolutionX = sf::VideoMode::getDesktopMode().width;
-			g_renderSettings.resolutionY = sf::VideoMode::getDesktopMode().height;
+			g_RenderSettings.resolutionX = sf::VideoMode::getDesktopMode().width;
+			g_RenderSettings.resolutionY = sf::VideoMode::getDesktopMode().height;
 		}
 	}
 
@@ -56,11 +56,12 @@ Context::Context(const Config &config)
 		exit(-1);
 	}
 
-	g_window = &window;
+	g_Window = &window;
 
 	glViewport(0, 0, window.getSize().x, window.getSize().y);
 
     glCullFace(GL_BACK);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glLineWidth(4 * g_renderSettings.resolutionX / 2560);
+	glLineWidth(4.0f * g_RenderSettings.resolutionX / 2560.0f);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }

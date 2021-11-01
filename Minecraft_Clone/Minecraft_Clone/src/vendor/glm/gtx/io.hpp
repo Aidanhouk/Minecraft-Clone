@@ -1,21 +1,21 @@
-/// @ref gtx_io
-/// @file glm/gtx/io.hpp
-/// @author Jan P Springer (regnirpsj@gmail.com)
-///
-/// @see core (dependence)
-/// @see gtc_matrix_access (dependence)
-/// @see gtc_quaternion (dependence)
-///
-/// @defgroup gtx_io GLM_GTX_io
-/// @ingroup gtx
-///
-/// Include <glm/gtx/io.hpp> to use the features of this extension.
-///
-/// std::[w]ostream support for glm types
-///
-/// std::[w]ostream support for glm types + qualifier/width/etc. manipulators
-/// based on howard hinnant's std::chrono io proposal
-/// [http://home.roadrunner.com/~hinnant/bloomington/chrono_io.html]
+// @ref gtx_io
+// @file glm/gtx/io.hpp
+// @author Jan P Springer (regnirpsj@gmail.com)
+//
+// @see core (dependence)
+// @see gtc_matrix_access (dependence)
+// @see gtc_quaternion (dependence)
+//
+// @defgroup gtx_io GLM_GTX_io
+// @ingroup gtx
+//
+// Include <glm/gtx/io.hpp> to use the features of this extension.
+//
+// std::[w]ostream support for glm types
+//
+// std::[w]ostream support for glm types + qualifier/width/etc. manipulators
+// based on howard hinnant's std::chrono io proposal
+// [http://home.roadrunner.com/~hinnant/bloomington/chrono_io.html]
 
 #pragma once
 
@@ -37,8 +37,8 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_io
-	/// @{
+	// @addtogroup gtx_io
+	// @{
 
 	namespace io
 	{
@@ -195,7 +195,7 @@ namespace glm
 	GLM_FUNC_DECL std::basic_ostream<CTy,CTr> & operator<<(std::basic_ostream<CTy,CTr> &,
                                                          std::pair<mat<4, 4, T, Q> const, mat<4, 4, T, Q> const> const&);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "io.inl"

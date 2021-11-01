@@ -1,17 +1,24 @@
 #pragma once
 
+#include "Shaders/HandShader.h"
+#include "Player/PlayerHand/HandData.h"
+
 #include "SFML/System.hpp"
 
-#include "Shaders/HandShader.h"
-#include "Model.h"
+class HandMesh;
+struct RenderInfo;
 
 class HandRenderer
 {
 public:
-	void render();
+	HandRenderer();
 
-	void setHandModel(Model& model) { m_model = &model; }
+	void addMeshToDraw(const HandMesh &handMesh);
+	void render();
 private:
 	HandShader m_shader;
-	Model * m_model;
+	const RenderInfo * m_mesh;
+
+	const HandData* m_handData;
+	glm::mat4 m_handProjMatrix;
 };

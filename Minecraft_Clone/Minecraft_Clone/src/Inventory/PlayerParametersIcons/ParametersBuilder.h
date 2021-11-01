@@ -6,7 +6,12 @@ enum ParameterType {
 	FullHeart = 0,
 	HalfHeart = 1,
 	EmptyHeart = 2,
-	FullBubble = 3,
+	FullHunger = 3,
+	HalfHunger = 4,
+	EmptyHunger = 5,
+	FullBubble = 6,
+
+	NUMBER_OF_TYPES,
 };
 
 class IconsMesh;

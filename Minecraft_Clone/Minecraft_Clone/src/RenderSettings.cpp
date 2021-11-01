@@ -1,3 +1,3 @@
 #include "RenderSettings.h"
 
-RenderSettings g_renderSettings;
+RenderSettings g_RenderSettings{ 0, 0 };

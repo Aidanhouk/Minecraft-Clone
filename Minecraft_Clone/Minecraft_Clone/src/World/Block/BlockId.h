@@ -1,5 +1,4 @@
-#ifndef BLOCKID_H_INCLUDED
-#define BLOCKID_H_INCLUDED
+#pragma once
 
 #include <cstdint>
 
@@ -28,8 +27,45 @@ enum class BlockId : Block_t {
 	SpruceLeaf = 19,
 	Ice = 20,
 	Dandelion = 21,
+	Bedrock = 22,
+	TundraGrass = 23,
+	Fern = 24,
+	LargeFern1 = 25,
+	LargeFern2 = 26,
+	LargeFern = 27,
+	Gravel = 28,
+	Clay = 29,
+	AzureBluet = 30,
+	BlueOrchid = 31,
+	CornFlower = 32,
+	LilyOfTheValley = 33,
+	OrangeTulip = 34,
+	OxeyeDaisy = 35,
+	PinkTulip = 36,
+	RedTulip = 37,
+	WhiteTulip = 38,
+	Lilac1 = 39,
+	Lilac2 = 40,
+	Lilac = 41,
+	Peony1 = 42,
+	Peony2 = 43,
+	Peony = 44,
+	RoseBush1 = 45,
+	RoseBush2 = 46,
+	RoseBush = 47,
+	CoalOre = 48,
+	IronOre = 49,
+	RedstoneOre = 50,
+	GoldOre = 51,
+	DiamondOre = 52,
+	EmeraldOre = 53,
+	CaveAir = 54,
+	WoodenSword = 55,
+	StoneSword = 56,
+	IronSword = 57,
+	GoldSword = 58,
+	DiamondSword = 59,
+	Apple = 60,
 
     NUM_TYPES
 };
-
-#endif // BLOCKID_H_INCLUDED

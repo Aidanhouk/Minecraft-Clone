@@ -2,22 +2,38 @@
 
 #include "Maths/glm.h"
 
+class Player;
+
 enum class GameState
 {
 	NOT_STARTED = 0,
 	PLAYING = 1,
 	DIED = 2,
+	PAUSED = 3,
+};
+
+enum class PlayerState
+{
+	NOT_MOVING = 0,
+	WALKING = 1,
+	SPRINTING = 2,
+	SNEAKING = 3,
 };
 
 struct PlayerInfo {
-	bool underwater = false;
-	bool darkScreen = false;
-	bool canMove = true;
-	bool interfaceCursor = false;
-	glm::vec3 delineatedBlock{ 0, -1, 0 };
-	int breakingStage = 0;
-	glm::vec3 position{ 0, 0, 0 };
-	GameState gameState = GameState::NOT_STARTED;
+	Player *player;
+	bool underwater;
+	bool darkScreen;
+	bool canMove;
+	bool inventoryCursor;
+	bool FPS_HUD;
+	glm::vec3 delineatedBlock;
+	int breakingStage;
+	float cameraPosition;
+	float cameraRotation;
+	float caveLighting;
+	GameState gameState;
+	PlayerState playerState;
 };
 
-extern PlayerInfo p_info;
+extern PlayerInfo g_PlayerInfo;

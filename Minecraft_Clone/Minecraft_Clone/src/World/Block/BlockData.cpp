@@ -46,6 +46,13 @@ BlockData::BlockData(const std::string &fileName)
         else if (line == "Collidable") {
             inFile >> m_data.isCollidable;
         }
+		else if (line == "ItemType") {
+			// don't want to refactor all created .block files...
+			m_data.itemType = ItemType::Block;
+			int id;
+			inFile >> id;
+			m_data.itemType = static_cast<ItemType>(id);
+		}
         else if (line == "MeshType") {
             int id;
             inFile >> id;
@@ -60,6 +67,16 @@ BlockData::BlockData(const std::string &fileName)
 			float hardness;
 			inFile >> hardness;
 			m_data.hardness = hardness;
+		}
+		else if (line == "Hunger") {
+			float hunger;
+			inFile >> hunger;
+			m_data.hunger = hunger;
+		}
+		else if (line == "Saturation") {
+			float saturation;
+			inFile >> saturation;
+			m_data.saturation = saturation;
 		}
     }
 }

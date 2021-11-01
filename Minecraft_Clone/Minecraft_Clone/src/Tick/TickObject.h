@@ -1,10 +1,7 @@
-#ifndef TICK_OBJECT_H
-#define TICK_OBJECT_H
+#pragma once
 
 class TickObject{
 public:
     virtual ~TickObject() = default;
     virtual void tickUpdate(unsigned int tickTime) = 0;
 };
-
-#endif

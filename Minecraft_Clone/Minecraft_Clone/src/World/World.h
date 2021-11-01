@@ -1,11 +1,11 @@
-#ifndef WORLD_H_INCLUDED
-#define WORLD_H_INCLUDED
+#pragma once
 
 #include <atomic>
 #include <memory>
 #include <mutex>
 #include <thread>
 #include <vector>
+#include <list>
 
 #include "../Util/NonCopyable.h"
 #include "Chunk/Chunk.h"
@@ -23,6 +23,14 @@ class World;
 
 struct Entity;
 
+struct UnloadedBlock
+{
+	sf::Vector3i pos;
+	ChunkBlock block;
+
+	friend bool operator== (const UnloadedBlock &block1, const UnloadedBlock &block2);
+};
+
 class World : public NonCopyable {
 public:
     World(const Camera &camera, const Config &config, Player &player);
@@ -30,7 +38,10 @@ public:
 
     ChunkBlock getBlock(int x, int y, int z);
     void setBlock(int x, int y, int z, ChunkBlock block);
+	void addUnloadedBlock(int x, int y, int z, ChunkBlock block);
+	void setAllUnloadedBlocks();
 
+	void reloadChunks() { m_reloadChunks = true; }
     void update(Player &player, float dt);
     void updateChunk(int blockX, int blockY, int blockZ);
 
@@ -50,6 +61,8 @@ public:
 	void addDroppedItem(const ItemStack& itemStack, const glm::vec3& pos);
 	void blockBroken(const glm::vec3& pos, World &world);
 	void checkForDroppedItems(const glm::vec3& pos);
+
+	BiomeId getBiomeId(int x, int z);
 private:
     void loadChunks(const Camera &camera);
     void updateChunks();
@@ -66,11 +79,13 @@ private:
     std::mutex m_genMutex;
 
     int m_loadDistance = 2;
-    const int m_renderDistance;
+    int m_renderDistance;
+	bool m_reloadChunks = false;
 
     glm::vec3 m_playerSpawnPoint;
 
 	DroppedItemsManager m_droppedItemManager;
-};
 
-#endif // WORLD_H_INCLUDED
+	std::vector<sf::Vector2i> m_chunksToUpdate;
+	std::vector<UnloadedBlock> m_unloadedBlocks;
+};

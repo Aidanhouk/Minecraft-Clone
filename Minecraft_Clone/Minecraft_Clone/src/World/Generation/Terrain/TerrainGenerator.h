@@ -1,10 +1,10 @@
-#ifndef TERRAINGENERATOR_H_INCLUDED
-#define TERRAINGENERATOR_H_INCLUDED
+#pragma once
 
-enum class BiomeId;
+#include "../Biome/Biome.h"
 
 class Chunk;
-struct Biome;
+
+//struct Biome;
 
 class TerrainGenerator {
 public:
@@ -12,6 +12,6 @@ public:
 
     virtual void generateTerrainFor(Chunk &chunk) = 0;
     virtual int getMinimumSpawnHeight() const noexcept = 0;
-};
 
-#endif // TERRAINGENERATOR_H_INCLUDED
+	virtual BiomeId getBiomeId(Chunk &chunk, int x, int z) = 0;
+};

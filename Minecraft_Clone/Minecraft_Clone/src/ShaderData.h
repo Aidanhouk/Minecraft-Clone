@@ -1,16 +1,10 @@
-#ifndef SHADER_DATA_H
-#define SHADER_DATA_H
+#pragma once
 
 struct ShaderData{
-    bool fxaa;
-
-    bool bloom;
-
-    bool motionblur;
-    
-    bool aniso;
+    bool fxaa = false;
+    bool bloom = false;
+    bool motionblur = false;
+    bool aniso = false;
 };
 
 extern ShaderData g_ShaderSettings;
-
-#endif

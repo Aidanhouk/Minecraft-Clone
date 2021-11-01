@@ -37,7 +37,8 @@ void IconsMesh::deleteData()
 	m_mesh.textureCoords.shrink_to_fit();
 	m_mesh.indices.shrink_to_fit();
 
-	m_model.deleteData();
+	// ???
+	//m_model.deleteData();
 }
 
 const Model &IconsMesh::getModel() const

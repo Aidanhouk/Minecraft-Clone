@@ -1,7 +1,9 @@
-#ifndef TREEGENERATOR_H_INCLUDED
-#define TREEGENERATOR_H_INCLUDED
+#pragma once
 
 #include "../../../Util/Random.h"
+#include "Util/Array2D.h"
+#include "World/WorldConstants.h"
+#include "World/Block/BlockId.h"
 
 class Chunk;
 
@@ -11,6 +13,6 @@ void makePalmTree(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int y, in
 void makeSpruceTree(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int y, int z);
 void makeCactus(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int y, int z);
 
-void makeSugarCane(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int y, int z);
-
-#endif // TREEGENERATOR_H_INCLUDED
+void makeSugarCane(Chunk &chunk, Random<std::minstd_rand> &rand, int x, int z,
+	Array2D<int, CHUNK_SIZE> &heightMap);
+void makeDoublePlant(Chunk &chunk, int x, int y, int z, BlockId id);

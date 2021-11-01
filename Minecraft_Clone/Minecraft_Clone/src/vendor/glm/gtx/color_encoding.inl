@@ -1,4 +1,4 @@
-/// @ref gtx_color_encoding
+// @ref gtx_color_encoding
 
 namespace glm
 {

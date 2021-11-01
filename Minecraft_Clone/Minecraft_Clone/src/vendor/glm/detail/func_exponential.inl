@@ -1,5 +1,5 @@
-/// @ref core
-/// @file glm/detail/func_exponential.inl
+// @ref core
+// @file glm/detail/func_exponential.inl
 
 #include "../vector_relational.hpp"
 #include "_vectorize.hpp"

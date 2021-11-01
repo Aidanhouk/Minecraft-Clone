@@ -1,5 +1,5 @@
-/// @ref core
-/// @file glm/detail/type_vec2.hpp
+// @ref core
+// @file glm/detail/type_vec2.hpp
 
 #pragma once
 
@@ -82,7 +82,7 @@ namespace glm
 
 		// -- Component accesses --
 
-		/// Return the count of components of the vector
+		// Return the count of components of the vector
 		typedef length_t length_type;
 		GLM_FUNC_DECL static GLM_CONSTEXPR length_type length(){return 2;}
 
@@ -106,7 +106,7 @@ namespace glm
 		template<typename U, qualifier P>
 		GLM_FUNC_DECL GLM_CONSTEXPR explicit vec(vec<1, U, P> const& v);
 
-		/// Explicit conversions (From section 5.4.1 Conversion and scalar constructors of GLSL 1.30.08 specification)
+		// Explicit conversions (From section 5.4.1 Conversion and scalar constructors of GLSL 1.30.08 specification)
 		template<typename A, typename B>
 		GLM_FUNC_DECL GLM_CONSTEXPR vec(A x, B y);
 		template<typename A, typename B>
@@ -118,14 +118,14 @@ namespace glm
 
 		// -- Conversion vector constructors --
 
-		/// Explicit conversions (From section 5.4.1 Conversion and scalar constructors of GLSL 1.30.08 specification)
+		// Explicit conversions (From section 5.4.1 Conversion and scalar constructors of GLSL 1.30.08 specification)
 		template<typename U, qualifier P>
 		GLM_FUNC_DECL GLM_CONSTEXPR GLM_EXPLICIT vec(vec<3, U, P> const& v);
-		/// Explicit conversions (From section 5.4.1 Conversion and scalar constructors of GLSL 1.30.08 specification)
+		// Explicit conversions (From section 5.4.1 Conversion and scalar constructors of GLSL 1.30.08 specification)
 		template<typename U, qualifier P>
 		GLM_FUNC_DECL GLM_CONSTEXPR GLM_EXPLICIT vec(vec<4, U, P> const& v);
 
-		/// Explicit conversions (From section 5.4.1 Conversion and scalar constructors of GLSL 1.30.08 specification)
+		// Explicit conversions (From section 5.4.1 Conversion and scalar constructors of GLSL 1.30.08 specification)
 		template<typename U, qualifier P>
 		GLM_FUNC_DECL GLM_CONSTEXPR GLM_EXPLICIT vec(vec<2, U, P> const& v);
 

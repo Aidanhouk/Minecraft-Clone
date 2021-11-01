@@ -33,20 +33,22 @@ void GrabbedItemDrawer::setSizes(float invSlotSize)
 
 void GrabbedItemDrawer::updateSprite(ItemSlot & grabbedItem)
 {
-	if (grabbedItem.item.getMaterial().id == Material::Nothing)
+	BlockId grabbedItemId = grabbedItem.item.getBlockId();
+	if (grabbedItemId == EMPTY_SLOT_ID)
 		return;
-	if (grabbedItem.item.getMaterial().id != m_item.getMaterial().id) {
-		m_item = ItemStack(grabbedItem.item.getMaterial(), 0);
+	if (grabbedItemId != m_item.getBlockId()) {
+		m_item.setData(grabbedItem.item.getBlockId(), 0);
 
-		ChunkBlock block(grabbedItem.item.getMaterial().toBlockID());
+		ChunkBlock block(grabbedItemId);
 		auto textureCoords = block.getData().texSideCoord;
-		//return { xMax, yMax, xMin, yMax, xMin, yMin, xMax, yMin };
-		auto texCoords = IconDatabase::get().textureAtlas.getTextureCoords(textureCoords);
+		//return { xMin, yMax, xMax, yMax, xMax, yMin, xMin, yMin };
+		std::array<GLfloat, 8> texCoords;
+		IconDatabase::get().textureAtlas.getTextureCoords(texCoords, textureCoords);
 
 		m_grabbedItemSprite.setTextureRect(sf::IntRect(
-			texCoords[0] * m_textureAtlasSize,
-			texCoords[7] * m_textureAtlasSize,
-			-m_indivTextureSize,
+			texCoords[0] * m_textureAtlasSize, // xMin
+			texCoords[7] * m_textureAtlasSize, // yMin
+			m_indivTextureSize,
 			m_indivTextureSize
 		));
 	}
@@ -54,7 +56,6 @@ void GrabbedItemDrawer::updateSprite(ItemSlot & grabbedItem)
 	m_grabbedItemSprite.setPosition(
 		(float)grabbedItem.position.x,
 		(float)grabbedItem.position.y);
-
 
 	if (m_numberOfItems != grabbedItem.item.getNumInStack()) {
 		m_numberOfItems = grabbedItem.item.getNumInStack();
@@ -74,5 +75,6 @@ void GrabbedItemDrawer::updateSprite(ItemSlot & grabbedItem)
 void GrabbedItemDrawer::draw(RenderMaster & master)
 {
 	master.drawSFMLOverInterface(m_grabbedItemSprite);
-	master.drawSFMLOverInterface(m_numberOfItemsText);
+	if (m_numberOfItems != 1)
+		master.drawSFMLOverInterface(m_numberOfItemsText);
 }

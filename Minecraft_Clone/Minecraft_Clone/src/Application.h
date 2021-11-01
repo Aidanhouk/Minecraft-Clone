@@ -1,5 +1,4 @@
-#ifndef APPLICATION_H_INCLUDED
-#define APPLICATION_H_INCLUDED
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -30,8 +29,6 @@ public:
 	void turnOffMouse();
 	void turnOnMouse();
 	
-	/// fix this later
-	void setPlayer(Player *player) { m_pPlayer = player; }
 private:
 	void handleEvents();
 	
@@ -41,9 +38,5 @@ private:
 	RenderMaster m_masterRenderer;
 	Camera m_camera;
 	
-	Player *m_pPlayer;
-	
 	bool m_isPopState = false;
 };
-
-#endif // APPLICATION_H_INCLUDED

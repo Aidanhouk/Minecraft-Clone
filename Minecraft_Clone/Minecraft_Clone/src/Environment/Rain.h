@@ -13,7 +13,7 @@ class Rain {
 public:
 	Rain();
 
-	void Render(const Camera& camera, glm::vec3 position);
+	void Render(const Camera& camera, glm::vec3 position, float precipitationVisibility);
 private:
 	void addVertexCoord(std::vector<GLfloat> &verteciesMesh,
 		const std::vector<GLfloat> &verteciesTexture, float biasX, float biasZ);

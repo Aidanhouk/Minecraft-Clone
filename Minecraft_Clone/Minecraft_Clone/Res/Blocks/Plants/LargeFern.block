@@ -1,0 +1,23 @@
+Name
+Large Fern
+
+Id
+27
+
+TexAll
+5 2
+
+Opaque
+0
+
+MeshType
+1
+
+ShaderType
+2
+
+Collidable
+0
+
+Hardness
+0.05

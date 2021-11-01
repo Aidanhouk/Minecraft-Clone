@@ -1,11 +1,11 @@
-/// @ref gtc_type_ptr
+// @ref gtc_type_ptr
 
 #include <cstring>
 
 namespace glm
 {
-	/// @addtogroup gtc_type_ptr
-	/// @{
+	// @addtogroup gtc_type_ptr
+	// @{
 
 	template<typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER T const* value_ptr(vec<2, T, Q> const& v)
@@ -381,6 +381,6 @@ namespace glm
 		return Result;
 	}
 
-	/// @}
+	// @}
 }//namespace glm
 

@@ -1,5 +1,4 @@
-#ifndef RENDERMASTER_H_INCLUDED
-#define RENDERMASTER_H_INCLUDED
+#pragma once
 
 #include <SFML/Graphics.hpp>
 
@@ -32,7 +31,7 @@ public:
 	void drawIcons(const IconsMesh &iconsMesh);
 	void drawDroppedItems(const DroppedItemsMesh &droppedItemsMesh);
 	void drawBreakingBlock();
-	void setHandModel(Model & model);
+	void drawHand(const HandMesh & handMesh);
 
     void finishRender(sf::RenderWindow &window, const Camera &camera);
 
@@ -53,5 +52,3 @@ private:
 
 	FrameBufferObject	m_fbo;
 };
-
-#endif // RENDERMASTER_H_INCLUDED

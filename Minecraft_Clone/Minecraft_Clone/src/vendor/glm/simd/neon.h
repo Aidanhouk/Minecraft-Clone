@@ -1,5 +1,5 @@
-/// @ref simd_neon
-/// @file glm/simd/neon.h
+// @ref simd_neon
+// @file glm/simd/neon.h
 
 #pragma once
 

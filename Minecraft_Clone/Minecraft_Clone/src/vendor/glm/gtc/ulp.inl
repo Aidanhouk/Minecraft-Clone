@@ -1,4 +1,4 @@
-/// @ref gtc_ulp
+// @ref gtc_ulp
 
 #include "../ext/scalar_ulp.hpp"
 

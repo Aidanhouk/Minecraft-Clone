@@ -65,7 +65,7 @@ Snowfall::Snowfall()
 	vertexCoords.reserve(12 * 8 * 25);
 	int numberOfTextures = 0;
 	int bias;
-	/// Distance between textures
+	// Distance between textures
 	const float distBetwTex = 2.0f;
 
 	for (int i = -7; i <= 7; ++i) {
@@ -146,7 +146,7 @@ Snowfall::Snowfall()
 		do
 			moveY = m_random.intInRange(-5, 1) / 20.0f;
 		while (moveY == 0.0f);
-		/// for each vertex the same bias
+		// for each vertex the same bias
 		std::vector<GLfloat> dirCoords{
 			moveX, moveY,
 			moveX, moveY,
@@ -163,24 +163,25 @@ void Snowfall::addVertexCoord(std::vector<GLfloat> &verteciesMesh,
 	const std::vector<GLfloat> &verteciesTexture, float biasX, float biasZ)
 {
 	for (int j = 0; j < 12; ++j) {
-		/// x
+		// x
 		if (j % 3 == 0)
 			verteciesMesh.emplace_back(verteciesTexture[j] + biasX);
-		/// z
+		// z
 		else if ((j + 1) % 3 == 0)
 			verteciesMesh.emplace_back(verteciesTexture[j] + biasZ);
-		/// y
+		// y
 		else
 			verteciesMesh.emplace_back(verteciesTexture[j]);
 	}
 }
 
-void Snowfall::Render(const Camera& camera, glm::vec3 pos)
+void Snowfall::Render(const Camera& camera, glm::vec3 pos, float precipitationVisibility)
 {
 	m_shader.useProgram();
 	m_snowModel.bindVAO();
 	m_texture.bindTexture();
-	m_movement += g_info.deltaTime / 6.0f;
+
+	m_movement += g_Info.deltaTime / 6.0f;
 
 	if (m_oldPos == glm::vec3(0.0f) && pos != glm::vec3(0.0f)) {
 		m_oldPos = pos;
@@ -199,7 +200,8 @@ void Snowfall::Render(const Camera& camera, glm::vec3 pos)
 	m_shader.loadProjectionViewMatrix(camera.getProjectionViewMatrix());
 
 	m_shader.loadTime(m_movement);
-	m_shader.loadLighting(g_info.lighting);
+	m_shader.loadLighting(g_Info.lighting);
+	m_shader.loadVisibility(precipitationVisibility);
 
 	GL::drawElements(m_snowModel.getIndicesCount());
 }

@@ -7,9 +7,10 @@
 
 class DroppedItemsMesh {
 public:
+
 	DroppedItemsMesh() = default;
 
-	void addItem(const std::array<GLfloat, 12> &verticesPosition,
+	void addFace(const std::array<GLfloat, 12> &verticesPosition,
 		const std::array<GLfloat, 8> &textureCoords,
 		const glm::vec3 &itemPosition);
 

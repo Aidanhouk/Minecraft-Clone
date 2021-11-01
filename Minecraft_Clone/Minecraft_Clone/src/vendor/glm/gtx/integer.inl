@@ -1,4 +1,4 @@
-/// @ref gtx_integer
+// @ref gtx_integer
 
 namespace glm
 {

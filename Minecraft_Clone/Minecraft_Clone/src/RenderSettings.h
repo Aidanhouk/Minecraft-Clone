@@ -1,12 +1,9 @@
-#ifndef RENDER_SETTINGS_H
-#define RENDER_SETTINGS_H
+#pragma once
 
 #include <GL/glew.h>
 
 struct RenderSettings{
-    int resolutionX = 1920;
-    int resolutionY = 1080;
+    int resolutionX;
+    int resolutionY;
 };
-extern RenderSettings g_renderSettings;
-
-#endif
+extern RenderSettings g_RenderSettings;

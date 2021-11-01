@@ -1,8 +1,8 @@
-/// @ref gtx_bit
+// @ref gtx_bit
 
 namespace glm
 {
-	///////////////////
+	/////////////
 	// highestBitValue
 
 	template<typename genIUType>
@@ -24,7 +24,7 @@ namespace glm
 		return detail::functor1<vec, L, T, T, Q>::call(highestBitValue, v);
 	}
 
-	///////////////////
+	/////////////
 	// lowestBitValue
 
 	template<typename genIUType>
@@ -39,7 +39,7 @@ namespace glm
 		return detail::functor1<vec, L, T, T, Q>::call(lowestBitValue, v);
 	}
 
-	///////////////////
+	/////////////
 	// powerOfTwoAbove
 
 	template<typename genType>
@@ -54,7 +54,7 @@ namespace glm
 		return detail::functor1<vec, L, T, T, Q>::call(powerOfTwoAbove, v);
 	}
 
-	///////////////////
+	/////////////
 	// powerOfTwoBelow
 
 	template<typename genType>
@@ -69,7 +69,7 @@ namespace glm
 		return detail::functor1<vec, L, T, T, Q>::call(powerOfTwoBelow, v);
 	}
 
-	/////////////////////
+	//////////////
 	// powerOfTwoNearest
 
 	template<typename genType>

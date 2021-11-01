@@ -1,8 +1,6 @@
-#ifndef M_BLUR_H
-#define M_BLUR_H
+#pragma once
 
 #include "MotionBlur.h"
-#include "../RenderSettings.h"
 #include "ImageRenderer.h"
 #include "Framebuffer.h"
 #include "../Camera.h"
@@ -19,5 +17,3 @@ private:
     MotionBlur m_shader;
     glm::mat4 prev;
 };
-
-#endif

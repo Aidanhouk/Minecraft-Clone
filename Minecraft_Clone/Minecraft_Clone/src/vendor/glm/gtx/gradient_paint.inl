@@ -1,4 +1,4 @@
-/// @ref gtx_gradient_paint
+// @ref gtx_gradient_paint
 
 namespace glm
 {

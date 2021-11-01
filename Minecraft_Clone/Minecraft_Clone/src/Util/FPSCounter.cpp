@@ -7,13 +7,13 @@
 
 FPSCounter::FPSCounter()
 {
-    m_text.move(12 * g_renderSettings.resolutionX / 2560,
-		8 * g_renderSettings.resolutionX / 2560);
-    m_text.setOutlineThickness(2 * g_renderSettings.resolutionX / 2560);
+    m_text.move(12 * g_RenderSettings.resolutionX / 2560,
+		8 * g_RenderSettings.resolutionX / 2560);
+    m_text.setOutlineThickness(2 * g_RenderSettings.resolutionX / 2560);
 
     m_font.loadFromFile("Res/Fonts/MinecraftRegular.otf");
     m_text.setFont(m_font);
-    m_text.setCharacterSize(g_renderSettings.resolutionX / 85.3f);
+    m_text.setCharacterSize(g_RenderSettings.resolutionX / 85.3f);
 }
 
 void FPSCounter::update()
@@ -24,7 +24,6 @@ void FPSCounter::update()
 		m_fps = m_frameCount / m_fpsTimer.restart().asSeconds();
 		m_frameCount = 0;
 		m_delayTimer.restart();
-		//std::cout << m_fps << "fps\n";
 	}
 }
 

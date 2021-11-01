@@ -1,5 +1,4 @@
-#ifndef CAMERA_H_INCLUDED
-#define CAMERA_H_INCLUDED
+#pragma once
 
 #include "Config.h"
 #include "Entity.h"
@@ -30,5 +29,3 @@ private:
 
     Config m_config;
 };
-
-#endif // CAMERA_H_INCLUDED

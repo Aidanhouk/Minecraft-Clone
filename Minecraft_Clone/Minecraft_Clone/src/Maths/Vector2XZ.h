@@ -1,5 +1,4 @@
-#ifndef VECTOR2XZ_H_INCLUDED
-#define VECTOR2XZ_H_INCLUDED
+#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <functional>
@@ -39,5 +38,3 @@ template <> struct hash<sf::Vector3i> {
     }
 };
 } // namespace std
-
-#endif // VECTOR2XZ_H_INCLUDED

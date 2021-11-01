@@ -1,5 +1,4 @@
-#ifndef CLASSICOVERWORLDGENERATOR_H_INCLUDED
-#define CLASSICOVERWORLDGENERATOR_H_INCLUDED
+#pragma once
 
 #include "TerrainGenerator.h"
 
@@ -27,6 +26,8 @@ public:
 	
 	void generateTerrainFor(Chunk &chunk) override;
 	int getMinimumSpawnHeight() const noexcept override;
+
+	BiomeId getBiomeId(Chunk &chunk, int x, int z) override;
 private:
 	static void setUpNoise();
 	
@@ -36,7 +37,8 @@ private:
 	void getHeightMap();
 	void getBiomeMap();
 
-	const Biome &getBiome(int x, int z) const;
+	const Biome &getBiome(int chunkX, int chunkZ) const;
+	const Biome &getBiome(int biomeValue) const;
 	
 	Array2D<int, CHUNK_SIZE> m_heightMap;
 	Array2D<int, CHUNK_SIZE + 1> m_biomeMap;
@@ -50,11 +52,7 @@ private:
 	DesertBiome m_desertBiome;
 	OceanBiome m_oceanBiome;
 	ForestBiome m_forestBiome;
-	MountainBiome m_mountaineBiome;
+	MountainBiome m_mountainsBiome;
 	
 	Chunk *m_pChunk = nullptr;
-
-	//mutable std::array<int, 500> m_ARR{ 0 };
 };
-
-#endif // CLASSICOVERWORLDGENERATOR_H_INCLUDED

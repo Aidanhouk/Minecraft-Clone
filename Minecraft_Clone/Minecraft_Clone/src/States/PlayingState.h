@@ -1,18 +1,18 @@
-#ifndef PLAYINGSTATE_H_INCLUDED
-#define PLAYINGSTATE_H_INCLUDED
+#pragma once
 
 #include "../Player/Player.h"
 #include "StateBase.h"
 
 #include "../Input/Keyboard.h"
+#include "../Input/Mouse.h"
 #include "../Util/FPSCounter.h"
 #include "../World/Chunk/Chunk.h"
 #include "../World/World.h"
 
 #include "../Tick/TickManager.h"
 #include "../Environment/SkyManager.h"
-#include "BlockBreaker.h"
-#include "Player/Hand.h"
+#include "../Player/BlockBreaker.h"
+#include "../Player/PlayerHand/Hand.h"
 
 extern std::shared_ptr<SkyManager> m_sky;
 
@@ -30,6 +30,9 @@ public:
 
     void onOpen() override;
 private:
+	void setTextSettings(Application &app);
+
+	Mouse m_mouse;
     Keyboard m_keyboard;
     Player m_player;
     World m_world;
@@ -38,15 +41,19 @@ private:
 	BlockBreaker					m_blockBreaker;
 	Hand							m_hand;
 	sf::Clock						m_placeBlockTimer;
+
 	sf::RectangleShape				m_crosshair;
 	sf::Texture						m_chTexture;
 
 	sf::Font						m_font;
 	sf::Text						m_startText;
+	sf::Text						m_pauseText;
 	sf::Text						m_deathText;
 
 	std::unique_ptr<TickManager>	m_tickManager;
 	std::unique_ptr<std::thread>	m_tickThread;
-};
 
-#endif // PLAYINGSTATE_H_INCLUDED
+	std::unique_ptr<std::thread>	m_soundThread;
+
+	bool							m_makeHitSound;
+};

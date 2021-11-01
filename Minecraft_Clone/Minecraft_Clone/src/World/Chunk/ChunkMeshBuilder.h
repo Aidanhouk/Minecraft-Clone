@@ -1,5 +1,4 @@
-#ifndef CHUNKMESHBUILDER_H_INCLUDED
-#define CHUNKMESHBUILDER_H_INCLUDED
+#pragma once
 
 #include "GL/glew.h"
 
@@ -45,5 +44,3 @@ private:
     ChunkMesh *m_pActiveMesh = nullptr;
     const BlockDataHolder *m_pBlockData = nullptr;
 };
-
-#endif // CHUNKMESHBUILDER_H_INCLUDED

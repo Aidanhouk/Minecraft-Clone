@@ -37,7 +37,7 @@ void Clouds::Render(const Camera& camera, glm::vec3 pos)
     m_cloud.bindVAO();
     m_cloudTexture.bindTexture();
 
-	m_movement += g_info.deltaTime;
+	m_movement += g_Info.deltaTime;
 
 	if (m_movement > 1024) {
 		m_movement = 0;
@@ -57,7 +57,7 @@ void Clouds::Render(const Camera& camera, glm::vec3 pos)
     m_shader.loadModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(m_oldPos.x, 0, m_oldPos.z + m_movement)));
     m_shader.loadProjectionViewMatrix(camera.getProjectionViewMatrix());
 
-    m_shader.loadLighting(g_info.lighting);
+    m_shader.loadLighting(g_Info.lighting);
 
     GL::drawElements(m_cloud.getIndicesCount());
 }

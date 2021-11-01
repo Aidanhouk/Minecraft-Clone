@@ -1,18 +1,21 @@
 #include "MountainsBiome.h"
 
-#include "../../WorldConstants.h"
 #include "../Structures/TreeGenerator.h"
 
 MountainBiome::MountainBiome(int seed)
-	: Biome(getNoiseParameters(), 300, 300, seed)
+	: Biome(getNoiseParameters(),
+		550, // tree
+		300, // plant
+		1000, // beachPlant
+		1000, // flowerCluster
+		seed)
 {
 	m_Id = BiomeId::MountainBiome;
 }
 
-ChunkBlock MountainBiome::getTopBlock(Rand &rand) const
+ChunkBlock MountainBiome::getTopBlock(Rand &rand, int y) const
 {
 	return BlockId::Snow;
-	//return rand.intInRange(0, 10) > 5 ? BlockId::Snow : BlockId::Stone;
 }
 
 ChunkBlock MountainBiome::getUnderGroundBlock(Rand & rand) const
@@ -25,14 +28,9 @@ ChunkBlock MountainBiome::getUnderWaterBlock(Rand &rand) const
 	return BlockId::Dirt;
 }
 
-ChunkBlock MountainBiome::getBeachBlock(Rand & rand) const
+ChunkBlock MountainBiome::getWaterSurfaceBlock(Rand & rand) const
 {
-	return BlockId::Snow;
-}
-
-ChunkBlock MountainBiome::getUnderBeachBlock(Rand & rand) const
-{
-	return BlockId::Dirt;
+	return BlockId::Ice;
 }
 
 ChunkBlock MountainBiome::getPlant(Rand &rand) const
@@ -42,8 +40,7 @@ ChunkBlock MountainBiome::getPlant(Rand &rand) const
 
 void MountainBiome::makeTree(Rand &rand, Chunk &chunk, int x, int y, int z) const
 {
-	if (y < 90)
-		makeSpruceTree(chunk, rand, x, y, z);
+	makeSpruceTree(chunk, rand, x, y, z);
 }
 
 NoiseParameters MountainBiome::getNoiseParameters()

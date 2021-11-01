@@ -1,14 +1,14 @@
-/// @ref gtx_integer
-/// @file glm/gtx/integer.hpp
-///
-/// @see core (dependence)
-///
-/// @defgroup gtx_integer GLM_GTX_integer
-/// @ingroup gtx
-///
-/// Include <glm/gtx/integer.hpp> to use the features of this extension.
-///
-/// Add support for integer for core functions
+// @ref gtx_integer
+// @file glm/gtx/integer.hpp
+//
+// @see core (dependence)
+//
+// @defgroup gtx_integer GLM_GTX_integer
+// @ingroup gtx
+//
+// Include <glm/gtx/integer.hpp> to use the features of this extension.
+//
+// Add support for integer for core functions
 
 #pragma once
 
@@ -26,8 +26,8 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_integer
-	/// @{
+	// @addtogroup gtx_integer
+	// @{
 
 	//! Returns x raised to the y power.
 	//! From GLM_GTX_integer extension.
@@ -70,7 +70,7 @@ namespace glm
 	//! From GLM_GTX_integer extension.
 	GLM_FUNC_DECL uint nlz(uint x);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "integer.inl"

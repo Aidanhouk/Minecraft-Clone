@@ -1,5 +1,4 @@
-#ifndef MODEL_H_INCLUDED
-#define MODEL_H_INCLUDED
+#pragma once
 
 //#include "Mesh.h"
 #include "Environment/SnowfallMesh.h"
@@ -7,6 +6,8 @@
 #include "Util/NonCopyable.h"
 
 #include "Renderer/RenderInfo.h"
+
+class SnowfallMesh;
 
 class Model : public NonCopyable {
 public:
@@ -18,8 +19,8 @@ public:
     Model &operator=(Model &&other);
 
 	void addData(const Mesh &mesh);
+	void addDataNoTexture(const Mesh &mesh);
 	void addSnowfallData(const SnowfallMesh &mesh);
-	void addDeliatedBlockData(const Mesh &mesh);
 
     void deleteData();
 
@@ -38,5 +39,3 @@ private:
     int m_vboCount = 0;
     std::vector<GLuint> m_buffers;
 };
-
-#endif // MODEL_H_INCLUDED

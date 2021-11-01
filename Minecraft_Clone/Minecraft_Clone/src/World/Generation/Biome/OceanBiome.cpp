@@ -1,14 +1,20 @@
 #include "OceanBiome.h"
 
 #include "../Structures/TreeGenerator.h"
+#include "../Structures/ClusterGenerator.h"
 
 OceanBiome::OceanBiome(int seed)
-    : Biome(getNoiseParameters(), 80, 1000, seed)
+	: Biome(getNoiseParameters(),
+		150, // tree
+		1000, // plant
+		1000, // beachPlant
+		1000, // flowerCluster
+		seed)
 {
 	m_Id = BiomeId::OceanBiome;
 }
 
-ChunkBlock OceanBiome::getTopBlock(Rand &rand) const
+ChunkBlock OceanBiome::getTopBlock(Rand &rand, int y) const
 {
 	return BlockId::Sand;
 }
@@ -25,12 +31,24 @@ ChunkBlock OceanBiome::getUnderWaterBlock(Rand &rand) const
 
 ChunkBlock OceanBiome::getPlant(Rand &rand) const
 {
-	return rand.intInRange(0, 10) > 8 ? BlockId::Rose : BlockId::TallGrass;
+	return BlockId::Cactus;
 }
 
 void OceanBiome::makeTree(Rand &rand, Chunk &chunk, int x, int y, int z) const
 {
 	makePalmTree(chunk, rand, x, y, z);
+}
+
+void OceanBiome::makeUnderwaterCluster(Rand & rand, Chunk & chunk, int x, int z, Array2D<int, CHUNK_SIZE>& heightMap) const
+{
+	int rnd = rand.intInRange(0, 2);
+
+	if (rnd <= 0)
+		ClusterGenerator::makeUnderwaterCluster(chunk, rand, x, z, heightMap, BlockId::Dirt);
+	else if (rnd <= 1)
+		ClusterGenerator::makeUnderwaterCluster(chunk, rand, x, z, heightMap, BlockId::Gravel);
+	else if (rnd <= 2)
+		ClusterGenerator::makeUnderwaterCluster(chunk, rand, x, z, heightMap, BlockId::Clay);
 }
 
 NoiseParameters OceanBiome::getNoiseParameters()

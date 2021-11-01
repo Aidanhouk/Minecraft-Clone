@@ -20,23 +20,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Audio\Music\Music.cpp" />
+    <ClCompile Include="src\Audio\Music\MusicSet.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Context.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Environment\Cloud.cpp" />
     <ClCompile Include="src\Environment\ProcSky.cpp" />
     <ClCompile Include="src\Environment\Rain.cpp" />
     <ClCompile Include="src\Environment\SkyManager.cpp" />
     <ClCompile Include="src\Environment\Snowfall.cpp" />
+    <ClCompile Include="src\Environment\SnowfallMesh.cpp" />
     <ClCompile Include="src\GlobalInfo.cpp" />
     <ClCompile Include="src\GL\GLFunctions.cpp" />
     <ClCompile Include="src\Input\Keyboard.cpp" />
+    <ClCompile Include="src\Input\Mouse.cpp" />
     <ClCompile Include="src\Input\ToggleKey.cpp" />
-    <ClCompile Include="src\Inventory\ItemIcons\GrabbedItemDrawer.cpp" />
     <ClCompile Include="src\Inventory\IconDatabase.cpp" />
-    <ClCompile Include="src\Inventory\Inventory.cpp" />
-    <ClCompile Include="src\Inventory\ItemIcons\ItemIconsBuilder.cpp" />
     <ClCompile Include="src\Inventory\IconsMesh.cpp" />
+    <ClCompile Include="src\Inventory\Inventory.cpp" />
+    <ClCompile Include="src\Inventory\ItemIcons\GrabbedItemDrawer.cpp" />
+    <ClCompile Include="src\Inventory\ItemIcons\ItemIconsBuilder.cpp" />
     <ClCompile Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.cpp" />
     <ClCompile Include="src\Item\ItemStack.cpp" />
     <ClCompile Include="src\Item\DroppedItem\DroppedItemsBuilder.cpp" />
@@ -53,10 +58,14 @@
     <ClCompile Include="src\Maths\Vector2XZ.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Physics\AABB.cpp" />
-    <ClCompile Include="src\Player\Hand.cpp" />
-    <ClCompile Include="src\Player\MovementFOV.cpp" />
+    <ClCompile Include="src\Player\Calculations\CameraShaking.cpp" />
+    <ClCompile Include="src\Player\Calculations\ScreenDarkening.cpp" />
+    <ClCompile Include="src\Player\PlayerHand\Hand.cpp" />
+    <ClCompile Include="src\Player\Calculations\MovementFOV.cpp" />
     <ClCompile Include="src\player\Player.cpp" />
+    <ClCompile Include="src\Player\PlayerHand\HandMesh.cpp" />
     <ClCompile Include="src\Player\PlayerInfo.cpp" />
+    <ClCompile Include="src\Player\Calculations\SneakingCamera.cpp" />
     <ClCompile Include="src\PostProcess\Antialiasing.cpp" />
     <ClCompile Include="src\PostProcess\Bloom.cpp" />
     <ClCompile Include="src\PostProcess\Combine.cpp" />
@@ -74,9 +83,9 @@
     <ClCompile Include="src\Renderer\AimedBlock\DelineateBlockRenderer.cpp" />
     <ClCompile Include="src\Renderer\DroppedItemsRenderer.cpp" />
     <ClCompile Include="src\Renderer\HandRenderer.cpp" />
-    <ClCompile Include="src\Renderer\Renderer_2D.cpp" />
     <ClCompile Include="src\renderer\ChunkRenderer.cpp" />
     <ClCompile Include="src\renderer\FloraRenderer.cpp" />
+    <ClCompile Include="src\Renderer\Renderer_2D.cpp" />
     <ClCompile Include="src\renderer\RenderMaster.cpp" />
     <ClCompile Include="src\renderer\SFMLRenderer.cpp" />
     <ClCompile Include="src\renderer\WaterRenderer.cpp" />
@@ -99,7 +108,11 @@
     <ClCompile Include="src\Shaders\ShaderLoader.cpp" />
     <ClCompile Include="src\Shaders\Environment\SunShader.cpp" />
     <ClCompile Include="src\Shaders\WaterShader.cpp" />
-    <ClCompile Include="src\States\BlockBreaker.cpp" />
+    <ClCompile Include="src\Audio\Sound\Sound.cpp" />
+    <ClCompile Include="src\Audio\SoundFunctions.cpp" />
+    <ClCompile Include="src\Audio\SoundMaster.cpp" />
+    <ClCompile Include="src\Audio\Sound\SoundSet.cpp" />
+    <ClCompile Include="src\Player\BlockBreaker.cpp" />
     <ClCompile Include="src\states\PlayingState.cpp" />
     <ClCompile Include="src\texture\BasicTexture.cpp" />
     <ClCompile Include="src\texture\TextureAtlas.cpp" />
@@ -118,7 +131,7 @@
     <ClCompile Include="src\world\Chunk\ChunkMeshBuilder.cpp" />
     <ClCompile Include="src\world\Chunk\ChunkSection.cpp" />
     <ClCompile Include="src\world\Event\PlayerDigEvent.cpp" />
-    <ClCompile Include="src\Player\DamageMaster.cpp" />
+    <ClCompile Include="src\Player\Calculations\DamageMaster.cpp" />
     <ClCompile Include="src\world\Generation\Biome\Biome.cpp" />
     <ClCompile Include="src\world\Generation\Biome\DesertBiome.cpp" />
     <ClCompile Include="src\World\Generation\Biome\MountainsBiome.cpp" />
@@ -126,6 +139,10 @@
     <ClCompile Include="src\world\Generation\Biome\ForestBiome.cpp" />
     <ClCompile Include="src\world\Generation\Biome\OceanBiome.cpp" />
     <ClCompile Include="src\World\Generation\Biome\TundraBiome.cpp" />
+    <ClCompile Include="src\World\Generation\Caves\CavesGenerator.cpp" />
+    <ClCompile Include="src\World\Generation\Caves\WormCave.cpp" />
+    <ClCompile Include="src\World\Generation\Seed.cpp" />
+    <ClCompile Include="src\World\Generation\Structures\ClusterGenerator.cpp" />
     <ClCompile Include="src\world\Generation\Structures\StructureBuilder.cpp" />
     <ClCompile Include="src\world\Generation\Structures\TreeGenerator.cpp" />
     <ClCompile Include="src\world\Generation\Terrain\ClassicOverWorldGenerator.cpp" />
@@ -134,6 +151,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\Audio\AudioSet.h" />
+    <ClInclude Include="src\Audio\Music\Music.h" />
+    <ClInclude Include="src\Audio\Music\MusicId.h" />
+    <ClInclude Include="src\Audio\Music\MusicSet.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Context.h" />
@@ -147,13 +168,15 @@
     <ClInclude Include="src\GlobalInfo.h" />
     <ClInclude Include="src\GL\GLFunctions.h" />
     <ClInclude Include="src\Input\Keyboard.h" />
+    <ClInclude Include="src\Input\Mouse.h" />
     <ClInclude Include="src\Input\ToggleKey.h" />
-    <ClInclude Include="src\Inventory\ItemIcons\GrabbedItemDrawer.h" />
     <ClInclude Include="src\Inventory\IconDatabase.h" />
-    <ClInclude Include="src\Inventory\Inventory.h" />
-    <ClInclude Include="src\Inventory\ItemIcons\ItemIconsBuilder.h" />
     <ClInclude Include="src\Inventory\IconsMesh.h" />
+    <ClInclude Include="src\Inventory\Inventory.h" />
+    <ClInclude Include="src\Inventory\ItemIcons\GrabbedItemDrawer.h" />
+    <ClInclude Include="src\Inventory\ItemIcons\ItemIconsBuilder.h" />
     <ClInclude Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.h" />
+    <ClInclude Include="src\Item\DroppedItem\Coordinates.h" />
     <ClInclude Include="src\Item\ItemStack.h" />
     <ClInclude Include="src\Item\DroppedItem\DroppedItemsBuilder.h" />
     <ClInclude Include="src\Item\DroppedItem\DroppedItemsManager.h" />
@@ -176,10 +199,17 @@
     <ClInclude Include="src\other\NonMovable.h" />
     <ClInclude Include="src\other\Singleton.h" />
     <ClInclude Include="src\Physics\AABB.h" />
-    <ClInclude Include="src\Player\Hand.h" />
-    <ClInclude Include="src\Player\MovementFOV.h" />
+    <ClInclude Include="src\Player\Calculations\CameraShaking.h" />
+    <ClInclude Include="src\Player\Calculations\ScreenDarkening.h" />
+    <ClInclude Include="src\Player\PlayerHand\Hand.h" />
+    <ClInclude Include="src\Player\Calculations\MovementFOV.h" />
+    <ClInclude Include="src\Player\PlayerHand\HandAnimationData.h" />
     <ClInclude Include="src\player\Player.h" />
+    <ClInclude Include="src\Player\PlayerConstants.h" />
+    <ClInclude Include="src\Player\PlayerHand\HandMesh.h" />
+    <ClInclude Include="src\Player\PlayerHand\HandData.h" />
     <ClInclude Include="src\Player\PlayerInfo.h" />
+    <ClInclude Include="src\Player\Calculations\SneakingCamera.h" />
     <ClInclude Include="src\PostProcess\Antialiasing.h" />
     <ClInclude Include="src\PostProcess\Bloom.h" />
     <ClInclude Include="src\PostProcess\Combine.h" />
@@ -197,9 +227,9 @@
     <ClInclude Include="src\Renderer\AimedBlock\DelineateBlockRenderer.h" />
     <ClInclude Include="src\Renderer\DroppedItemsRenderer.h" />
     <ClInclude Include="src\Renderer\HandRenderer.h" />
-    <ClInclude Include="src\Renderer\Renderer_2D.h" />
     <ClInclude Include="src\renderer\ChunkRenderer.h" />
     <ClInclude Include="src\renderer\FloraRenderer.h" />
+    <ClInclude Include="src\Renderer\Renderer_2D.h" />
     <ClInclude Include="src\renderer\RenderInfo.h" />
     <ClInclude Include="src\renderer\RenderMaster.h" />
     <ClInclude Include="src\renderer\SFMLRenderer.h" />
@@ -224,7 +254,12 @@
     <ClInclude Include="src\Shaders\Environment\SunShader.h" />
     <ClInclude Include="src\Shaders\WaterShader.h" />
     <ClInclude Include="src\shader\Shader.h" />
-    <ClInclude Include="src\States\BlockBreaker.h" />
+    <ClInclude Include="src\Audio\Sound\Sound.h" />
+    <ClInclude Include="src\Audio\SoundFunctions.h" />
+    <ClInclude Include="src\Audio\Sound\SoundId.h" />
+    <ClInclude Include="src\Audio\SoundMaster.h" />
+    <ClInclude Include="src\Audio\Sound\SoundSet.h" />
+    <ClInclude Include="src\Player\BlockBreaker.h" />
     <ClInclude Include="src\states\PlayingState.h" />
     <ClInclude Include="src\states\StateBase.h" />
     <ClInclude Include="src\texture\BasicTexture.h" />
@@ -534,7 +569,7 @@
     <ClInclude Include="src\world\Chunk\IChunk.h" />
     <ClInclude Include="src\world\Event\IWorldEvent.h" />
     <ClInclude Include="src\world\Event\PlayerDigEvent.h" />
-    <ClInclude Include="src\Player\DamageMaster.h" />
+    <ClInclude Include="src\Player\Calculations\DamageMaster.h" />
     <ClInclude Include="src\world\Generation\Biome\Biome.h" />
     <ClInclude Include="src\world\Generation\Biome\DesertBiome.h" />
     <ClInclude Include="src\World\Generation\Biome\MountainsBiome.h" />
@@ -542,6 +577,10 @@
     <ClInclude Include="src\world\Generation\Biome\ForestBiome.h" />
     <ClInclude Include="src\world\Generation\Biome\OceanBiome.h" />
     <ClInclude Include="src\World\Generation\Biome\TundraBiome.h" />
+    <ClInclude Include="src\World\Generation\Caves\CavesGenerator.h" />
+    <ClInclude Include="src\World\Generation\Caves\WormCave.h" />
+    <ClInclude Include="src\World\Generation\Seed.h" />
+    <ClInclude Include="src\World\Generation\Structures\ClusterGenerator.h" />
     <ClInclude Include="src\world\Generation\Structures\StructureBuilder.h" />
     <ClInclude Include="src\world\Generation\Structures\TreeGenerator.h" />
     <ClInclude Include="src\world\Generation\Terrain\ClassicOverWorldGenerator.h" />
@@ -551,28 +590,6 @@
     <ClInclude Include="src\world\WorldConstants.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Res\Blocks\Air.block" />
-    <None Include="Res\Blocks\BirchBark.block" />
-    <None Include="Res\Blocks\BirchLeaf.block" />
-    <None Include="Res\Blocks\Cactus.block" />
-    <None Include="Res\Blocks\Dandelion.block" />
-    <None Include="Res\Blocks\DeadShrub.block" />
-    <None Include="Res\Blocks\Dirt.block" />
-    <None Include="Res\Blocks\Grass.block" />
-    <None Include="Res\Blocks\Ice.block" />
-    <None Include="Res\Blocks\OakBark.block" />
-    <None Include="Res\Blocks\OakLeaf.block" />
-    <None Include="Res\Blocks\PalmBark.block" />
-    <None Include="Res\Blocks\PalmLeaf.block" />
-    <None Include="Res\Blocks\Rose.block" />
-    <None Include="Res\Blocks\Sand.block" />
-    <None Include="Res\Blocks\Snow.block" />
-    <None Include="Res\Blocks\SpruceBark.block" />
-    <None Include="Res\Blocks\SpruceLeaf.block" />
-    <None Include="Res\Blocks\Stone.block" />
-    <None Include="Res\Blocks\SugarCane.block" />
-    <None Include="Res\Blocks\TallGrass.block" />
-    <None Include="Res\Blocks\Water.block" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
@@ -763,7 +780,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -771,14 +788,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\SFML-2.5.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\libnoise\include;$(SolutionDir)Dependencies\SFML-2.5.1\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLEW\lib\Release\Win32;$(SolutionDir)Dependencies\GLFW\lib-vc2017;$(SolutionDir)Dependencies\freetype;$(SolutionDir)Dependencies\SFML-2.5.1\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLEW\lib\Release\Win32;$(SolutionDir)Dependencies\GLFW\lib-vc2017;$(SolutionDir)Dependencies\libnoise\lib;$(SolutionDir)Dependencies\SFML-2.5.1\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;libnoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -800,8 +817,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\SFML-2.5.1\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\libnoise\include;$(SolutionDir)Dependencies\SFML-2.5.1\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC ;GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
@@ -810,24 +827,30 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLEW\lib\Release\Win32;$(SolutionDir)Dependencies\GLFW\lib-vc2017;$(SolutionDir)Dependencies\freetype;$(SolutionDir)Dependencies\SFML-2.5.1\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLEW\lib\Release\Win32;$(SolutionDir)Dependencies\GLFW\lib-vc2017;$(SolutionDir)Dependencies\libnoise\lib;$(SolutionDir)Dependencies\SFML-2.5.1\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;sfml-audio-s.lib;sfml-graphics-s.lib;sfml-system-s.lib;sfml-window-s.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;libnoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>src;src\vendor;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLFW_64\include;$(SolutionDir)Dependencies\libnoise\include;$(SolutionDir)Dependencies\SFML-2.5.1_64\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;Shell32.lib;opengl32.lib;User32.lib;Gdi32.lib;freetype.lib;sfml-audio-s.lib;sfml-graphics-s.lib;sfml-system-s.lib;sfml-window-s.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;libnoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLEW\lib\Release\x64;$(SolutionDir)Dependencies\GLFW_64\lib-vc2017;$(SolutionDir)Dependencies\libnoise\lib;$(SolutionDir)Dependencies\SFML-2.5.1_64\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -5,7 +5,7 @@
 #include "Inventory/IconsMesh.h"
 #include "Inventory/IconDatabase.h"
 
-void Renderer_2D::setMeshToDraw(const IconsMesh & iconsMesh)
+void Renderer_2D::addMeshToDraw(const IconsMesh & iconsMesh)
 {
 	m_mesh = &iconsMesh.getModel().getRenderInfo();
 }

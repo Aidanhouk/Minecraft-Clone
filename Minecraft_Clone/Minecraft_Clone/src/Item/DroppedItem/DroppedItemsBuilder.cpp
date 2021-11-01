@@ -3,125 +3,19 @@
 #include "DroppedItemsManager.h"
 #include "DroppedItemsMesh.h"
 
+#include "Coordinates.h"
+
 #include "World/Block/ChunkBlock.h"
 #include "World/Block/BlockData.h"
 #include "World/Block/BlockDatabase.h"
+#include "World/World.h"
 
 #include "RenderSettings.h"
 #include "Config.h"
 #include "Player/PlayerInfo.h"
+#include "Player/Player.h"
 
 #include <iostream>
-
-const float pos = 0.15f;
-
-namespace cubeFaces {
-
-	const std::array<GLfloat, 12> frontFace{
-		-pos, -pos, +pos,
-		+pos, -pos, +pos,
-		+pos, +pos, +pos,
-		-pos, +pos, +pos,
-	};
-	const std::array<GLfloat, 12> backFace{
-		+pos, -pos, -pos,
-		-pos, -pos, -pos,
-		-pos, +pos, -pos,
-		+pos, +pos, -pos,
-	};
-	const std::array<GLfloat, 12> leftFace{
-		-pos, -pos, -pos,
-		-pos, -pos, +pos,
-		-pos, +pos, +pos,
-		-pos, +pos, -pos,
-	};
-	const std::array<GLfloat, 12> rightFace{
-		+pos, -pos, +pos,
-		+pos, -pos, -pos,
-		+pos, +pos, -pos,
-		+pos, +pos, +pos,
-	};
-	const std::array<GLfloat, 12> topFace{
-		-pos, +pos, +pos,
-		+pos, +pos, +pos,
-		+pos, +pos, -pos,
-		-pos, +pos, -pos,
-	};
-	const std::array<GLfloat, 12> bottomFace{
-		-pos, -pos, -pos,
-		+pos, -pos, -pos,
-		+pos, -pos, +pos,
-		-pos, -pos, +pos,
-	};
-} // namespace cubeFaces
-
-namespace xBlockFaces {
-
-	const std::array<GLfloat, 12> xFace1{
-		-pos, -pos, -pos,
-		+pos, -pos, +pos,
-		+pos, +pos, +pos,
-		-pos, +pos, -pos,
-	};
-	const std::array<GLfloat, 12> xFace2{
-		-pos, -pos, +pos,
-		+pos, -pos, -pos,
-		+pos, +pos, -pos,
-		-pos, +pos, +pos,
-	};
-} // namespace xBlockFaces
-
-namespace cactusFaces {
-
-	const static float bias = 1 / 16.0f * 0.3f;
-
-	const std::array<GLfloat, 12> frontFace{
-		-pos, -pos, +pos - bias,
-		+pos, -pos, +pos - bias,
-		+pos, +pos, +pos - bias,
-		-pos, +pos, +pos - bias,
-	};
-	const std::array<GLfloat, 12> backFace{
-		+pos, -pos, -pos + bias,
-		-pos, -pos, -pos + bias,
-		-pos, +pos, -pos + bias,
-		+pos, +pos, -pos + bias,
-	};
-	const std::array<GLfloat, 12> leftFace{
-		-pos + bias, -pos, -pos,
-		-pos + bias, -pos, +pos,
-		-pos + bias, +pos, +pos,
-		-pos + bias, +pos, -pos,
-	};
-	const std::array<GLfloat, 12> rightFace{
-		+pos - bias, -pos, +pos,
-		+pos - bias, -pos, -pos,
-		+pos - bias, +pos, -pos,
-		+pos - bias, +pos, +pos,
-	};
-	const std::array<GLfloat, 12> topFace{
-		-pos, +pos, +pos,
-		+pos, +pos, +pos,
-		+pos, +pos, -pos,
-		-pos, +pos, -pos,
-	};
-	const std::array<GLfloat, 12> bottomFace{
-		-pos, -pos, -pos,
-		+pos, -pos, -pos,
-		+pos, -pos, +pos,
-		-pos, -pos, +pos,
-	};
-} // namespace cactusFaces
-
-namespace {
-
-	const std::array<GLfloat, 12> shadow{
-		-pos, -1.7 * pos, -pos,
-		+pos, -1.7 * pos, -pos,
-		+pos, -1.7 * pos, +pos,
-		-pos, -1.7 * pos, +pos,
-	};
-} // namespace
 
 DroppedItemsBuilder::DroppedItemsBuilder(DroppedItemsManager &droppedItemsManager, DroppedItemsMesh &droppedItemsMesh)
 	: m_pDroppedItemsManager{ &droppedItemsManager },
@@ -129,92 +23,160 @@ DroppedItemsBuilder::DroppedItemsBuilder(DroppedItemsManager &droppedItemsManage
 {
 }
 
-void DroppedItemsBuilder::buildMesh()
+void DroppedItemsBuilder::buildMesh(World * world)
 {
-	auto &items = m_pDroppedItemsManager->getDroppedItems();
-
-	for (auto &item : items) {
-		ChunkBlock block(item.getItemStack().getMaterial().toBlockID());
-		auto &data = block.getData();
+	for (auto &item : m_pDroppedItemsManager->getDroppedItems()) {
 		auto position = item.position;
-
+		// if player is far from item then item isn't being drawn
 		if (
-			glm::pow(position.x - p_info.position.x, 2) +
-			glm::pow(position.y - p_info.position.y, 2) +
-			glm::pow(position.z - p_info.position.z, 2) >
-			glm::pow(g_Config.renderDistance * 16, 2)
+			glm::pow(position.x - g_PlayerInfo.player->position.x, 2) +
+			glm::pow(position.y - g_PlayerInfo.player->position.y, 2) +
+			glm::pow(position.z - g_PlayerInfo.player->position.z, 2) >
+			glm::pow(std::max(g_Config.renderDistance - 3, 1) * 16, 2)
 			) {
 			continue;
 		}
-		std::array<GLfloat, 8> texCoords;
 
-		if (data.meshType == BlockMeshType::Cube) {
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texBottomCoord);
-			m_pDroppedItemsMesh->addItem(cubeFaces::bottomFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texTopCoord);
-			m_pDroppedItemsMesh->addItem(cubeFaces::topFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(cubeFaces::leftFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(cubeFaces::rightFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(cubeFaces::frontFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(cubeFaces::backFace, texCoords, position);
-
-
-
-			//if (item.getAcceleration().y == 0.0f) {
-			//	texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(sf::Vector2i(1, 15));
-			//	m_pDroppedItemsMesh->addItem(shadow, texCoords, position);
-			//}
-		}
-		else if (data.meshType == BlockMeshType::X) {
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texTopCoord);
-			m_pDroppedItemsMesh->addItem(xBlockFaces::xFace1, texCoords, position);
-			m_pDroppedItemsMesh->addItem(xBlockFaces::xFace2, texCoords, position);
-
-
-
-			//if (item.getAcceleration().y == 0.0f) {
-			//	texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(sf::Vector2i(2, 15));
-			//	m_pDroppedItemsMesh->addItem(shadow, texCoords, position);
-			//}
-		}
-		else if (data.meshType == BlockMeshType::Cactus) {
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texBottomCoord);
-			m_pDroppedItemsMesh->addItem(cactusFaces::bottomFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texTopCoord);
-			m_pDroppedItemsMesh->addItem(cactusFaces::topFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(cactusFaces::leftFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(cactusFaces::rightFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(cactusFaces::frontFace, texCoords, position);
-
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(data.texSideCoord);
-			m_pDroppedItemsMesh->addItem(cactusFaces::backFace, texCoords, position);
-
-
-
-			//if (item.getAcceleration().y == 0.0f) {
-			//	texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(sf::Vector2i(1, 15));
-			//	m_pDroppedItemsMesh->addItem(shadow, texCoords, position);
-			//}
-		}
+		// add shadow texture
 		if (item.getAcceleration().y == 0.0f) {
-			texCoords = BlockDatabase::get().textureAtlas.getTextureCoords(sf::Vector2i(0, 15));
-			m_pDroppedItemsMesh->addItem(shadow, texCoords, position);
+			std::array<GLfloat, 8> texCoords;
+			BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, { 0, 15 });
+			m_pDroppedItemsMesh->addFace(shadow, texCoords, position);
+		}
+		else if (world) {
+			float newY = position.y + 0.3f;
+			for (int i = position.y - 1; i >= 0; --i) {
+				if (world->getBlock(position.x, i, position.z).getData().isCollidable == true) {
+					newY = i + 1.3f;
+					break;
+				}
+			}
+
+			std::array<GLfloat, 8> texCoords;
+			BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, { 0, 15 });
+			m_pDroppedItemsMesh->addFace(shadow, texCoords, { position.x, newY, position.z });
+		}
+
+		ChunkBlock block(item.getItemStack().getBlockId());
+
+		if (block.getData().meshType == BlockMeshType::Cube) {
+			buildCubeMesh(block, position);
+		}
+		else if (block.getData().meshType == BlockMeshType::Cactus) {
+			buildCactusMesh(block, position);
+		}
+		else { // X or Default
+			buildDefaultItemMesh(block, position);
+		}
+	}
+}
+
+void DroppedItemsBuilder::buildCubeMesh(ChunkBlock & block, glm::vec3& position)
+{
+	auto &data = block.getData();
+
+	std::array<GLfloat, 8> texCoords;
+
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texBottomCoord);
+	m_pDroppedItemsMesh->addFace(cubeFaces::bottomFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texTopCoord);
+	m_pDroppedItemsMesh->addFace(cubeFaces::topFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
+	m_pDroppedItemsMesh->addFace(cubeFaces::leftFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
+	m_pDroppedItemsMesh->addFace(cubeFaces::rightFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
+	m_pDroppedItemsMesh->addFace(cubeFaces::frontFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
+	m_pDroppedItemsMesh->addFace(cubeFaces::backFace, texCoords, position);
+}
+
+void DroppedItemsBuilder::buildCactusMesh(ChunkBlock & block, glm::vec3& position)
+{
+	auto &data = block.getData();
+
+	std::array<GLfloat, 8> texCoords;
+
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texBottomCoord);
+	m_pDroppedItemsMesh->addFace(cactusFaces::bottomFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texTopCoord);
+	m_pDroppedItemsMesh->addFace(cactusFaces::topFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
+	m_pDroppedItemsMesh->addFace(cactusFaces::leftFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
+	m_pDroppedItemsMesh->addFace(cactusFaces::rightFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
+	m_pDroppedItemsMesh->addFace(cactusFaces::frontFace, texCoords, position);
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
+	m_pDroppedItemsMesh->addFace(cactusFaces::backFace, texCoords, position);
+}
+
+void DroppedItemsBuilder::buildDefaultItemMesh(ChunkBlock & block, glm::vec3& position)
+{
+	auto &data = block.getData();
+
+	std::array<GLfloat, 8> texCoords;
+
+	position.y += 0.1f;
+
+	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texTopCoord);
+	m_pDroppedItemsMesh->addFace(defaultItemFaces::mainFace1, texCoords, position);
+	m_pDroppedItemsMesh->addFace(defaultItemFaces::mainFace2, texCoords, position);
+
+	auto pixels = BlockDatabase::get().textureAtlas.getIndivTexturePixels(data.texTopCoord);
+	position.x -= HALF_SIZE * defaultItemFaces::ENLARGEMENT_COEF;
+	position.y += HALF_SIZE * defaultItemFaces::ENLARGEMENT_COEF;
+	position.z -= defaultItemFaces::PIXEL_SIZE / 2.0f;
+
+	int indivTextureSize = BlockDatabase::get().textureAtlas.getIndivTextureSize();
+	float pixelSize = (1.0f / 16) / indivTextureSize; // 16 hardcored here
+
+	for (int y = 0; y < indivTextureSize; ++y) {
+		for (int x = 0; x < indivTextureSize; ++x) {
+			int index = y * indivTextureSize + x;
+			if (pixels[index]->a == 0.0f)
+				continue;
+
+			auto pixelTexCoords = texCoords;
+			//\
+					xMin 0 6\
+					xMax 2 4\
+					yMin 5 7\
+					yMax 1 3\
+					return { xMin, yMin, xMax, yMin, xMax, yMax, xMin, yMax };
+			pixelTexCoords[0] = pixelTexCoords[6] = pixelTexCoords[0] + x * pixelSize; // xMin
+			pixelTexCoords[2] = pixelTexCoords[4] = pixelTexCoords[0] + pixelSize; // xMax
+			pixelTexCoords[5] = pixelTexCoords[7] = pixelTexCoords[5] + y * pixelSize; // yMin
+			pixelTexCoords[1] = pixelTexCoords[3] = pixelTexCoords[5] + pixelSize; // yMax
+
+			auto pos = position;
+			pos.x += x * defaultItemFaces::PIXEL_SIZE;
+			pos.y -= (y + 1) * defaultItemFaces::PIXEL_SIZE;
+
+			if (x == 0)
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceLeft, pixelTexCoords, pos);
+			else if (pixels[index - 1]->a == 0.0f)
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceLeft, pixelTexCoords, pos);
+
+			if (x == indivTextureSize - 1)
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceRight, pixelTexCoords, pos);
+			else if (pixels[index + 1]->a == 0.0f)
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceRight, pixelTexCoords, pos);
+
+			if (y == 0)
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceTop, pixelTexCoords, pos);
+			else if (pixels[index - indivTextureSize]->a == 0.0f)
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceTop, pixelTexCoords, pos);
+
+			if (y == indivTextureSize - 1)
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceBottom, pixelTexCoords, pos);
+			else if (pixels[index + indivTextureSize]->a == 0.0f)
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceBottom, pixelTexCoords, pos);
+
+			//m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceLeft, pixelTexCoords, pos);
+			//m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceRight, pixelTexCoords, pos);
+			//m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceTop, pixelTexCoords, pos);
+			//m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceBottom, pixelTexCoords, pos);
 		}
 	}
 }

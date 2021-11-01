@@ -1,15 +1,15 @@
-/// @ref gtx_matrix_major_storage
-/// @file glm/gtx/matrix_major_storage.hpp
-///
-/// @see core (dependence)
-/// @see gtx_extented_min_max (dependence)
-///
-/// @defgroup gtx_matrix_major_storage GLM_GTX_matrix_major_storage
-/// @ingroup gtx
-///
-/// Include <glm/gtx/matrix_major_storage.hpp> to use the features of this extension.
-///
-/// Build matrices with specific matrix order, row or column
+// @ref gtx_matrix_major_storage
+// @file glm/gtx/matrix_major_storage.hpp
+//
+// @see core (dependence)
+// @see gtx_extented_min_max (dependence)
+//
+// @defgroup gtx_matrix_major_storage GLM_GTX_matrix_major_storage
+// @ingroup gtx
+//
+// Include <glm/gtx/matrix_major_storage.hpp> to use the features of this extension.
+//
+// Build matrices with specific matrix order, row or column
 
 #pragma once
 
@@ -26,8 +26,8 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_matrix_major_storage
-	/// @{
+	// @addtogroup gtx_matrix_major_storage
+	// @{
 
 	//! Build a row major matrix from row vectors.
 	//! From GLM_GTX_matrix_major_storage extension.
@@ -113,7 +113,7 @@ namespace glm
 	GLM_FUNC_DECL mat<4, 4, T, Q> colMajor4(
 		mat<4, 4, T, Q> const& m);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "matrix_major_storage.inl"

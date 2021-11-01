@@ -1,5 +1,4 @@
-#ifndef G_H_SHADER_H
-#define G_H_SHADER_H
+#pragma once
 
 #include "../Shaders/BasicShader.h"
 
@@ -11,5 +10,3 @@ private:
     void getUniforms() override;
     GLuint target;
 };
-
-#endif

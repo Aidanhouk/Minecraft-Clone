@@ -38,14 +38,14 @@ void ItemIconsBuilder::buildMesh()
 
 	if (m_pInventory->isInventoryOpened()) {
 		for (int i = 0; i < invSlots.size(); ++i) {
-			if (invSlots[i].item.getMaterial().id != Material::ID::Nothing) {
+			if (invSlots[i].item.getBlockId() != EMPTY_SLOT_ID) {
 				buildIcon(invSlots[i]);
 			}
 		}
 	}
 	else {
 		for (int i = 0; i < 9; ++i) {
-			if (invSlots[i].item.getMaterial().id != Material::ID::Nothing) {
+			if (invSlots[i].item.getBlockId() != EMPTY_SLOT_ID) {
 				buildToolbarIcon(invSlots[i], m_pInventory->getToolbarSlotsPos()[i]);
 			}
 		}
@@ -54,8 +54,8 @@ void ItemIconsBuilder::buildMesh()
 
 void ItemIconsBuilder::buildIcon(ItemSlot &slot)
 {
-	static const float RESX = g_renderSettings.resolutionX;
-	static const float RESY = g_renderSettings.resolutionY;
+	static const float RESX = g_RenderSettings.resolutionX;
+	static const float RESY = g_RenderSettings.resolutionY;
 
 	std::array<GLfloat, 12> vertexPos{
 		(slot.position.x)					/ RESX,	(RESY - slot.position.y)					/ RESY,	0.0f,
@@ -68,28 +68,29 @@ void ItemIconsBuilder::buildIcon(ItemSlot &slot)
 		vertex = vertex * 2 - 1.0f;
 	}
 
-	ChunkBlock block(slot.item.getMaterial().toBlockID());
+	ChunkBlock block(slot.item.getBlockId());
 	auto textureCoords = block.getData().texSideCoord;
 
-	auto texCoords = IconDatabase::get().textureAtlas.getTextureCoords(textureCoords);
+	std::array<GLfloat, 8> texCoords;
+	IconDatabase::get().textureAtlas.getTextureCoords(texCoords, textureCoords);
 
 	m_pItemIconsMesh->addIcon(vertexPos, texCoords);
 
 
 
 	int number = slot.item.getNumInStack();
-	/// Like in Minecraft
-	//if (number == 1)
-	//	return;
+	// Like in Minecraft
+	if (number == 1)
+		return;
 
 	int bias = m_toolbarSlotSize * 0.05f;
 
 	if (number >= 10) {
-		/// 1st digit
+		// 1st digit
 		buildDigit(number / 10, sf::Vector2i(
 			slot.position.x + m_invSlotSize - m_invSlotSize / 2.7f + bias,
 			RESY - slot.position.y - bias), m_invSlotSize);
-		/// 2nd digit
+		// 2nd digit
 		buildDigit(number % 10, sf::Vector2i(
 			slot.position.x + m_invSlotSize + bias,
 			RESY - slot.position.y - bias), m_invSlotSize);
@@ -103,8 +104,8 @@ void ItemIconsBuilder::buildIcon(ItemSlot &slot)
 
 void ItemIconsBuilder::buildToolbarIcon(ItemSlot & slot, sf::Vector2i &toolbarSlotPos)
 {
-	static const float RESX = g_renderSettings.resolutionX;
-	static const float RESY = g_renderSettings.resolutionY;
+	static const float RESX = g_RenderSettings.resolutionX;
+	static const float RESY = g_RenderSettings.resolutionY;
 
 	std::array<GLfloat, 12> vertexPos{
 		(toolbarSlotPos.x)						/ RESX, (RESY - toolbarSlotPos.y)						/ RESY,	0.0f,
@@ -117,28 +118,29 @@ void ItemIconsBuilder::buildToolbarIcon(ItemSlot & slot, sf::Vector2i &toolbarSl
 		vertex = vertex * 2 - 1.0f;
 	}
 
-	ChunkBlock block(slot.item.getMaterial().toBlockID());
+	ChunkBlock block(slot.item.getBlockId());
 	auto textureCoords = block.getData().texSideCoord;
 
-	auto texCoords = IconDatabase::get().textureAtlas.getTextureCoords(textureCoords);
+	std::array<GLfloat, 8> texCoords;
+	IconDatabase::get().textureAtlas.getTextureCoords(texCoords, textureCoords);
 
 	m_pItemIconsMesh->addIcon(vertexPos, texCoords);
 
 
 
 	int number = slot.item.getNumInStack();
-	/// Like in Minecraft
-	//if (number == 1)
-	//	return;
+	// Like in Minecraft
+	if (number == 1)
+		return;
 
 	int bias = m_toolbarSlotSize * 0.05f;
 
 	if (number >= 10) {
-		/// 1st digit
+		// 1st digit
 		buildDigit(number / 10, sf::Vector2i(
 			toolbarSlotPos.x + m_toolbarSlotSize - m_toolbarSlotSize / 2.7f + bias,
 			RESY - toolbarSlotPos.y - bias), m_toolbarSlotSize);
-		/// 2nd digit
+		// 2nd digit
 		buildDigit(number % 10, sf::Vector2i(
 			toolbarSlotPos.x + m_toolbarSlotSize + bias,
 			RESY - toolbarSlotPos.y - bias), m_toolbarSlotSize);
@@ -152,8 +154,8 @@ void ItemIconsBuilder::buildToolbarIcon(ItemSlot & slot, sf::Vector2i &toolbarSl
 
 void ItemIconsBuilder::buildDigit(int digit, sf::Vector2i rightBottomPos, float slotSize)
 {
-	static const float RESX = g_renderSettings.resolutionX;
-	static const float RESY = g_renderSettings.resolutionY;
+	static const float RESX = g_RenderSettings.resolutionX;
+	static const float RESY = g_RenderSettings.resolutionY;
 
 	float digitWidth = slotSize / 2.7f;
 	float digitHeight = digitWidth * 8 / 6;
@@ -178,8 +180,7 @@ void ItemIconsBuilder::buildDigit(int digit, sf::Vector2i rightBottomPos, float 
 	};
 
 	for (auto & textCoord : texCoords)
-		/// might change to textCoord /= IconDatabase::get().textureAtlas.getAtlasSize()
-		textCoord /= 4096.0f;
+		textCoord /= IconDatabase::get().textureAtlas.getAtlasSize();
 
 	m_pItemIconsMesh->addIcon(vertexPos, texCoords);
 }

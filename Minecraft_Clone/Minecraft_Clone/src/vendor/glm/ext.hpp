@@ -1,6 +1,6 @@
-/// @file glm/ext.hpp
-///
-/// @ref core (Dependence)
+// @file glm/ext.hpp
+//
+// @ref core (Dependence)
 
 #include "detail/setup.hpp"
 

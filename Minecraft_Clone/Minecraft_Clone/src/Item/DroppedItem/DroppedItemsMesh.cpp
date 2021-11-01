@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void DroppedItemsMesh::addItem(const std::array<GLfloat, 12> &verticesPosition,
+void DroppedItemsMesh::addFace(const std::array<GLfloat, 12> &verticesPosition,
 	const std::array<GLfloat, 8> &textureCoords,
 	const glm::vec3 &itemPosition)
 {
@@ -41,7 +41,8 @@ void DroppedItemsMesh::deleteData()
 	m_mesh.textureCoords.shrink_to_fit();
 	m_mesh.indices.shrink_to_fit();
 
-	m_model.deleteData();
+	// ???
+	//m_model.deleteData();
 }
 
 const Model &DroppedItemsMesh::getModel() const

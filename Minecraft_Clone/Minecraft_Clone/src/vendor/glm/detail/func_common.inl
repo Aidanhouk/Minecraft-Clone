@@ -1,5 +1,5 @@
-/// @ref core
-/// @file glm/detail/func_common.inl
+// @ref core
+// @file glm/detail/func_common.inl
 
 #include "../vector_relational.hpp"
 #include "compute_common.hpp"
@@ -464,11 +464,11 @@ namespace detail
 			modf(x.w, i.w));
 	}
 
-	//// Only valid if (INT_MIN <= x-y <= INT_MAX)
-	//// min(x,y)
+	/// Only valid if (INT_MIN <= x-y <= INT_MAX)
+	/// min(x,y)
 	//r = y + ((x - y) & ((x - y) >> (sizeof(int) *
 	//CHAR_BIT - 1)));
-	//// max(x,y)
+	/// max(x,y)
 	//r = x - ((x - y) & ((x - y) >> (sizeof(int) *
 	//CHAR_BIT - 1)));
 

@@ -1,14 +1,14 @@
-/// @ref gtx_vec_swizzle
-/// @file glm/gtx/vec_swizzle.hpp
-///
-/// @see core (dependence)
-///
-/// @defgroup gtx_vec_swizzle GLM_GTX_vec_swizzle
-/// @ingroup gtx
-///
-/// Include <glm/gtx/vec_swizzle.hpp> to use the features of this extension.
-///
-/// Functions to perform swizzle operation.
+// @ref gtx_vec_swizzle
+// @file glm/gtx/vec_swizzle.hpp
+//
+// @see core (dependence)
+//
+// @defgroup gtx_vec_swizzle GLM_GTX_vec_swizzle
+// @ingroup gtx
+//
+// Include <glm/gtx/vec_swizzle.hpp> to use the features of this extension.
+//
+// Functions to perform swizzle operation.
 
 #pragma once
 

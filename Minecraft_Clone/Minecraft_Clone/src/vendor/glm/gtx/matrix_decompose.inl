@@ -1,4 +1,4 @@
-/// @ref gtx_matrix_decompose
+// @ref gtx_matrix_decompose
 
 #include "../gtc/constants.hpp"
 #include "../gtc/epsilon.hpp"
@@ -6,7 +6,7 @@
 namespace glm{
 namespace detail
 {
-	/// Make a linear combination of two vectors and return the result.
+	// Make a linear combination of two vectors and return the result.
 	// result = (a * ascl) + (b * bscl)
 	template<typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER vec<3, T, Q> combine(
@@ -49,7 +49,7 @@ namespace detail
 			PerspectiveMatrix[i][3] = static_cast<T>(0);
 		PerspectiveMatrix[3][3] = static_cast<T>(1);
 
-		/// TODO: Fixme!
+		// TODO: Fixme!
 		if(epsilonEqual(determinant(PerspectiveMatrix), static_cast<T>(0), epsilon<T>()))
 			return false;
 

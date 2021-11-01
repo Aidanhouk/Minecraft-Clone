@@ -65,9 +65,9 @@ Rain::Rain()
 	vertexCoords.reserve(12 * 8 * 30);
 	int numberOfTextures = 0;
 	int bias;
-	/// Distance between textures
+	// Distance between textures
 	const float distBetwTex = 0.5f;
-	/// Distance between diagonal textures
+	// Distance between diagonal textures
 	const float diagTexDist = distBetwTex * 0.707f;
 	//const int biasCoeffMin = 0, biasCoeffMax = 0;
 	const int biasCoeffMin = -10, biasCoeffMax = 10;
@@ -125,12 +125,12 @@ Rain::Rain()
 	/*
 		++numberOfTextures;
 		bias = m_random.intInRange(biasCoeffMin, biasCoeffMax);
-		/// front
+		// front
 		for (int j = 0; j < 12; ++j) {
-			/// x
+			// x
 			if (j % 3 == 0)
 				vertexCoords.emplace_back(frontCoords[j] + bias * distBetwTex);
-			/// z
+			// z
 			else if ((j + 1) % 3 == 0)
 				vertexCoords.emplace_back(frontCoords[j] - i * distBetwTex);
 			else
@@ -139,12 +139,12 @@ Rain::Rain()
 
 		++numberOfTextures;
 		bias = m_random.intInRange(biasCoeffMin, biasCoeffMax);
-		/// front-right
+		// front-right
 		for (int j = 0; j < 12; ++j) {
-			/// x
+			// x
 			if (j % 3 == 0)
 				vertexCoords.emplace_back(frontRightCoords[j] + i * diagTexDist + bias * diagTexDist);
-			/// z
+			// z
 			else if ((j + 1) % 3 == 0)
 				vertexCoords.emplace_back(frontRightCoords[j] - i * diagTexDist + bias * diagTexDist);
 			else
@@ -153,12 +153,12 @@ Rain::Rain()
 
 		++numberOfTextures;
 		bias = m_random.intInRange(biasCoeffMin, biasCoeffMax);
-		/// right
+		// right
 		for (int j = 0; j < 12; ++j) {
-			/// x
+			// x
 			if (j % 3 == 0)
 				vertexCoords.emplace_back(rightCoords[j] + i * distBetwTex);
-			/// z
+			// z
 			else if ((j + 1) % 3 == 0)
 				vertexCoords.emplace_back(rightCoords[j] + bias * distBetwTex);
 			else
@@ -167,12 +167,12 @@ Rain::Rain()
 
 		++numberOfTextures;
 		bias = m_random.intInRange(biasCoeffMin, biasCoeffMax);
-		/// right-back
+		// right-back
 		for (int j = 0; j < 12; ++j) {
-			/// x
+			// x
 			if (j % 3 == 0)
 				vertexCoords.emplace_back(rightBackCoords[j] + i * diagTexDist + bias * diagTexDist);
-			/// z
+			// z
 			else if ((j + 1) % 3 == 0)
 				vertexCoords.emplace_back(rightBackCoords[j] + i * diagTexDist - bias * diagTexDist);
 			else
@@ -181,12 +181,12 @@ Rain::Rain()
 
 		++numberOfTextures;
 		bias = m_random.intInRange(biasCoeffMin, biasCoeffMax);
-		/// back
+		// back
 		for (int j = 0; j < 12; ++j) {
-			/// x
+			// x
 			if (j % 3 == 0)
 				vertexCoords.emplace_back(backCoords[j] + bias * distBetwTex);
-			/// z
+			// z
 			else if ((j + 1) % 3 == 0)
 				vertexCoords.emplace_back(backCoords[j] + i * distBetwTex);
 			else
@@ -195,12 +195,12 @@ Rain::Rain()
 
 		++numberOfTextures;
 		bias = m_random.intInRange(biasCoeffMin, biasCoeffMax);
-		/// back-left
+		// back-left
 		for (int j = 0; j < 12; ++j) {
-			/// x
+			// x
 			if (j % 3 == 0)
 				vertexCoords.emplace_back(backLeftCoords[j] - i * diagTexDist + bias * diagTexDist);
-			/// z
+			// z
 			else if ((j + 1) % 3 == 0)
 				vertexCoords.emplace_back(backLeftCoords[j] + i * diagTexDist + bias * diagTexDist);
 			else
@@ -209,12 +209,12 @@ Rain::Rain()
 
 		++numberOfTextures;
 		bias = m_random.intInRange(biasCoeffMin, biasCoeffMax);
-		/// left
+		// left
 		for (int j = 0; j < 12; ++j) {
-			/// x
+			// x
 			if (j % 3 == 0)
 				vertexCoords.emplace_back(leftCoords[j] - i * distBetwTex);
-			/// z
+			// z
 			else if ((j + 1) % 3 == 0)
 				vertexCoords.emplace_back(leftCoords[j] + bias * distBetwTex);
 			else
@@ -223,12 +223,12 @@ Rain::Rain()
 
 		++numberOfTextures;
 		bias = m_random.intInRange(biasCoeffMin, biasCoeffMax);
-		/// left-front
+		// left-front
 		for (int j = 0; j < 12; ++j) {
-			/// x
+			// x
 			if (j % 3 == 0)
 				vertexCoords.emplace_back(leftFrontCoords[j] - i * diagTexDist + bias * diagTexDist);
-			/// z
+			// z
 			else if ((j + 1) % 3 == 0)
 				vertexCoords.emplace_back(leftFrontCoords[j] - i * diagTexDist - bias * diagTexDist);
 			else
@@ -265,24 +265,24 @@ void Rain::addVertexCoord(std::vector<GLfloat> &verteciesMesh,
 	const std::vector<GLfloat> &verteciesTexture, float biasX, float biasZ)
 {
 	for (int j = 0; j < 12; ++j) {
-		/// x
+		// x
 		if (j % 3 == 0)
 			verteciesMesh.emplace_back(verteciesTexture[j] + biasX);
-		/// z
+		// z
 		else if ((j + 1) % 3 == 0)
 			verteciesMesh.emplace_back(verteciesTexture[j] + biasZ);
-		/// y
+		// y
 		else
 			verteciesMesh.emplace_back(verteciesTexture[j]);
 	}
 }
 
-void Rain::Render(const Camera& camera, glm::vec3 pos)
+void Rain::Render(const Camera& camera, glm::vec3 pos, float precipitationVisibility)
 {
 	m_shader.useProgram();
 	m_snowModel.bindVAO();
 	m_texture.bindTexture();
-	m_movement += g_info.deltaTime * 6.0f;
+	m_movement += g_Info.deltaTime * 6.0f;
 
 	if (m_movement > 2.0f) {
 		m_movement = 0.0f;
@@ -302,8 +302,8 @@ void Rain::Render(const Camera& camera, glm::vec3 pos)
 	m_shader.loadModelMatrix(glm::translate(glm::mat4(1.0f),
 		glm::vec3(m_oldPos.x, m_oldPos.y - m_movement, m_oldPos.z)));
 	m_shader.loadProjectionViewMatrix(camera.getProjectionViewMatrix());
-
-	m_shader.loadLighting(g_info.lighting);
+	m_shader.loadLighting(g_Info.lighting);
+	m_shader.loadVisibility(precipitationVisibility);
 
 	GL::drawElements(m_snowModel.getIndicesCount());
 }

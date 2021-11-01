@@ -1,23 +1,22 @@
 #include "Keyboard.h"
 
 Keyboard::Keyboard()
+	:m_recentlyReleased{ sf::Keyboard::KeyCount }
 {
-    std::fill(m_keys.begin(), m_keys.end(), false);
+    std::fill(m_keys.begin(), m_keys.end(), KeyState::NOT_PRESSED);
 }
 
-void Keyboard::update(sf::Event e)
+void Keyboard::update(sf::Event& e)
 {
-    m_recentlyReleased = sf::Keyboard::KeyCount;
     switch (e.type) {
+		case sf::Event::KeyPressed:
+			if (m_keys[e.key.code] != KeyState::PRESSED_AND_USED)
+				m_keys[e.key.code] = KeyState::PRESSED;
+			break;
         case sf::Event::KeyReleased:
-            m_keys[e.key.code] = false;
+			m_recentlyReleased = e.key.code;
+			m_keys[e.key.code] = KeyState::NOT_PRESSED;
             break;
-
-        case sf::Event::KeyPressed:
-            m_recentlyReleased = e.key.code;
-            m_keys[e.key.code] = true;
-            break;
-
         default:
             break;
     }
@@ -25,10 +24,27 @@ void Keyboard::update(sf::Event e)
 
 bool Keyboard::isKeyDown(sf::Keyboard::Key key) const
 {
-    return m_keys[key];
+    return m_keys[key] == KeyState::PRESSED;
 }
 
-bool Keyboard::keyReleased(sf::Keyboard::Key key) const
+bool Keyboard::toggle(sf::Keyboard::Key key)
 {
-    return m_recentlyReleased == key;
+	if (m_keys[key] == KeyState::PRESSED) {
+		m_keys[key] = KeyState::PRESSED_AND_USED;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool Keyboard::isKeyReleased(sf::Keyboard::Key key)
+{
+	if (m_recentlyReleased == key) {
+		m_recentlyReleased = sf::Keyboard::KeyCount;
+		return true;
+	}
+	else {
+		return false;
+	}
 }

@@ -1,5 +1,4 @@
-#ifndef PROC_SKY_SHADER_H
-#define PROC_SKY_SHADER_H
+#pragma once
 
 #include "../BasicShader.h"
 
@@ -18,5 +17,3 @@ private:
     GLuint m_locationView;
 	GLfloat m_light;
 };
-
-#endif

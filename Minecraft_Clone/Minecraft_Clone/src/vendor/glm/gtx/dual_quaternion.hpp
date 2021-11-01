@@ -1,17 +1,17 @@
-/// @ref gtx_dual_quaternion
-/// @file glm/gtx/dual_quaternion.hpp
-/// @author Maksim Vorobiev (msomeone@gmail.com)
-///
-/// @see core (dependence)
-/// @see gtc_constants (dependence)
-/// @see gtc_quaternion (dependence)
-///
-/// @defgroup gtx_dual_quaternion GLM_GTX_dual_quaternion
-/// @ingroup gtx
-///
-/// Include <glm/gtx/dual_quaternion.hpp> to use the features of this extension.
-///
-/// Defines a templated dual-quaternion type and several dual-quaternion operations.
+// @ref gtx_dual_quaternion
+// @file glm/gtx/dual_quaternion.hpp
+// @author Maksim Vorobiev (msomeone@gmail.com)
+//
+// @see core (dependence)
+// @see gtc_constants (dependence)
+// @see gtc_quaternion (dependence)
+//
+// @defgroup gtx_dual_quaternion GLM_GTX_dual_quaternion
+// @ingroup gtx
+//
+// Include <glm/gtx/dual_quaternion.hpp> to use the features of this extension.
+//
+// Defines a templated dual-quaternion type and several dual-quaternion operations.
 
 #pragma once
 
@@ -30,8 +30,8 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_dual_quaternion
-	/// @{
+	// @addtogroup gtx_dual_quaternion
+	// @{
 
 	template<typename T, qualifier Q = defaultp>
 	struct tdualquat
@@ -48,7 +48,7 @@ namespace glm
 		// -- Component accesses --
 
 		typedef length_t length_type;
-		/// Return the count of components of a dual quaternion
+		// Return the count of components of a dual quaternion
 		GLM_FUNC_DECL static GLM_CONSTEXPR length_type length(){return 2;}
 
 		GLM_FUNC_DECL part_type & operator[](length_type i);
@@ -132,112 +132,112 @@ namespace glm
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL bool operator!=(tdualquat<T, Q> const& q1, tdualquat<T, Q> const& q2);
 
-	/// Creates an identity dual quaternion.
-	///
-	/// @see gtx_dual_quaternion
+	// Creates an identity dual quaternion.
+	//
+	// @see gtx_dual_quaternion
 	template <typename T, qualifier Q>
 	GLM_FUNC_DECL tdualquat<T, Q> dual_quat_identity();
 
-	/// Returns the normalized quaternion.
-	///
-	/// @see gtx_dual_quaternion
+	// Returns the normalized quaternion.
+	//
+	// @see gtx_dual_quaternion
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL tdualquat<T, Q> normalize(tdualquat<T, Q> const& q);
 
-	/// Returns the linear interpolation of two dual quaternion.
-	///
-	/// @see gtc_dual_quaternion
+	// Returns the linear interpolation of two dual quaternion.
+	//
+	// @see gtc_dual_quaternion
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL tdualquat<T, Q> lerp(tdualquat<T, Q> const& x, tdualquat<T, Q> const& y, T const& a);
 
-	/// Returns the q inverse.
-	///
-	/// @see gtx_dual_quaternion
+	// Returns the q inverse.
+	//
+	// @see gtx_dual_quaternion
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL tdualquat<T, Q> inverse(tdualquat<T, Q> const& q);
 
-	/// Converts a quaternion to a 2 * 4 matrix.
-	///
-	/// @see gtx_dual_quaternion
+	// Converts a quaternion to a 2 * 4 matrix.
+	//
+	// @see gtx_dual_quaternion
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL mat<2, 4, T, Q> mat2x4_cast(tdualquat<T, Q> const& x);
 
-	/// Converts a quaternion to a 3 * 4 matrix.
-	///
-	/// @see gtx_dual_quaternion
+	// Converts a quaternion to a 3 * 4 matrix.
+	//
+	// @see gtx_dual_quaternion
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL mat<3, 4, T, Q> mat3x4_cast(tdualquat<T, Q> const& x);
 
-	/// Converts a 2 * 4 matrix (matrix which holds real and dual parts) to a quaternion.
-	///
-	/// @see gtx_dual_quaternion
+	// Converts a 2 * 4 matrix (matrix which holds real and dual parts) to a quaternion.
+	//
+	// @see gtx_dual_quaternion
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL tdualquat<T, Q> dualquat_cast(mat<2, 4, T, Q> const& x);
 
-	/// Converts a 3 * 4 matrix (augmented matrix rotation + translation) to a quaternion.
-	///
-	/// @see gtx_dual_quaternion
+	// Converts a 3 * 4 matrix (augmented matrix rotation + translation) to a quaternion.
+	//
+	// @see gtx_dual_quaternion
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL tdualquat<T, Q> dualquat_cast(mat<3, 4, T, Q> const& x);
 
 
-	/// Dual-quaternion of low single-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of low single-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef tdualquat<float, lowp>		lowp_dualquat;
 
-	/// Dual-quaternion of medium single-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of medium single-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef tdualquat<float, mediump>	mediump_dualquat;
 
-	/// Dual-quaternion of high single-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of high single-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef tdualquat<float, highp>		highp_dualquat;
 
 
-	/// Dual-quaternion of low single-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of low single-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef tdualquat<float, lowp>		lowp_fdualquat;
 
-	/// Dual-quaternion of medium single-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of medium single-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef tdualquat<float, mediump>	mediump_fdualquat;
 
-	/// Dual-quaternion of high single-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of high single-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef tdualquat<float, highp>		highp_fdualquat;
 
 
-	/// Dual-quaternion of low double-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of low double-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef tdualquat<double, lowp>		lowp_ddualquat;
 
-	/// Dual-quaternion of medium double-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of medium double-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef tdualquat<double, mediump>	mediump_ddualquat;
 
-	/// Dual-quaternion of high double-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of high double-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef tdualquat<double, highp>	highp_ddualquat;
 
 
 #if(!defined(GLM_PRECISION_HIGHP_FLOAT) && !defined(GLM_PRECISION_MEDIUMP_FLOAT) && !defined(GLM_PRECISION_LOWP_FLOAT))
-	/// Dual-quaternion of floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef highp_fdualquat			dualquat;
 
-	/// Dual-quaternion of single-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of single-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef highp_fdualquat			fdualquat;
 #elif(defined(GLM_PRECISION_HIGHP_FLOAT) && !defined(GLM_PRECISION_MEDIUMP_FLOAT) && !defined(GLM_PRECISION_LOWP_FLOAT))
 	typedef highp_fdualquat			dualquat;
@@ -254,9 +254,9 @@ namespace glm
 
 
 #if(!defined(GLM_PRECISION_HIGHP_DOUBLE) && !defined(GLM_PRECISION_MEDIUMP_DOUBLE) && !defined(GLM_PRECISION_LOWP_DOUBLE))
-	/// Dual-quaternion of default double-qualifier floating-point numbers.
-	///
-	/// @see gtx_dual_quaternion
+	// Dual-quaternion of default double-qualifier floating-point numbers.
+	//
+	// @see gtx_dual_quaternion
 	typedef highp_ddualquat			ddualquat;
 #elif(defined(GLM_PRECISION_HIGHP_DOUBLE) && !defined(GLM_PRECISION_MEDIUMP_DOUBLE) && !defined(GLM_PRECISION_LOWP_DOUBLE))
 	typedef highp_ddualquat			ddualquat;
@@ -268,7 +268,7 @@ namespace glm
 #	error "GLM error: Multiple default precision requested for double-precision floating-point types"
 #endif
 
-	/// @}
+	// @}
 } //namespace glm
 
 #include "dual_quaternion.inl"

@@ -1,4 +1,4 @@
-/// @ref gtx_number_precision
+// @ref gtx_number_precision
 
 namespace glm
 {

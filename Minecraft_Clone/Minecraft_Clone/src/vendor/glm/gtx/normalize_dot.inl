@@ -1,4 +1,4 @@
-/// @ref gtx_normalize_dot
+// @ref gtx_normalize_dot
 
 namespace glm
 {

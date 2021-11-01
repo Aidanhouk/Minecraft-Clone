@@ -1,5 +1,4 @@
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
+#pragma once
 
 #include <GL/glew.h>
 
@@ -21,5 +20,3 @@ private:
     GLuint m_colTex;
     GLuint m_depTex;
 };
-
-#endif

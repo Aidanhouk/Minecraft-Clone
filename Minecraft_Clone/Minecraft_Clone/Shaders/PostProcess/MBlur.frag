@@ -27,7 +27,7 @@ void main()
 	
 	float maxVelocity = 0.05;
 	vec2 pixel = 1.0 / resolution;
-	vec2 velocity = (currentPos.xy - previousPos.xy) * 0.05;
+	vec2 velocity = (currentPos.xy - previousPos.xy) * 0.10;
 	velocity = clamp(velocity, vec2(-maxVelocity), vec2(maxVelocity));
 	vec2 sampleStep = velocity / SAMPLES;
 	

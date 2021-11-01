@@ -1,5 +1,4 @@
-#ifndef CHUNKRENDERER_H_INCLUDED
-#define CHUNKRENDERER_H_INCLUDED
+#pragma once
 
 #include <vector>
 
@@ -19,5 +18,3 @@ private:
 
     ChunkShader m_shader;
 };
-
-#endif // CHUNKRENDERER_H_INCLUDED

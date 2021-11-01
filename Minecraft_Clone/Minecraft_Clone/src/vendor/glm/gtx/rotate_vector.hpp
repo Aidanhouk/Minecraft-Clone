@@ -1,15 +1,15 @@
-/// @ref gtx_rotate_vector
-/// @file glm/gtx/rotate_vector.hpp
-///
-/// @see core (dependence)
-/// @see gtx_transform (dependence)
-///
-/// @defgroup gtx_rotate_vector GLM_GTX_rotate_vector
-/// @ingroup gtx
-///
-/// Include <glm/gtx/rotate_vector.hpp> to use the features of this extension.
-///
-/// Function to directly rotate a vector
+// @ref gtx_rotate_vector
+// @file glm/gtx/rotate_vector.hpp
+//
+// @see core (dependence)
+// @see gtx_transform (dependence)
+//
+// @defgroup gtx_rotate_vector GLM_GTX_rotate_vector
+// @ingroup gtx
+//
+// Include <glm/gtx/rotate_vector.hpp> to use the features of this extension.
+//
+// Function to directly rotate a vector
 
 #pragma once
 
@@ -29,16 +29,16 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_rotate_vector
-	/// @{
+	// @addtogroup gtx_rotate_vector
+	// @{
 
-	/// Returns Spherical interpolation between two vectors
-	///
-	/// @param x A first vector
-	/// @param y A second vector
-	/// @param a Interpolation factor. The interpolation is defined beyond the range [0, 1].
-	///
-	/// @see gtx_rotate_vector
+	// Returns Spherical interpolation between two vectors
+	//
+	// @param x A first vector
+	// @param y A second vector
+	// @param a Interpolation factor. The interpolation is defined beyond the range [0, 1].
+	//
+	// @see gtx_rotate_vector
 	template<typename T, qualifier Q>
 	GLM_FUNC_DECL vec<3, T, Q> slerp(
 		vec<3, T, Q> const& x,
@@ -117,7 +117,7 @@ namespace glm
 		vec<3, T, Q> const& Normal,
 		vec<3, T, Q> const& Up);
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "rotate_vector.inl"

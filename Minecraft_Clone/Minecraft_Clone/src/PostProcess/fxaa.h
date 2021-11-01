@@ -1,5 +1,4 @@
-#ifndef FXAA_H
-#define FXAA_H
+#pragma once
 
 #include "../Shaders/BasicShader.h"
 
@@ -11,5 +10,3 @@ private:
     void getUniforms() override;
     GLuint m_res;
 };
-
-#endif

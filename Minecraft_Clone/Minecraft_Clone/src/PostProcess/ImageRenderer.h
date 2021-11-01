@@ -1,5 +1,4 @@
-#ifndef IMAGE_RENDERER_H
-#define IMAGE_RENDERER_H
+#pragma once
 
 #include "../GL/GLFunctions.h"
 #include "Framebuffer.h"
@@ -17,5 +16,3 @@ public:
     FrameBufferObject fbo;
 private:
 };
-
-#endif

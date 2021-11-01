@@ -1,5 +1,4 @@
-#ifndef NON_MOVE
-#define NON_MOVE
+#pragma once
 
 class NonMovable {
   public:
@@ -10,5 +9,3 @@ class NonMovable {
   protected:
     NonMovable() = default;
 };
-
-#endif // NON_MOVE

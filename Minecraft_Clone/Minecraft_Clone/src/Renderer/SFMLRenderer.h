@@ -1,5 +1,4 @@
-#ifndef SFMLRENDERER_H_INCLUDED
-#define SFMLRENDERER_H_INCLUDED
+#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -16,5 +15,3 @@ private:
 	std::vector<const sf::Drawable *> m_draws;
 	std::vector<const sf::Drawable *> m_drawsOverInterface;
 };
-
-#endif // SFMLRENDERER_H_INCLUDED

@@ -1,5 +1,4 @@
-#ifndef CHUNKSHADER_H_INCLUDED
-#define CHUNKSHADER_H_INCLUDED
+#pragma once
 
 #include "BasicShader.h"
 
@@ -9,10 +8,12 @@ class ChunkShader : public BasicShader {
 
 	void loadLighting(float light);
 	void loadDTime(float dayTime);
+	void loadFog(bool fog);
+	void loadFogDensity(float density);
   private:
     void getUniforms() override;
-	GLuint lighting;
-	GLuint dtime;
+	GLuint m_lighting;
+	GLuint m_dtime;
+	GLboolean m_fog;
+	GLfloat m_fogDensity;
 };
-
-#endif // CHUNKSHADER_H_INCLUDED

@@ -1,0 +1,23 @@
+Name
+DiamondOre
+
+Id
+52
+
+TexAll
+13 3
+
+Opaque
+1
+
+MeshType
+0
+
+ShaderType
+0
+
+Collidable
+1
+
+Hardness
+15

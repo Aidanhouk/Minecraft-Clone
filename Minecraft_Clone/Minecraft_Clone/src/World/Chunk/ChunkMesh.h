@@ -1,5 +1,4 @@
-#ifndef CHUNKMESH_H_INCLUDED
-#define CHUNKMESH_H_INCLUDED
+#pragma once
 
 #include "../../Model.h"
 
@@ -23,7 +22,7 @@ public:
 
     void deleteData();
 
-    int faces = 0;
+	int faces = 0;
 
 private:
     Mesh m_mesh;
@@ -37,5 +36,3 @@ struct ChunkMeshCollection {
     ChunkMesh waterMesh;
     ChunkMesh floraMesh;
 };
-
-#endif // CHUNKMESH_H_INCLUDED

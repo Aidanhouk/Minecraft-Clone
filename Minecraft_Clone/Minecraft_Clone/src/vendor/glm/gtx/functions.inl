@@ -1,4 +1,4 @@
-/// @ref gtx_functions
+// @ref gtx_functions
 
 #include "../exponential.hpp"
 

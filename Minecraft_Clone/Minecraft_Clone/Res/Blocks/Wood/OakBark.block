@@ -1,0 +1,29 @@
+Name
+Oak Bark
+
+Id
+4
+
+TexTop
+11 0
+
+TexSide
+10 0
+
+TexBottom
+11 0
+
+Opaque
+1
+
+MeshType
+0
+
+ShaderType
+0
+
+Collidable
+1
+
+Hardness
+3

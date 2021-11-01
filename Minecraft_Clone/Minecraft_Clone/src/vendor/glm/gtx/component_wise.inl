@@ -1,4 +1,4 @@
-/// @ref gtx_component_wise
+// @ref gtx_component_wise
 
 #include <limits>
 

@@ -1,5 +1,4 @@
-#ifndef RENDERINFO_H_INCLUDED
-#define RENDERINFO_H_INCLUDED
+#pragma once
 
 struct RenderInfo {
     GLuint vao = 0;
@@ -11,5 +10,3 @@ struct RenderInfo {
         indicesCount = 0;
     }
 };
-
-#endif // RENDERINFO_H_INCLUDED

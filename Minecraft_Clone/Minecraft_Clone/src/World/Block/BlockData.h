@@ -1,14 +1,22 @@
-#ifndef BLOCKDATA_H_INCLUDED
-#define BLOCKDATA_H_INCLUDED
+#pragma once
 
 #include "../../Util/NonCopyable.h"
 #include "BlockId.h"
 #include <SFML/Graphics.hpp>
 
+// this should be refactored to much more classes with inheritance and so on
+enum class ItemType {
+	Default = 0,
+	Block = 1,
+	Tool = 2,
+	Food = 3,
+};
+
 enum class BlockMeshType {
     Cube = 0,
     X = 1,
 	Cactus = 2,
+	Default = 3,
 };
 
 enum class BlockShaderType {
@@ -23,12 +31,17 @@ struct BlockDataHolder : public NonCopyable {
     sf::Vector2i texSideCoord;
     sf::Vector2i texBottomCoord;
 
+	ItemType itemType;
     BlockMeshType meshType;
     BlockShaderType shaderType;
 
     bool isOpaque;
     bool isCollidable;
+
 	float hardness;
+
+	int hunger;
+	float saturation;
 };
 
 class BlockData : public NonCopyable {
@@ -40,5 +53,3 @@ public:
 private:
     BlockDataHolder m_data;
 };
-
-#endif // BLOCKDATA_H_INCLUDED

@@ -10,7 +10,7 @@ class IconsMesh;
 
 class Renderer_2D {
 public:
-	void setMeshToDraw(const IconsMesh &iconsMesh);
+	void addMeshToDraw(const IconsMesh &iconsMesh);
 	void render();
 private:
 	const RenderInfo * m_mesh;

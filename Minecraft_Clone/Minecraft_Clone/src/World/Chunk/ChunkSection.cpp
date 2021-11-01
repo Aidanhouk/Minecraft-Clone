@@ -9,36 +9,73 @@
 #include <iostream>
 #include <thread>
 
-ChunkSection::ChunkSection(const sf::Vector3i &location, World &world)
+ChunkSection::ChunkSection(const sf::Vector3i &location, World *world)
     : m_aabb({CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE})
     , m_location(location)
-    , m_pWorld(&world)
+    , m_pWorld(world)
 {
     m_aabb.update({location.x * CHUNK_SIZE, location.y * CHUNK_SIZE,
                    location.z * CHUNK_SIZE});
 }
 
+ChunkSection::ChunkSection(ChunkSection && x)
+	: m_aabb({ CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE }),
+	m_blocks{ std::move(x.m_blocks) },
+	m_layers{ std::move(x.m_layers) },
+	m_meshes{ std::move(x.m_meshes) },
+	m_location{ x.m_location },
+	m_pWorld{ x.m_pWorld },
+	m_hasMesh{ x.m_hasMesh },
+	m_hasBufferedMesh{ x.m_hasBufferedMesh }
+{
+	m_aabb.update({ m_location.x * CHUNK_SIZE, m_location.y * CHUNK_SIZE,
+				   m_location.z * CHUNK_SIZE });
+	x.m_pWorld = nullptr;
+}
+
+ChunkSection & ChunkSection::operator=(ChunkSection && x)
+{
+	if (&x == this)
+		return *this;
+
+	m_blocks = std::move(x.m_blocks);
+	m_layers = std::move(x.m_layers);
+
+	m_meshes = std::move(x.m_meshes);
+
+	m_location = x.m_location;
+
+	m_pWorld = x.m_pWorld;
+	m_pWorld = nullptr;
+
+	m_hasMesh = x.m_hasMesh;
+
+	m_hasBufferedMesh = x.m_hasBufferedMesh;
+
+	return *this;
+}
+
 void ChunkSection::setBlock(int x, int y, int z, ChunkBlock block)
 {
-    if (outOfBounds(x) || outOfBounds(y) || outOfBounds(z)) {
-        auto location = toWorldPosition(x, y, z);
-        m_pWorld->setBlock(location.x, location.y, location.z, block);
-        return;
-    }
-
-    m_layers[y].update(block);
-
-    m_blocks[getIndex(x, y, z)] = block;
+	if (outOfBounds(x) || outOfBounds(y) || outOfBounds(z)) {
+	    auto location = toWorldPosition(x, y, z);
+	    m_pWorld->setBlock(location.x, y, location.z, block);
+	    return;
+	}
+	
+	m_layers[y].update(block);
+	
+	m_blocks[getIndex(x, y, z)] = block;
 }
 
 ChunkBlock ChunkSection::getBlock(int x, int y, int z) const
 {
-    if (outOfBounds(x) || outOfBounds(y) || outOfBounds(z)) {
-        auto location = toWorldPosition(x, y, z);
-        return m_pWorld->getBlock(location.x, location.y, location.z);
-    }
-
-    return m_blocks[getIndex(x, y, z)];
+	if (outOfBounds(x) || outOfBounds(y) || outOfBounds(z)) {
+	    auto location = toWorldPosition(x, y, z);
+	    return m_pWorld->getBlock(location.x, location.y, location.z);
+	}
+	
+	return m_blocks[getIndex(x, y, z)];
 }
 
 const sf::Vector3i ChunkSection::getLocation() const
@@ -58,8 +95,10 @@ bool ChunkSection::hasBuffered() const
 
 sf::Vector3i ChunkSection::toWorldPosition(int x, int y, int z) const
 {
-    return {m_location.x * CHUNK_SIZE + x, m_location.y * CHUNK_SIZE + y,
-            m_location.z * CHUNK_SIZE + z};
+    return {
+		m_location.x * CHUNK_SIZE + x,
+		m_location.y * CHUNK_SIZE + y,
+		m_location.z * CHUNK_SIZE + z};
 }
 
 void ChunkSection::makeMesh()

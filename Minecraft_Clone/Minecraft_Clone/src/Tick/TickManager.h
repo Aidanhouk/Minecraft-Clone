@@ -1,5 +1,4 @@
-#ifndef TICK_MANAGER_H
-#define TICK_MANAGER_H
+#pragma once
 
 #include "TickObject.h"
 #include <vector>
@@ -20,5 +19,3 @@ class TickManager
         std::vector<std::shared_ptr<TickObject>> m_tickObjects;
         unsigned int m_tickTime;
 };
-
-#endif

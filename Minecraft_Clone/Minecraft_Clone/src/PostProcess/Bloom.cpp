@@ -1,7 +1,9 @@
 #include "Bloom.h"
 
+#include "../RenderSettings.h"
+
 Bloom::Bloom()
-	: renderer(g_renderSettings.resolutionX, g_renderSettings.resolutionY)
+	: renderer(g_RenderSettings.resolutionX, g_RenderSettings.resolutionY)
 {}
 
 void Bloom::render(GLuint texture)

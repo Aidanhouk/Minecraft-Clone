@@ -165,9 +165,6 @@
     <ClCompile Include="src\Item\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Input\ToggleKey.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\GL\GLFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -193,9 +190,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Shaders\PostProcessShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Player\DamageMaster.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PostProcess\Antialiasing.cpp">
@@ -231,12 +225,6 @@
     <ClCompile Include="src\PostProcess\VerticalGaussian.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player\MovementFOV.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Inventory\Inventory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Player\PlayerInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -244,24 +232,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Shaders\Basic_2D_Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\Renderer_2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Inventory\ItemIcons\ItemIconsBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Inventory\ItemIcons\GrabbedItemDrawer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Inventory\IconsMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Inventory\IconDatabase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\world\Generation\Biome\ValleyBiome.cpp">
@@ -327,9 +297,6 @@
     <ClCompile Include="src\Renderer\DroppedItemsRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\States\BlockBreaker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Shaders\AimedBlock\DelineateShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -348,7 +315,91 @@
     <ClCompile Include="src\Renderer\HandRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player\Hand.cpp">
+    <ClCompile Include="src\Player\Calculations\SneakingCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\Calculations\MovementFOV.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\Calculations\CameraShaking.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\Generation\Structures\ClusterGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\BlockBreaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\Calculations\DamageMaster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\ToggleKey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\Generation\Seed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\Calculations\ScreenDarkening.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\PlayerHand\Hand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\PlayerHand\HandMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Environment\SnowfallMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Renderer_2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\ItemIcons\GrabbedItemDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\ItemIcons\ItemIconsBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\IconDatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\IconsMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\Inventory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\Generation\Caves\CavesGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\Generation\Caves\WormCave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Audio\SoundFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Audio\SoundMaster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Audio\Sound\Sound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Audio\Sound\SoundSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Audio\Music\Music.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Audio\Music\MusicSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1412,9 +1463,6 @@
     <ClInclude Include="src\Item\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Input\ToggleKey.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\GL\GLFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1440,9 +1488,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Shaders\PostProcessShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Player\DamageMaster.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\PostProcess\Antialiasing.h">
@@ -1478,12 +1523,6 @@
     <ClInclude Include="src\PostProcess\VerticalGaussian.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Player\MovementFOV.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Inventory\Inventory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Player\PlayerInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1491,24 +1530,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Shaders\Basic_2D_Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer\Renderer_2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Inventory\ItemIcons\ItemIconsBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Inventory\ItemIcons\GrabbedItemDrawer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Inventory\IconsMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Inventory\IconDatabase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\world\Generation\Biome\ValleyBiome.h">
@@ -1577,9 +1598,6 @@
     <ClInclude Include="src\Renderer\DroppedItemsRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\States\BlockBreaker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Shaders\AimedBlock\DelineateShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1598,7 +1616,106 @@
     <ClInclude Include="src\Renderer\HandRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Player\Hand.h">
+    <ClInclude Include="src\Player\PlayerConstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\Calculations\SneakingCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\Calculations\MovementFOV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\Calculations\CameraShaking.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\Generation\Structures\ClusterGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\BlockBreaker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\Calculations\DamageMaster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\ToggleKey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\Generation\Seed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\Calculations\ScreenDarkening.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\PlayerHand\Hand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\PlayerHand\HandMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Item\DroppedItem\Coordinates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\PlayerHand\HandAnimationData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\PlayerHand\HandData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Renderer_2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\Inventory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\ItemIcons\GrabbedItemDrawer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\ItemIcons\ItemIconsBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\IconDatabase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\IconsMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\Generation\Caves\WormCave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\Generation\Caves\CavesGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\SoundFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\SoundMaster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\Sound\Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\Sound\SoundId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\Sound\SoundSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\Music\MusicId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\Music\Music.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\Music\MusicSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\AudioSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\Mouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2011,27 +2128,5 @@
     <None Include="src\vendor\glm\detail\type_vec4_simd.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="Res\Blocks\Water.block" />
-    <None Include="Res\Blocks\Air.block" />
-    <None Include="Res\Blocks\BirchBark.block" />
-    <None Include="Res\Blocks\BirchLeaf.block" />
-    <None Include="Res\Blocks\Cactus.block" />
-    <None Include="Res\Blocks\DeadShrub.block" />
-    <None Include="Res\Blocks\Dirt.block" />
-    <None Include="Res\Blocks\Grass.block" />
-    <None Include="Res\Blocks\Ice.block" />
-    <None Include="Res\Blocks\OakBark.block" />
-    <None Include="Res\Blocks\OakLeaf.block" />
-    <None Include="Res\Blocks\PalmBark.block" />
-    <None Include="Res\Blocks\PalmLeaf.block" />
-    <None Include="Res\Blocks\Rose.block" />
-    <None Include="Res\Blocks\Sand.block" />
-    <None Include="Res\Blocks\Snow.block" />
-    <None Include="Res\Blocks\SpruceBark.block" />
-    <None Include="Res\Blocks\SpruceLeaf.block" />
-    <None Include="Res\Blocks\Stone.block" />
-    <None Include="Res\Blocks\SugarCane.block" />
-    <None Include="Res\Blocks\TallGrass.block" />
-    <None Include="Res\Blocks\Dandelion.block" />
   </ItemGroup>
 </Project>

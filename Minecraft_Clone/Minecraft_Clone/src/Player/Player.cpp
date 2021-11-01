@@ -3,42 +3,38 @@
 #include <SFML/Graphics.hpp>
 
 #include <iomanip>
-#include <iostream>
 #include <sstream>
+#include <memory>
+#include <thread>
 
 #include "../Input/Keyboard.h"
+#include "../Input/Mouse.h"
+#include "../Input/ToggleKey.h"
 #include "../Renderer/RenderMaster.h"
 #include "../World/World.h"
 #include "../RenderSettings.h"
 #include "PlayerInfo.h"
 #include "GlobalInfo.h"
-#include "Hand.h"
+#include "PlayerHand/Hand.h"
 #include "Application.h"
-
-#include "World/Generation/Terrain/ClassicOverWorldGenerator.h"
+#include "Audio/SoundMaster.h"
+#include "Audio/SoundFunctions.h"
+#include "PlayerConstants.h"
 
 #include <iostream>
 
 Player::Player(const Config &config, Application &app)
 	: Entity({ 2500, 125, 2500 }, { 0.0f, 0.0f, 0.0f }, { 0.3f, 1.0f, 0.3f }),
-	m_inventoryKey(sf::Keyboard::E),
-	m_throwItemKey(sf::Keyboard::Q),
-	m_flyKey(sf::Keyboard::F),
-	m_creativeKey(sf::Keyboard::Tab),
-	m_postProcKey(sf::Keyboard::P),
-	m_num1(sf::Keyboard::Num1),
-	m_num2(sf::Keyboard::Num2),
-	m_num3(sf::Keyboard::Num3),
-	m_num4(sf::Keyboard::Num4),
-	m_num5(sf::Keyboard::Num5),
-	m_num6(sf::Keyboard::Num6),
-	m_num7(sf::Keyboard::Num7),
-	m_num8(sf::Keyboard::Num8),
-	m_num9(sf::Keyboard::Num9),
 	m_acceleration(glm::vec3(0.f)),
 	m_movementFOV(config),
-	m_Inventory(*this, app)
+	m_Inventory(*this, app),
+	m_hp(MAX_HP),
+	m_hunger(MAX_HUNGER),
+	m_oxygen(MAX_OXYGEN),
+	m_saturationLevel(SATURATION_DEFAULT)
 {
+	g_PlayerInfo.player = this;
+
     m_font.loadFromFile("Res/Fonts/MinecraftRegular.otf");
 
 	m_playerInfo.setFont(m_font);
@@ -47,9 +43,9 @@ Player::Player(const Config &config, Application &app)
 	m_playerInfo.setPosition(0.0f, 50.0f * app.getWindow().getSize().x / 2560);
 }
 
-int Player::addItem(const Material &material, int number)
+int Player::addItem(BlockId blockID, int number)
 {
-	return m_Inventory.addItems(material, number);
+	return m_Inventory.addItems(blockID, number);
 }
 
 void Player::removeHeldItem(int number)
@@ -62,35 +58,61 @@ ItemStack &Player::getHeldItems()
     return m_Inventory.getHeldItems();
 }
 
-void Player::handleInput(const sf::RenderWindow &window, Keyboard &keyboard, Hand &hand, World &world)
+void Player::handleInput(const sf::RenderWindow &window, Mouse &mouse, Keyboard &keyboard, Hand &hand, World &world)
 {
 	keyboardInput(keyboard, world);
 	mouseInput(window);
 
-	p_info.position = position;
-
-	if (m_inventoryKey.isKeyPressed()) {
+	if (keyboard.toggle(sf::Keyboard::E)) {
 		m_Inventory.showOrHideInventory();
 	}
-
-	if (p_info.interfaceCursor) {
-		m_Inventory.mouseInput(window);
+	if (g_PlayerInfo.inventoryCursor) {
+		m_Inventory.mouseInput(window, mouse);
+		if (keyboard.toggle(sf::Keyboard::Escape))
+			m_Inventory.showOrHideInventory();
 		return;
 	}
-	
-	if (m_flyKey.isKeyPressed()) {
-		if (m_creativeMode)
-			m_isFlying = !m_isFlying;
+
+	if (keyboard.toggle(sf::Keyboard::F) && m_creativeMode) {
+		m_isFlying = !m_isFlying;
+		m_lastTopPosition = position.y;
 	}
-	if (m_creativeKey.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::Tab)) {
 		m_creativeMode = !m_creativeMode;
-		m_isFlying = false;
+
+		if (m_creativeMode) {
+			m_hp = 20;
+			m_oxygen = 20;
+			m_hunger = 20;
+		}
+		else {
+			m_isFlying = false;
+			m_lastTopPosition = position.y;
+		}
+
+		//m_hp = 20;
+		//m_oxygen = 20;
+		//m_hunger = 20;
+		//if (!m_creativeMode) {
+		//	m_isFlying = false;
+		//	m_lastTopPosition = position.y;
+		//}
+
+		m_Inventory.shouldUpdateIcons();
 	}
-	if (m_postProcKey.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::P)) {
 		g_Config.postProcess = !g_Config.postProcess;
 	}
-
-	if (m_throwItemKey.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::F3)) {
+		g_PlayerInfo.FPS_HUD = !g_PlayerInfo.FPS_HUD;
+	}
+	else if (keyboard.toggle(sf::Keyboard::F4)) {
+		g_Info.fog = !g_Info.fog;
+	}
+	else if (keyboard.toggle(sf::Keyboard::F5)) {
+		g_Info.weather = !g_Info.weather;
+	}
+	else if (keyboard.toggle(sf::Keyboard::Q)) {
 		if (m_Inventory.getHeldItems().getNumInStack() > 0) {
 			hand.swing();
 			hand.leftMouseHold();
@@ -98,141 +120,220 @@ void Player::handleInput(const sf::RenderWindow &window, Keyboard &keyboard, Han
 		m_Inventory.throwItem(1);
 		m_Inventory.removeHeldItem(1);
 	}
-	
-	if (m_num1.isKeyPressed()) {
+
+	if (keyboard.toggle(sf::Keyboard::Num1)) {
 		m_Inventory.setHeldItem(0);
 	}
-	else if (m_num2.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::Num2)) {
 		m_Inventory.setHeldItem(1);
 	}
-	else if (m_num3.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::Num3)) {
 		m_Inventory.setHeldItem(2);
 	}
-	else if (m_num4.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::Num4)) {
 		m_Inventory.setHeldItem(3);
 	}
-	else if (m_num5.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::Num5)) {
 		m_Inventory.setHeldItem(4);
 	}
-	else if (m_num6.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::Num6)) {
 		m_Inventory.setHeldItem(5);
 	}
-	else if (m_num7.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::Num7)) {
 		m_Inventory.setHeldItem(6);
 	}
-	else if (m_num8.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::Num8)) {
 		m_Inventory.setHeldItem(7);
 	}
-	else if (m_num9.isKeyPressed()) {
+	else if (keyboard.toggle(sf::Keyboard::Num9)) {
 		m_Inventory.setHeldItem(8);
 	}
 }
 
 void Player::mouseScrollEvent(int delta)
 {
-	if (p_info.interfaceCursor || p_info.gameState != GameState::PLAYING)
+	if (g_PlayerInfo.inventoryCursor || g_PlayerInfo.gameState != GameState::PLAYING)
 		return;
-	/// Wheel down = next item
+	// Wheel down = next item
 	if (delta < 0)
 		m_Inventory.nextItem();
-	/// Wheel up = previous item
+	// Wheel up = previous item
 	else
 		m_Inventory.previousItem();
 }
 
 void Player::update(float dt, World &world)
 {
-	if (m_regenerationTimer.getElapsedTime().asSeconds() > 5
-		&& m_hp < 20 && m_hp >= 1) {
-		++m_hp;
-		m_regenerationTimer.restart();
-		parametersUpdate();
+	if (g_PlayerInfo.gameState != GameState::PLAYING)
+		return;
+
+	if (!sneakyFallCheck(dt, world))
+		velocity += m_acceleration;
+	m_acceleration = { 0, 0, 0 };
+
+	if (!m_isFlying) {
+		if (!m_isOnGround) {
+			if (m_isSwimming) {
+				if (position.y >= WATER_LEVEL + 0.3f)
+					reachCertainSpeed(DROWNING_SPEED_ON_SURFACE, 80 * dt);
+				else
+					reachCertainSpeed(DROWNING_SPEED_UNDERWATER, 80 * dt);
+
+				if (m_isDivnigDown)
+					reachCertainSpeed(-SWIMMING_VERTICAL_SPEED, 100 * dt);
+			}
+			else {
+				velocity.y -= 40 * dt;
+
+				if (position.y > m_lastPositionY || position.y == m_lastPositionY)
+					m_lastTopPosition = position.y;
+				m_lastPositionY = position.y;
+			}
+		}
+		m_isOnGround = false;
 	}
 
-    velocity += m_acceleration;
-    m_acceleration = {0, 0, 0};
+	position.x += velocity.x * dt;
+	collide(world, { velocity.x, 0, 0 });
+	if (position.x < 0)
+		position.x = 0;
 
-    if (!m_isFlying) {
-        if (!m_isOnGround) {
-			if (m_isSwimming) {
-				/// -3.0 is a drowning speed
-				if (velocity.y < -3.1f) {
-					velocity.y += 80 * dt;
-				}
-				else if (velocity.y > -2.9f) {
-					velocity.y -= 80 * dt;
-				}
-			}
-			else
-				velocity.y -= 40 * dt;
-        }
-		m_isOnGround = false;
-    }
+	position.z += velocity.z * dt;
+	collide(world, { 0, 0, velocity.z });
+	if (position.z < 0)
+		position.z = 0;
 
-    position.x += velocity.x * dt;
-    collide(world, {velocity.x, 0, 0});
+	position.y += velocity.y * dt;
+	collide(world, { 0, velocity.y, 0 });
+	//if (position.y < 0)
+	//	position.y = 0;
 
-    position.y += velocity.y * dt;
-    collide(world, {0, velocity.y, 0});
-
-    position.z += velocity.z * dt;
-    collide(world, {0, 0, velocity.z});
 
 	movementInWater(world);
 
 	box.update(position);
 
-	static double timePassed = 0.0;
-	timePassed += dt;
-	
-	if ((world.getBlock(position.x, position.y - 2, position.z).getData().id == BlockId::Ice
-		|| world.getBlock(position.x, position.y - 3, position.z).getData().id == BlockId::Ice)
-		&& !m_isFlying) {
-		m_isOnIce = true;
+	movementStops(dt, world);
 
-		if (timePassed > 1.0 / 50.0) {
-			timePassed = 0.0;
-			velocity.x *= 0.96f;
-			velocity.z *= 0.96f;
-		}
+	if (!m_isMoving)
+		m_cameraShaking.defaultPosition();
+
+	if (world.getBlock(position.x, position.y, position.z).id == (Block_t)BlockId::CaveAir)
+		m_screenDarkening.makeScreenDarker();
+	else
+		m_screenDarkening.makeScreenLighter();
+
+	if (!m_creativeMode)
+		statsUpdate(dt);
+
+	parametersUpdate();
+}
+
+void Player::statsUpdate(float dt)
+{
+	if (m_regenerationTimer.getElapsedTime().asSeconds() > 0.5f
+		&& m_hp < MAX_HP && m_hp > 0 && m_hunger == 20 && m_saturationLevel > 0.0f) {
+		++m_hp;
+		m_Inventory.shouldUpdateIcons();
+		m_exhaustionLevel += 6.0f;
+		m_regenerationTimer.restart();
 	}
-	else {
-		m_isOnIce = false;
 
-		velocity.x *= 0.95f;
-		velocity.z *= 0.95f;
-
-		/// hack for low framerates
-		if (!m_isMoving) {
-			velocity.x *= 0.9f;
-			velocity.z *= 0.9f;
-		}
+	if (m_regenerationTimer.getElapsedTime().asSeconds() > 4.0f
+		&& m_hp < MAX_HP && m_hp > 0 && m_hunger >= 18) {
+		++m_hp;
+		m_Inventory.shouldUpdateIcons();
+		m_exhaustionLevel += 6.0f;
+		m_regenerationTimer.restart();
 	}
 
-    if (m_isFlying) {
-        velocity.y *= 0.95f;
-    }
+	static sf::Clock hungerAffectHealthTimer;
+	if (hungerAffectHealthTimer.getElapsedTime().asSeconds() > 4.0f
+		&& m_hunger == 0 && m_hp > 1) {
+		--m_hp;
+		m_Inventory.shouldUpdateIcons();
+
+		g_SoundMaster.play(SoundId::PlayerWasHit);
+		hungerAffectHealthTimer.restart();
+	}
+
+	if (m_isRunning)
+		m_exhaustionLevel += dt / 7.0f * 4.0f
+		/ 2;
+
+	if (m_exhaustionLevel >= 4.0f) {
+		//m_exhaustionLevel -= 4.0f;
+		m_exhaustionLevel = 0.0f;
+		decreaseSaturation();
+	}
+}
+
+void Player::decreaseSaturation()
+{
+	if (m_saturationLevel > 0.0f) {
+		--m_saturationLevel;
+		if (m_saturationLevel < 0.0f)
+			m_saturationLevel = 0.0f;
+	}
+	else if (m_hunger > 0) {
+		--m_hunger;
+		m_Inventory.shouldUpdateIcons();
+	}
+}
+
+bool Player::canEat()
+{
+	return m_hunger < MAX_HUNGER;
+}
+
+void Player::eatFood(float hunger, float saturation)
+{
+	int lastHunger = m_hunger;
+
+	m_hunger += hunger;
+	if (m_hunger > MAX_HUNGER)
+		m_hunger = MAX_HUNGER;
+
+	if (lastHunger != m_hunger)
+		m_Inventory.shouldUpdateIcons();
+
+	m_saturationLevel += saturation;
+	if (m_saturationLevel > m_hunger)
+		m_saturationLevel = m_hunger;
+}
+
+void Player::reachCertainSpeed(float neededSpeed, float howFastReachIt)
+{
+	if (velocity.y < neededSpeed - 0.1f)
+		velocity.y += howFastReachIt;
+	else if (velocity.y > neededSpeed + 0.1f)
+		velocity.y -= howFastReachIt;
 }
 
 void Player::collide(World &world, const glm::vec3 &vel)
 {
 	for (int x = position.x - box.dimensions.x; x < position.x + box.dimensions.x; ++x) {
-		for (int y = position.y - box.dimensions.y; y < position.y + 0.97f; ++y) {
+		for (int y = position.y - box.dimensions.y; y < position.y + 0.99f; ++y) {
 			for (int z = position.z - box.dimensions.z; z < position.z + box.dimensions.z; ++z) {
-				
+
 				auto block = world.getBlock(x, y, z);
 
-				if (block != 0 && block.getData().isCollidable) {
+				if (block.getData().isCollidable) {
 
+					bool gotDamage = false;
 					if (block.getData().id == BlockId::Cactus && !m_creativeMode) {
 						int lastHP = m_hp;
 						m_hp -= m_damageMaster.getCactusDamage();
 
-						if (lastHP != m_hp)
-							parametersUpdate();
-						///@TODO proccess death
+						if (lastHP != m_hp) {
+							g_SoundMaster.play(SoundId::ClassicHurt);
+
+							gotDamage = true;
+						}
+						//@TODO proccess death
 						if (m_hp <= 0) {
-							p_info.gameState = GameState::DIED;
+							g_PlayerInfo.gameState = GameState::DIED;
+							g_PlayerInfo.playerState = PlayerState::NOT_MOVING;
 						}
 					}
 
@@ -240,23 +341,46 @@ void Player::collide(World &world, const glm::vec3 &vel)
 						position.y = y - box.dimensions.y;
 						velocity.y = 0;
 					}
-					/// When on ground
+					// When on ground
 					else if (vel.y < 0) {
-						if (vel.y < -25.0f && !m_creativeMode) {
-							int lastHP = m_hp;
-							m_hp -= m_damageMaster.getFallDamage(vel.y);
 
-							if (lastHP != m_hp)
-								parametersUpdate();
-							///@TODO proccess death
-							if (m_hp <= 0) {
-								p_info.gameState = GameState::DIED;
+						if (m_fallDelayTimer.getElapsedTime().asSeconds() > 0.1f) {
+							m_fallDelayTimer.restart();
+
+							if (vel.y < -15.0f && !m_creativeMode) {
+								int lastHP = m_hp;
+								if (m_isSwimming)
+									// not reaaly good solution
+									m_hp -= m_damageMaster.getFallDamage((m_lastTopPosition - position.y) * 0.5f);
+								else
+									m_hp -= m_damageMaster.getFallDamage(m_lastTopPosition - position.y);
+								if (lastHP != m_hp) {
+									processFallSound(world);
+									gotDamage = true;
+								}
+								else {
+									processStepSound(world);
+								}
+								//@TODO proccess death
+								if (m_hp <= 0) {
+									g_PlayerInfo.gameState = GameState::DIED;
+									g_PlayerInfo.playerState = PlayerState::NOT_MOVING;
+								}
+							}
+							else if (vel.y < -3.0f) {
+								processStepSound(world);
 							}
 						}
 						m_isOnGround = true;
+						m_isReallyOnGround = true;
 						position.y = y + box.dimensions.y + 1;
 						velocity.y = 0;
 					}
+					if (gotDamage) {
+						m_Inventory.shouldUpdateIcons();
+					}
+
+
 
 					if (vel.x > 0) {
 						position.x = x - box.dimensions.x;
@@ -272,23 +396,164 @@ void Player::collide(World &world, const glm::vec3 &vel)
 						position.z = z + box.dimensions.z + 1;
 					}
 				}
+				else if (block.getId() == Block_t(BlockId::Water))
+					if (!m_isSwimming && position.y < (int)y + 1.94f && velocity.y < -5.2f) {
+						g_SoundMaster.keepPlaying(SoundId::WaterSplashNormal);
+					}
 			}
 		}
+	}
+}
+
+bool Player::sneakyFallCheck(float dt, World & world)
+{
+	if (m_isSneaking && m_isReallyOnGround && !m_isFlying) {
+
+		auto newPosition = position + m_acceleration;
+
+		float boxX = box.dimensions.x * 0.9f;
+		float boxZ = box.dimensions.z * 0.9f;
+
+		std::array<ChunkBlock, 4> blocks;
+		blocks[0] = world.getBlock(newPosition.x - boxX, newPosition.y - 1.5f, newPosition.z - boxZ);
+		blocks[1] = world.getBlock(newPosition.x - boxX, newPosition.y - 1.5f, newPosition.z + boxZ);
+		blocks[2] = world.getBlock(newPosition.x + boxX, newPosition.y - 1.5f, newPosition.z - boxZ);
+		blocks[3] = world.getBlock(newPosition.x + boxX, newPosition.y - 1.5f, newPosition.z + boxZ);
+
+		bool playerDoesNotFall = false;
+		for (int i = 0; i < 4; ++i) {
+			if (blocks[i].getData().isCollidable)
+				playerDoesNotFall = true;
+		}
+
+		if (playerDoesNotFall)
+			return false;
+		else {
+			blocks[0] = world.getBlock(position.x - boxX, position.y - 1.5f, position.z - boxZ);
+			blocks[1] = world.getBlock(position.x - boxX, position.y - 1.5f, position.z + boxZ);
+			blocks[2] = world.getBlock(position.x + boxX, position.y - 1.5f, position.z - boxZ);
+			blocks[3] = world.getBlock(position.x + boxX, position.y - 1.5f, position.z + boxZ);
+
+			std::array<bool, 4> existingBlocks{ false };
+			for (int i = 0; i < 4; ++i) {
+				if (blocks[i].getData().isCollidable)
+					existingBlocks[i] = true;
+			}
+
+			if (m_acceleration.x < 0) {
+				if (m_acceleration.z < 0) {
+					if (!existingBlocks[1] && existingBlocks[2])
+						velocity.z += m_acceleration.z;
+					else if (!existingBlocks[2] && existingBlocks[1])
+						velocity.x += m_acceleration.x;
+				}
+				else if (m_acceleration.z > 0) {
+					if (!existingBlocks[0] && existingBlocks[3])
+						velocity.z += m_acceleration.z;
+					else if (!existingBlocks[3] && existingBlocks[0])
+						velocity.x += m_acceleration.x;
+				}
+			}
+			else if (m_acceleration.x > 0) {
+				if (m_acceleration.z < 0) {
+					if (!existingBlocks[0] && existingBlocks[3])
+						velocity.x += m_acceleration.x;
+					else if (!existingBlocks[3] && existingBlocks[0])
+						velocity.z += m_acceleration.z;
+				}
+				else if (m_acceleration.z > 0) {
+					if (!existingBlocks[1] && existingBlocks[2])
+						velocity.x += m_acceleration.x;
+					else if (!existingBlocks[2] && existingBlocks[1])
+						velocity.z += m_acceleration.z;
+				}
+			}
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void Player::movementStops(float dt, World &world)
+{
+	static double timePassed = 0.0;
+	timePassed += dt;
+
+	if ((getBlockEntityStandsOn(world) == BlockId::Ice) && !m_isFlying) {
+		m_isOnIce = true;
+
+		if (m_isSneaking) {
+			velocity.x *= 0.95f;
+			velocity.z *= 0.95f;
+		}
+		if (timePassed > 1.0 / 50.0) {
+			timePassed = 0.0;
+
+			velocity.x *= 0.96f;
+			velocity.z *= 0.96f;
+		}
+	}
+	// jumped from ice
+	else if ((!m_isReallyOnGround && !m_isOnWaterSurface && !m_isSwimming)
+		&& m_isOnIce && !m_isFlying)
+	{
+		if (m_isSneaking) {
+			velocity.x *= 0.95f;
+			velocity.z *= 0.95f;
+		}
+		if (timePassed > 1.0 / 50.0) {
+			timePassed = 0.0;
+
+			velocity.x *= 0.96f;
+			velocity.z *= 0.96f;
+		}
+	}
+	else {
+		//if (m_isReallyOnGround || m_isOnWaterSurface || m_isSwimming)
+		m_isOnIce = false;
+
+		if (m_isFlying) {
+			velocity.x *= 0.95f;
+			velocity.z *= 0.95f;
+		}
+		else {
+			velocity.x *= 0.95f;
+			velocity.z *= 0.95f;
+			// hack for low framerates
+			if (!m_isMoving) {
+				velocity.x *= 0.9f;
+				velocity.z *= 0.9f;
+			}
+		}
+	}
+
+	if (m_isFlying) {
+		velocity.y *= 0.95f;
 	}
 }
 
 void Player::movementInWater(World & world)
 {
 	bool breath = true;
-	if (world.getBlock(position.x, position.y, position.z).getData().id == BlockId::Water
-		&& position.y <= WATER_LEVEL + 1) {
+	if (world.getBlock(position.x, position.y, position.z).getData().id == BlockId::Water) {
+		//&& position.y <= WATER_LEVEL + 1) {
 		m_isSwimming = true;
-		/// Underwater, bad vision
+		static sf::Clock underwaterSoundsTimer;
+		// Underwater, bad vision
+		//if (position.y - floor(position.y) < 0.3f) {
 		if (position.y < WATER_LEVEL + 0.3f) {
-			if (p_info.underwater != true) {
-				parametersUpdate();
+			if (g_PlayerInfo.underwater != true) {
+				m_Inventory.shouldUpdateIcons();
+				g_SoundMaster.playRandom(SoundSet::EnterWaterSet);
 			}
-			p_info.underwater = true;
+			g_SoundMaster.keepPlaying(SoundId::UnderwaterAmbience);
+			g_PlayerInfo.underwater = true;
+			if (underwaterSoundsTimer.getElapsedTime().asSeconds() > 5.0f) {
+				underwaterSoundsTimer.restart();
+				g_SoundMaster.playUnderwaterSound();
+			}
 			if (!m_creativeMode) {
 				breath = false;
 				if (m_oxygen > 0) {
@@ -296,29 +561,37 @@ void Player::movementInWater(World & world)
 					m_oxygen -= m_damageMaster.getChokeDamage();
 
 					if (lastOxygen != m_oxygen)
-						parametersUpdate();
+						m_Inventory.shouldUpdateIcons();
 				}
 				else {
 					int lastHP = m_hp;
 					m_hp -= m_damageMaster.getChokeDamage();
 
-					if (lastHP != m_hp)
-						parametersUpdate();
-					///@TODO proccess death
+					if (lastHP != m_hp && g_PlayerInfo.gameState != GameState::DIED) {
+						g_SoundMaster.playRandom(SoundSet::DrownDamageSet);
+						m_Inventory.shouldUpdateIcons();
+					}
+					//@TODO proccess death
 					if (m_hp <= 0) {
-						p_info.gameState = GameState::DIED;
+						g_PlayerInfo.gameState = GameState::DIED;
+						g_PlayerInfo.playerState = PlayerState::NOT_MOVING;
 					}
 				}
 			}
 		}
 		else {
-			p_info.underwater = false;
+			if (g_PlayerInfo.underwater) {
+				g_SoundMaster.stop(SoundId::UnderwaterAmbience);
+				g_SoundMaster.playRandom(SoundSet::ExitWaterSet);
+			}
+			g_PlayerInfo.underwater = false;
+			underwaterSoundsTimer.restart();
 		}
 	}
 	else {
-		p_info.underwater = false;
+		g_PlayerInfo.underwater = false;
 		if (world.getBlock(position.x, position.y - 1, position.z).getData().id == BlockId::Water
-			&& position.y <= WATER_LEVEL + 1.85f) {
+			&& position.y <= WATER_LEVEL + 1.93f) {
 			m_isSwimming = true;
 		}
 		else {
@@ -330,165 +603,282 @@ void Player::movementInWater(World & world)
 		m_oxygen += m_damageMaster.breath();
 
 		if (lastOxygen != m_oxygen)
-			parametersUpdate();
+			m_Inventory.shouldUpdateIcons();
 	}
 }
 
-void Player::keyboardInput(Keyboard &keyboard, World &world)
+void Player::movementOnIce()
 {
-	static float const m_SPEED = 0.16f;
-	static bool isRunning = false;
-	
-	if (!p_info.canMove)
-		return;
-	
-	isRunning = false;
-	m_isMoving = false;
-	if (keyboard.isKeyDown(sf::Keyboard::W)) {
-		m_isMoving = true;
-	    float speed = m_SPEED;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-			isRunning = true;
-			m_movementFOV.sprint();
-			if (m_isFlying)
-				speed *= 5;
-			else
-				speed *= 2;
-		}
-		if (!m_isFlying && (m_isSwimming ||
-			world.getBlock(position.x, (std::ceil)(position.y - 2.2f), position.z).getData().id == BlockId::Water))
-			speed *= 0.5f;
-	    m_acceleration.x += -glm::cos(glm::radians(rotation.y + 90)) * speed;
-	    m_acceleration.z += -glm::sin(glm::radians(rotation.y + 90)) * speed;
-	}
-	if (!isRunning)
-		m_movementFOV.walk();
-	if (keyboard.isKeyDown(sf::Keyboard::S)) {
-		m_isMoving = true;
-		float speed = m_SPEED;
-		if (!m_isFlying && (m_isSwimming))
-			speed *= 0.5f;
-	    m_acceleration.x += glm::cos(glm::radians(rotation.y + 90)) * speed;
-	    m_acceleration.z += glm::sin(glm::radians(rotation.y + 90)) * speed;
-	}
-	if (keyboard.isKeyDown(sf::Keyboard::A)) {
-		m_isMoving = true;
-		float speed = m_SPEED;
-		if (!m_isFlying && (m_isSwimming))
-			speed *= 0.5f;
-	    m_acceleration.x += -glm::cos(glm::radians(rotation.y)) * speed;
-	    m_acceleration.z += -glm::sin(glm::radians(rotation.y)) * speed;
-	}
-	if (keyboard.isKeyDown(sf::Keyboard::D)) {
-		m_isMoving = true;
-		float speed = m_SPEED;
-		if (!m_isFlying && (m_isSwimming))
-			speed *= 0.5f;
-	    m_acceleration.x += glm::cos(glm::radians(rotation.y)) * speed;
-	    m_acceleration.z += glm::sin(glm::radians(rotation.y)) * speed;
-	}
-	
 	if (m_isOnIce) {
-		const float VEL = 7.0f;
-		if (!isRunning) {
-			if (glm::abs(velocity.x) > VEL / 2.0f
-				|| glm::abs(velocity.z) > VEL / 2.0f) {
+		if (!m_isFlying) {
+			if (!m_isRunning) {
+				if (glm::abs(velocity.x) > ICE_SPEED
+					|| glm::abs(velocity.z) > ICE_SPEED) {
+					m_acceleration.x = 0.0f;
+					m_acceleration.z = 0.0f;
+				}
+			}
+			else if (glm::abs(velocity.x) > ICE_SPEED * ICE_SPRINTING_COEF
+				|| glm::abs(velocity.z) > ICE_SPEED * ICE_SPRINTING_COEF) {
 				m_acceleration.x = 0.0f;
 				m_acceleration.z = 0.0f;
 			}
 		}
-		else if (glm::abs(velocity.x) > VEL
-			|| glm::abs(velocity.z) > VEL) {
-			m_acceleration.x = 0.0f;
-			m_acceleration.z = 0.0f;
+		//else {
+		//	if (!m_isRunning) {
+		//		if (glm::abs(velocity.x) > ICE_SPEED * FLYING_COEF
+		//			|| glm::abs(velocity.z) > ICE_SPEED * FLYING_COEF) {
+		//			m_acceleration.x = 0.0f;
+		//			m_acceleration.z = 0.0f;
+		//		}
+		//	}
+		//	else if (glm::abs(velocity.x) > ICE_SPEED * FLYING_COEF * SPRINT_FLYING_COEF
+		//		|| glm::abs(velocity.z) > ICE_SPEED * FLYING_COEF * SPRINT_FLYING_COEF) {
+		//		m_acceleration.x = 0.0f;
+		//		m_acceleration.z = 0.0f;
+		//	}
+		//}
+	}
+}
+
+void Player::processStepSound(World & world)
+{
+	if (m_isSwimming)
+		return;
+
+	makeStepSound(getBlockEntityStandsOn(world));
+}
+
+void Player::processFallSound(World & world)
+{
+	g_SoundMaster.play(SoundId::FallDamage);
+
+	//if (m_isSwimming)
+	//	return;
+	//
+	//makeFallSound(getBlockEntityStandsOn(world));
+}
+
+void Player::keyboardInput(Keyboard &keyboard, World &world)
+{
+	if (!m_isSwimming && isEntityOnWaterSurface(world))
+		m_isOnWaterSurface = true;
+	else
+		m_isOnWaterSurface = false;
+
+	if (!g_PlayerInfo.canMove) {
+		g_PlayerInfo.playerState = PlayerState::NOT_MOVING;
+		return;
+	}
+
+	m_isRunning = false;
+	m_isMoving = false;
+	m_isDivnigDown = false;
+
+	if (keyboard.isKeyDown(sf::Keyboard::LShift)) {
+		m_isSneaking = true;
+		m_sneakingCamera.sneak();
+		if (m_isFlying)
+			m_acceleration.y -= 0.6f;
+	}
+	else {
+		m_isSneaking = false;
+		m_sneakingCamera.stand();
+	}
+	if (keyboard.isKeyDown(sf::Keyboard::W)
+		&& !keyboard.isKeyDown(sf::Keyboard::S)) {
+		m_isMoving = true;
+
+		float speed = WALKING_SPEED;
+		if (m_isFlying) 
+			speed *= FLYING_COEF;
+
+		if (keyboard.isKeyDown(sf::Keyboard::LControl)) {
+			if (m_isFlying) {
+				m_isRunning = true;
+				m_movementFOV.sprint();
+				speed *= SPRINT_FLYING_COEF;
+			}
+			else if (!m_isSneaking && m_hunger > 6) {
+				m_isRunning = true;
+				m_movementFOV.sprint();
+				speed *= SPRINTING_COEF;
+			}
+		}
+
+		if (m_isSneaking && !m_isFlying)
+			speed *= SNEAKING_COEF;
+		if ((m_isSwimming || m_isOnWaterSurface) && !m_isFlying)
+			speed *= SWIMMING_COEF;
+		m_acceleration.x += -glm::cos(glm::radians(rotation.y + 90)) * speed;
+		m_acceleration.z += -glm::sin(glm::radians(rotation.y + 90)) * speed;
+	}
+
+
+
+	//m_isMoving = true;
+	//float speed = WALKING_SPEED;
+	//if (m_isFlying)
+	//	speed *= FLYING_COEF;
+	//
+	//if (m_isFlying) {
+	//	m_isRunning = true;
+	//	m_movementFOV.sprint();
+	//	speed *= SPRINT_FLYING_COEF;
+	//}
+	//else if (!m_isSneaking && m_hunger > 6) {
+	//	m_isRunning = true;
+	//	m_movementFOV.sprint();
+	//	speed *= SPRINTING_COEF;
+	//}
+	//if (m_isSneaking && !m_isFlying)
+	//	speed *= SNEAKING_COEF;
+	//if ((m_isSwimming || m_isOnWaterSurface) && !m_isFlying)
+	//	speed *= SWIMMING_COEF;
+	//m_acceleration.x += -glm::cos(glm::radians(rotation.y + 90)) * speed;
+	//m_acceleration.z += -glm::sin(glm::radians(rotation.y + 90)) * speed;
+
+
+
+	if (!m_isRunning)
+		m_movementFOV.walk();
+	if (keyboard.isKeyDown(sf::Keyboard::S)
+		&& !keyboard.isKeyDown(sf::Keyboard::W)) {
+		m_isMoving = true;
+		float speed = WALKING_SPEED;
+		if (m_isFlying)
+			speed *= FLYING_COEF;
+		if (m_isSneaking && !m_isFlying)
+			speed *= SNEAKING_COEF;
+		if (!m_isFlying && (m_isSwimming || m_isOnWaterSurface))
+			speed *= SWIMMING_COEF;
+		m_acceleration.x += glm::cos(glm::radians(rotation.y + 90)) * speed;
+		m_acceleration.z += glm::sin(glm::radians(rotation.y + 90)) * speed;
+	}
+	if (keyboard.isKeyDown(sf::Keyboard::A)
+		&& !keyboard.isKeyDown(sf::Keyboard::D)) {
+		m_isMoving = true;
+		float speed = WALKING_SPEED;
+		if (m_isFlying)
+			speed *= FLYING_COEF;
+		if (m_isSneaking && !m_isFlying)
+			speed *= SNEAKING_COEF;
+		if (!m_isFlying && (m_isSwimming || m_isOnWaterSurface))
+			speed *= SWIMMING_COEF;
+		m_acceleration.x += -glm::cos(glm::radians(rotation.y)) * speed;
+		m_acceleration.z += -glm::sin(glm::radians(rotation.y)) * speed;
+	}
+	if (keyboard.isKeyDown(sf::Keyboard::D)
+		&& !keyboard.isKeyDown(sf::Keyboard::A)) {
+		m_isMoving = true;
+		float speed = WALKING_SPEED;
+		if (m_isFlying)
+			speed *= FLYING_COEF;
+		if (m_isSneaking && !m_isFlying)
+			speed *= SNEAKING_COEF;
+		if (!m_isFlying && (m_isSwimming || m_isOnWaterSurface))
+			speed *= SWIMMING_COEF;
+		m_acceleration.x += glm::cos(glm::radians(rotation.y)) * speed;
+		m_acceleration.z += glm::sin(glm::radians(rotation.y)) * speed;
+	}
+
+	if (keyboard.isKeyDown(sf::Keyboard::Space)) {
+		if (m_isFlying)
+			m_acceleration.y += 0.6f;
+		else {
+			jump(world);
 		}
 	}
-	
-	if (keyboard.isKeyDown(sf::Keyboard::Space)) {
-		jump(world);
+	else if (m_isSneaking && !m_isFlying) {
+		if (m_isSwimming)
+			m_isDivnigDown = true;
 	}
-	else if (keyboard.isKeyDown(sf::Keyboard::LShift) && m_isFlying) {
-	    m_acceleration.y -= 0.6;
+
+	movementOnIce();
+
+	bool makeStep = false;
+	if (m_isMoving && !m_isFlying && m_isReallyOnGround) {
+		if (m_isSneaking) {
+			g_PlayerInfo.playerState = PlayerState::SNEAKING;
+		}
+		else if (m_isRunning) {
+			g_PlayerInfo.playerState = PlayerState::SPRINTING;
+			if (m_isReallyOnGround)
+				m_cameraShaking.sprint(makeStep);
+		}
+		else {
+			g_PlayerInfo.playerState = PlayerState::WALKING;
+			if (m_isReallyOnGround)
+				m_cameraShaking.walk(makeStep);
+		}
 	}
-	
-	if (keyboard.isKeyDown(sf::Keyboard::F5)) {
-		g_info.weather = Weather::Rain;
+	else {
+		g_PlayerInfo.playerState = PlayerState::NOT_MOVING;
 	}
-	else if (keyboard.isKeyDown(sf::Keyboard::F6)) {
-		g_info.weather = Weather::Snowfall;
-	}
-	else if (keyboard.isKeyDown(sf::Keyboard::F7)) {
-		g_info.weather = Weather::None;
-	}
+
+	if (makeStep)
+		processStepSound(world);
 }
 
 void Player::mouseInput(const sf::RenderWindow &window)
 {
-	if (p_info.gameState == GameState::NOT_STARTED) {
+	if (g_PlayerInfo.gameState == GameState::NOT_STARTED) {
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
 			|| sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-			p_info.gameState = GameState::PLAYING;
+			g_PlayerInfo.gameState = GameState::PLAYING;
 		}
-		if (p_info.gameState == GameState::NOT_STARTED)
+		if (g_PlayerInfo.gameState == GameState::NOT_STARTED)
 			return;
 	}
 
 	static sf::Vector2i lastMousePosition = sf::Mouse::getPosition(window);
-	
+
 	static bool useMouse = true;
-	
 	static ToggleKey useMouseKey(sf::Keyboard::L);
 	if (useMouseKey.isKeyPressed()) {
-	    useMouse = !useMouse;
-	}
-	if (!useMouse || p_info.interfaceCursor) {
-		lastMousePosition = sf::Mouse::getPosition(window);
-	    return;
-	}
-	
-	auto change = sf::Mouse::getPosition() - lastMousePosition;
-	
-	rotation.y += change.x * 0.01f * g_Config.mouse_sensitivity;
-	rotation.x += change.y * 0.01f * g_Config.mouse_sensitivity;
-	
-	/// @TODO fix this
-	if (g_Config.isFullscreen == false) {
-		if (g_renderSettings.resolutionX == 2560) {
-			rotation.y -= 328 * 0.01f * g_Config.mouse_sensitivity;
-			rotation.x -= 211 * 0.01f * g_Config.mouse_sensitivity;
-		}
-		else if (g_renderSettings.resolutionX == 1920) {
-			rotation.y -= 328 * 0.01f * g_Config.mouse_sensitivity;
-			rotation.x -= 211 * 0.01f * g_Config.mouse_sensitivity;
-		}
-		else if (g_renderSettings.resolutionX == 1366) {
-			rotation.y -= 605 * 0.01f * g_Config.mouse_sensitivity;
-			rotation.x -= 367 * 0.01f * g_Config.mouse_sensitivity;
-		}
+		useMouse = !useMouse;
 	}
 
-	/// if degree > 87.1 then the ray which detects the block player aiming at, doesn't work correctly
+	if (!useMouse || g_PlayerInfo.inventoryCursor) {
+		lastMousePosition = sf::Mouse::getPosition(window);
+		return;
+	}
+
+	auto change = sf::Mouse::getPosition() - lastMousePosition;
+
+	rotation.y += change.x * 0.01f * g_Config.mouseSensitivity;
+	rotation.x += change.y * 0.01f * g_Config.mouseSensitivity;
+
+	// @TODO fix this
+	// in windowed mode the game detects strange mouse movements on my computer
+	if (!g_Config.isFullscreen) {
+		static bool f = 0;
+		static float rotationYFix;
+		static float rotationXFix;
+		if (f == 0) {
+			f = 1;
+			rotationYFix = -rotation.y;
+			rotationXFix = -rotation.x;
+		}
+		rotation.y += rotationYFix;
+		rotation.x += rotationXFix;
+	}
+
+	// if degree > BOUND then the ray which detects the block player aiming at, doesn't work correctly
 	static float const BOUND = 87.1f;
 	if (rotation.x > BOUND)
-	    rotation.x = BOUND;
+		rotation.x = BOUND;
 	else if (rotation.x < -BOUND)
-	    rotation.x = -BOUND;
-	
+		rotation.x = -BOUND;
+
 	if (rotation.y > 360.0f)
-	    rotation.y = 0.0f;
+		rotation.y = 0.0f;
 	else if (rotation.y < 0.0f)
-	    rotation.y = 360.0f;
-	
-	//auto cx = static_cast<int>(window.getSize().x / 2);
-	//auto cy = static_cast<int>(window.getSize().y / 2);
-	//
-	//sf::Mouse::setPosition({cx, cy}, window);
-	//
-	//lastMousePosition = sf::Mouse::getPosition();
+		rotation.y = 360.0f;
 
 	static sf::Vector2i center = {
-		g_renderSettings.resolutionX >> 1,
-		g_renderSettings.resolutionY >> 1
+		g_RenderSettings.resolutionX >> 1,
+		g_RenderSettings.resolutionY >> 1
 	};
 
 	auto windowSize = window.getSize();
@@ -506,72 +896,69 @@ void Player::mouseInput(const sf::RenderWindow &window)
 
 void Player::jump(World &world)
 {
-	if (!m_isFlying) {
-		if (m_isSwimming) {
-			m_isOnGround = false;
-			if (velocity.y > -4.6)
-				velocity.y = 5.0f;
-		}
-		else if (m_isOnGround) {
-			m_isOnGround = false;
-			m_acceleration.y += 10.0f;
-			if (world.getBlock(position.x, position.y - 2, position.z).getData().id == BlockId::Ice
-				|| world.getBlock(position.x, position.y - 3, position.z).getData().id == BlockId::Ice) {
-				m_isOnIce = true;
-			}
-		}
+	if (m_isSwimming) {
+		m_isOnGround = false;
+		m_isReallyOnGround = false;
+		if (velocity.y > -4.6)
+			velocity.y = SWIMMING_VERTICAL_SPEED;
 	}
-	else {
-		m_acceleration.y = 0.6f;
-	}
-}
+	else if (m_isOnGround) {
+		if (m_jumpDelayTimer.getElapsedTime().asSeconds() < 0.3f)
+			return;
+		m_jumpDelayTimer.restart();
 
-inline void Player::parametersUpdate()
-{
-	m_Inventory.updateIcons();
+		m_isOnGround = false;
+		m_isReallyOnGround = false;
+		m_acceleration.y += 10.0f;
+
+		if (m_isRunning)
+			m_exhaustionLevel += 0.2f
+			/ 2;
+		else
+			m_exhaustionLevel += 0.05f
+			/ 2;
+	}
 }
 
 void Player::drawGUI(RenderMaster &master)
 {
-    std::ostringstream stream;
+	std::ostringstream stream;
 	stream
-		<< " X: " << (int)position.x
-		<< " Y: " << (int)position.y
-		<< " Z: " << (int)position.z
-		<< "\n Close HUD <F3>"
+		<< " <F3> Hide debug info"
+		<< "\n"
+		<< "\n XYZ:  " <<
+		(int)position.x << " / " <<
+		(int)position.y << " / " <<
+		(int)position.z
+		<< "\n Chunk:  " <<
+		(int)position.x % CHUNK_SIZE << " / " <<
+		(int)position.y % CHUNK_SIZE << " / " <<
+		(int)position.z % CHUNK_SIZE
 		<< std::boolalpha
-		<< "\n Creative mode <Tab> - " << m_creativeMode
-		<< "\n Flying (in creative mode) <F> - " << m_isFlying
-		<< "\n Post processing <P> - " << g_Config.postProcess
-		<< "\n Weather <F5/F6/F7> - ";
+		<< "\n <F4>   Fog - " << g_Info.fog
+		<< "\n <F5>   Weather - " << g_Info.weather
+		<< "\n <+/->  Render distance - " << g_Config.renderDistance
+		<< "\n <LCtrl +/-> Time : ";
+	if (g_Info.dayTime >= 18000)
+		stream << g_Info.dayTime / 1000 - 18 << " AM";
+	else if (g_Info.dayTime < 6000)
+		stream << g_Info.dayTime / 1000 + 6 << " AM";
+	else
+		stream << g_Info.dayTime / 1000 - 6 << " PM";
 
-	switch (g_info.weather)
-	{
-	case Weather::None:
-		stream << "Clear";
-		break;
-	case Weather::Rain:
-		stream << "Rain";
-		break;
-	case Weather::Snowfall:
-		stream << "Snowfall";
-		break;
-	}
-
-	stream << "\n Time <+/-> : ";
-	if (g_info.dayTime >= 18000) {
-		stream << g_info.dayTime / 1000 - 18 << " AM";
-	}
-	else if (g_info.dayTime < 6000) {
-		stream << g_info.dayTime / 1000 + 6 << " AM";
-	}
-	else {
-		stream << g_info.dayTime / 1000 - 6 << " PM";
-	}
+	stream
+		<< "\n <Tab> Creative mode - " << m_creativeMode
+		<< "\n <F>    Flying (in creative mode) - " << m_isFlying
+		<< "\n <P>    Post processing - " << g_Config.postProcess;
 
 	m_playerInfo.setString(stream.str());
 
-    master.drawSFML(m_playerInfo);
+	master.drawSFML(m_playerInfo);
+}
+
+void Player::parametersUpdate()
+{
+	m_Inventory.updateIcons();
 }
 
 void Player::drawInventory(RenderMaster & master)

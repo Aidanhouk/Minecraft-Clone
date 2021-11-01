@@ -1,5 +1,5 @@
-/// @ref simd
-/// @file glm/simd/trigonometric.h
+// @ref simd
+// @file glm/simd/trigonometric.h
 
 #pragma once
 

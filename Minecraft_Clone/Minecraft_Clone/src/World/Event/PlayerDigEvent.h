@@ -1,27 +1,30 @@
-#ifndef PLAYERDIGEVENT_H_INCLUDED
-#define PLAYERDIGEVENT_H_INCLUDED
+#pragma once
 
 #include <SFML/Graphics.hpp>
 
 #include "../../Maths/glm.h"
 #include "IWorldEvent.h"
+#include "World/Block/BlockId.h"
+#include "Util/Random.h"
 
 class Player;
+class Hand;
 
 class PlayerDigEvent : public IWorldEvent {
 public:
     PlayerDigEvent(sf::Mouse::Button button, const glm::vec3 &location,
-                   Player &player);
+                   Player &player, Hand &hand);
 
     void handle(World &world) override;
 
 private:
     void dig(World &world);
 	void breakBlocksAbove(World &world, const glm::vec3 &pos);
+	void breakDoublePlant(World &world, const glm::vec3 &pos, BlockId brokenPlant);
 
     sf::Mouse::Button m_buttonPress;
     glm::vec3 m_digSpot;
     Player *m_pPlayer;
+	Hand *m_phand;
+	Random<std::minstd_rand> m_random;
 };
-
-#endif // PLAYERDIGEVENT_H_INCLUDED

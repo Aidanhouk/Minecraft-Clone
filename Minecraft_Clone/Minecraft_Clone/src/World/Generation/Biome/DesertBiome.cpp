@@ -1,15 +1,20 @@
 #include "DesertBiome.h"
 
-#include "../../WorldConstants.h"
 #include "../Structures/TreeGenerator.h"
+#include "../Structures/ClusterGenerator.h"
 
 DesertBiome::DesertBiome(int seed)
-    : Biome(getNoiseParameters(), 350, 500, seed)
+	: Biome(getNoiseParameters(),
+		650, // tree
+		500, // plant
+		50, // beachPlant
+		1000, // flowerCluster
+		seed)
 {
 	m_Id = BiomeId::DesertBiome;
 }
 
-ChunkBlock DesertBiome::getTopBlock(Rand &rand) const
+ChunkBlock DesertBiome::getTopBlock(Rand &rand, int y) const
 {
     return BlockId::Sand;
 }
@@ -49,14 +54,26 @@ void DesertBiome::makeTree(Rand &rand, Chunk &chunk, int x, int y, int z) const
     }
 }
 
+void DesertBiome::makeUnderwaterCluster(Rand & rand, Chunk & chunk, int x, int z, Array2D<int, CHUNK_SIZE>& heightMap) const
+{
+	int rnd = rand.intInRange(0, 2);
+
+	if (rnd <= 0)
+		ClusterGenerator::makeUnderwaterCluster(chunk, rand, x, z, heightMap, BlockId::Dirt);
+	else if (rnd <= 1)
+		ClusterGenerator::makeUnderwaterCluster(chunk, rand, x, z, heightMap, BlockId::Gravel);
+	else if (rnd <= 2)
+		ClusterGenerator::makeUnderwaterCluster(chunk, rand, x, z, heightMap, BlockId::Clay);
+}
+
 NoiseParameters DesertBiome::getNoiseParameters()
 {
 	NoiseParameters heightParams;
-	heightParams.octaves = 9;
-	heightParams.amplitude = 30;
+	heightParams.octaves = 7;
+	heightParams.amplitude = 10;
 	heightParams.smoothness = 300;
-	heightParams.heightOffset = 35;
-	heightParams.roughness = 0.6f;
+	heightParams.heightOffset = 57;
+	heightParams.roughness = 0.7f;
 	
 	return heightParams;
 }

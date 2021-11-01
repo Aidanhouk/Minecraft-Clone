@@ -1,9 +1,9 @@
 #include "ItemStack.h"
 
-#include <algorithm>
+#include "Material.h"
 
-ItemStack::ItemStack(const Material &material, int amount)
-    : m_pMaterial(&material)
+ItemStack::ItemStack(BlockId blockId, int amount)
+    : m_blockId(blockId)
     , m_numInStack(amount)
 {
 }
@@ -11,10 +11,11 @@ ItemStack::ItemStack(const Material &material, int amount)
 int ItemStack::add(int amount)
 {
     m_numInStack += amount;
-	// adding more than one item
-    if (m_numInStack > m_pMaterial->maxStackSize) {
-        int leftOver = m_numInStack - m_pMaterial->maxStackSize;
-        m_numInStack = m_pMaterial->maxStackSize;
+	auto &material = Material::toMaterial(m_blockId);
+	const int maxStackSize = material.maxStackSize;
+    if (m_numInStack > maxStackSize) {
+        int leftOver = m_numInStack - maxStackSize;
+        m_numInStack = maxStackSize;
         return leftOver;
     }
     else {
@@ -27,8 +28,25 @@ void ItemStack::remove(int number)
 	// can't be negative
 	m_numInStack -= number;
     if (m_numInStack == 0) {
-        m_pMaterial = &Material::NOTHING;
+        m_blockId = EMPTY_SLOT_ID;
     }
+}
+
+void ItemStack::setData(BlockId blockId, int number)
+{
+	m_blockId = blockId;
+	m_numInStack = number;
+}
+
+void ItemStack::clear()
+{
+	m_blockId = EMPTY_SLOT_ID;
+	m_numInStack = 0;
+}
+
+BlockId ItemStack::getBlockId() const
+{
+	return m_blockId;
 }
 
 int ItemStack::getNumInStack() const
@@ -36,7 +54,8 @@ int ItemStack::getNumInStack() const
     return m_numInStack;
 }
 
-const Material &ItemStack::getMaterial() const
+int ItemStack::getMaxStackSize() const
 {
-    return *m_pMaterial;
+	//auto &material = Material::toMaterial(m_blockId);
+	return Material::toMaterial(m_blockId).maxStackSize;
 }

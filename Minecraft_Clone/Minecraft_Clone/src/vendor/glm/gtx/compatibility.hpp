@@ -1,14 +1,14 @@
-/// @ref gtx_compatibility
-/// @file glm/gtx/compatibility.hpp
-///
-/// @see core (dependence)
-///
-/// @defgroup gtx_compatibility GLM_GTX_compatibility
-/// @ingroup gtx
-///
-/// Include <glm/gtx/compatibility.hpp> to use the features of this extension.
-///
-/// Provide functions to increase the compatibility with Cg and HLSL languages
+// @ref gtx_compatibility
+// @file glm/gtx/compatibility.hpp
+//
+// @see core (dependence)
+//
+// @defgroup gtx_compatibility GLM_GTX_compatibility
+// @ingroup gtx
+//
+// Include <glm/gtx/compatibility.hpp> to use the features of this extension.
+//
+// Provide functions to increase the compatibility with Cg and HLSL languages
 
 #pragma once
 
@@ -35,8 +35,8 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_compatibility
-	/// @{
+	// @addtogroup gtx_compatibility
+	// @{
 
 	template<typename T> GLM_FUNC_QUALIFIER T lerp(T x, T y, T a){return mix(x, y, a);}																					//!< \brief Returns x * (1.0 - a) + y * a, i.e., the linear blend of x and y using the floating-point value a. The value for a is not restricted to the range [0, 1]. (From GLM_GTX_compatibility)
 	template<typename T, qualifier Q> GLM_FUNC_QUALIFIER vec<2, T, Q> lerp(const vec<2, T, Q>& x, const vec<2, T, Q>& y, T a){return mix(x, y, a);}							//!< \brief Returns x * (1.0 - a) + y * a, i.e., the linear blend of x and y using the floating-point value a. The value for a is not restricted to the range [0, 1]. (From GLM_GTX_compatibility)
@@ -127,7 +127,7 @@ namespace glm
 	typedef mat<4, 3, double, highp>		double4x3;		//!< \brief double-qualifier floating-point matrix with 4 x 3 components. (From GLM_GTX_compatibility extension)
 	typedef mat<4, 4, double, highp>		double4x4;		//!< \brief double-qualifier floating-point matrix with 4 x 4 components. (From GLM_GTX_compatibility extension)
 
-	/// @}
+	// @}
 }//namespace glm
 
 #include "compatibility.inl"

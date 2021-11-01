@@ -1,5 +1,5 @@
-/// @ref core
-/// @file glm/detail/func_common_simd.inl
+// @ref core
+// @file glm/detail/func_common_simd.inl
 
 #if GLM_ARCH & GLM_ARCH_SSE2_BIT
 

@@ -1,5 +1,4 @@
-#ifndef AABB_H_INCLUDED
-#define AABB_H_INCLUDED
+#pragma once
 
 #include "../Maths/glm.h"
 
@@ -51,5 +50,3 @@ struct AABB {
     glm::vec3 position;
     const glm::vec3 dimensions;
 };
-
-#endif // AABB_H_INCLUDED

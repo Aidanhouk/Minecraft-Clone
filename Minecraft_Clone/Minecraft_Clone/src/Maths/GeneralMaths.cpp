@@ -29,8 +29,6 @@ float smoothInterpolation(float bottomLeft, float topLeft, float bottomRight,
     float xValue = 1 - (x - xMin) / width;
     float zValue = 1 - (z - zMin) / height;
 
-    // std::cout << xValue << std::endl;
-
     float a = smoothstep(bottomLeft, bottomRight, xValue);
     float b = smoothstep(topLeft, topRight, xValue);
     return smoothstep(a, b, zValue);

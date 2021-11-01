@@ -1,9 +1,11 @@
 #include "Application.h"
 
-#include <iostream>
-
 #include "States/PlayingState.h"
 #include "World/Block/BlockDatabase.h"
+#include "Audio/SoundMaster.h"
+#include "Player/PlayerInfo.h"
+
+#include <iostream>
 
 Application::Application(const Config &config)
     : m_context(config)
@@ -13,6 +15,7 @@ Application::Application(const Config &config)
     pushState<StatePlaying>(*this, config);
 
 	g_Config = config;
+	g_SoundMaster.setVolumeAll(MusicSet::DefaultInGameSet, config.musicVolume);
 }
 
 void Application::runLoop()
@@ -22,17 +25,19 @@ void Application::runLoop()
 
     sf::Time m;
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     while (m_context.window.isOpen() && !m_states.empty()) {
+
         auto deltaTime = dtTimer.restart();
-		g_info.deltaTime = deltaTime.asSeconds();
+		g_Info.deltaTime = deltaTime.asSeconds();
         auto &state = *m_states.back();
 
-        state.handleInput();
-        state.update(deltaTime.asSeconds());
-        m_camera.update();
+		if (g_PlayerInfo.gameState != GameState::PAUSED) {
+			state.handleInput();
+			state.update(deltaTime.asSeconds());
+			m_camera.update();
+		}
 
-        state.render(m_masterRenderer);
+		state.render(m_masterRenderer);
         m_masterRenderer.finishRender(m_context.window, m_camera);
 
         handleEvents();
@@ -42,8 +47,10 @@ void Application::runLoop()
         }
 
         m = dt.restart();
-		g_info.elapsedTime += m.asSeconds();
+		g_Info.elapsedTime += m.asSeconds();
     }
+
+	g_SoundMaster.stopEverything();
 }
 
 void Application::handleEvents()
@@ -58,9 +65,21 @@ void Application::handleEvents()
 
             case sf::Event::KeyPressed:
                 switch (e.key.code) {
-                    case sf::Keyboard::Escape:
-                        m_context.window.close();
+                    case sf::Keyboard::Enter:
+						if (g_PlayerInfo.gameState == GameState::PAUSED) {
+							g_PlayerInfo.gameState = GameState::PLAYING;
+						}
                         break;
+					case sf::Keyboard::Escape:
+						if (g_PlayerInfo.gameState == GameState::PAUSED ||
+							g_PlayerInfo.gameState == GameState::DIED) {
+							m_context.window.close();
+						}
+						else if (!g_PlayerInfo.inventoryCursor) {
+							g_PlayerInfo.gameState = GameState::PAUSED;
+							g_PlayerInfo.playerState = PlayerState::NOT_MOVING;
+						}
+						break;
 
                     default:
                         break;
@@ -68,7 +87,7 @@ void Application::handleEvents()
                 break;
 
 			case sf::Event::MouseWheelMoved:
-				m_pPlayer->mouseScrollEvent(e.mouseWheel.delta);
+				g_PlayerInfo.player->mouseScrollEvent(e.mouseWheel.delta);
 				break;
 
             default:

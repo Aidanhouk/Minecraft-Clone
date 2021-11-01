@@ -1,5 +1,4 @@
-#ifndef BASICSHADER_H_INCLUDED
-#define BASICSHADER_H_INCLUDED
+#pragma once
 
 #include "Shader.h"
 
@@ -22,5 +21,3 @@ class BasicShader : public Shader {
 	GLuint m_locationViewMatrix;
     GLuint m_locationModelMatrix;
 };
-
-#endif // BASICSHADER_H_INCLUDED

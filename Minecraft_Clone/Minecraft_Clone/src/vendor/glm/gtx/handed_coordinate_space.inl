@@ -1,4 +1,4 @@
-/// @ref gtx_handed_coordinate_space
+// @ref gtx_handed_coordinate_space
 
 namespace glm
 {

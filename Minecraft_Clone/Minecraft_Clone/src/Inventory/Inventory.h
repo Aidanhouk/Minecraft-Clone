@@ -7,6 +7,7 @@
 #include "IconsMesh.h"
 #include "ItemIcons/GrabbedItemDrawer.h"
 
+class Mouse;
 class RenderMaster;
 class Application;
 class Player;
@@ -31,10 +32,12 @@ public:
 	float getToolbarSlotSize() { return m_toolSlotSize; }
 	bool isInventoryOpened() { return m_isOpened; }
 
-	int addItems(const Material &material, int number, int callNumber = 1);
+	int addItems(BlockId blockId, int number, int callNumber = 1);
 	void removeHeldItem(int number);
-	// finish it after creating physics
-	void throwItem(int number, ItemSlot *thrownSlot = nullptr);
+	// if items were thrown from inventory using mouse
+	void throwItem(int number, ItemSlot *thrownSlot);
+	// if one item was thrown by pressing threw button (Q by default)
+	void throwItem(int number);
 	ItemSlot* getPointedItem() { return m_pPointedSlot; }
 	ItemSlot* getGrabbedItem() { return &m_grabbedSlot; }
 	void setDroppedItemsManager(DroppedItemsManager* manager) { m_pDroppedItemsManager = manager; }
@@ -43,9 +46,10 @@ public:
 	void nextItem();
 	void previousItem();
 
+	void shouldUpdateIcons();
 	void updateIcons();
 
-	void mouseInput(const sf::RenderWindow &window);
+	void mouseInput(const sf::RenderWindow &window, Mouse &mouse);
 	void showOrHideInventory();
 	void draw(RenderMaster &master);
 private:
@@ -64,6 +68,7 @@ private:
 	void updateGrabbedItemIcon();
 
 	bool isSlotEmpty(ItemSlot* slot);
+	bool isGrabbedSlotEmpty();
 
 
 
@@ -71,9 +76,11 @@ private:
 
 	std::array<ItemSlot, 4 * 9> m_slots;
 	std::array<sf::Vector2i, 9> m_toolbarItemPos;
-	int m_heldItem = 0;
+	int m_heldItemIndex = 0;
 
 	bool m_isOpened = false;
+
+	bool m_updateIcons;
 
 	sf::Font				m_font;
 	// inventory objects
@@ -91,11 +98,10 @@ private:
 	sf::Texture				m_toolbarTexture;
 	sf::Text				m_toolbarItemText;
 	sf::RectangleShape		m_heldItemFrame;
-	sf::Texture				m_heldItemTexture;
+	sf::Texture				m_heldItemFrameTexture;
 	float					m_toolSlotSize;
 	float					m_toolDistanceBetweenSlots;
 
-	sf::Clock				m_clickTimer;
 	ItemSlot				m_grabbedSlot;
 	ItemSlot*				m_pPointedSlot = nullptr;
 

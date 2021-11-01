@@ -1,5 +1,4 @@
-#ifndef SKY_MANAGER_H
-#define SKY_MANAGER_H
+#pragma once
 
 #include "../Tick/TickObject.h"
 #define GLM_FORCE_RADIANS
@@ -15,13 +14,19 @@
 
 class Camera;
 
+enum class PrecipitationType {
+	NONE = 0,
+	RAIN = 1,
+	SNOW = 2,
+};
+
 class SkyManager : public TickObject
 {
 public:
 	SkyManager();
 	
 	void tickUpdate(unsigned int tickTime);
-	void update(glm::vec3 playerPosition);
+	void update(glm::vec3 playerPosition, PrecipitationType precipitaionType);
 	
 	void setTime(unsigned int time);
 	unsigned int getTime();
@@ -29,9 +34,12 @@ public:
 	void renderSkyBox(const Camera& camera);
 	void render(const Camera& camera);
 private:
+	void playMusic(unsigned int dayTime);
+
+	float precipitationLightLevel;
 	unsigned int dayTime;
 	
-	unsigned int m_prevTime; //Ticks can skip around sometimes so...
+	unsigned int m_prevTime; // Ticks can skip around sometimes so...
 	glm::vec3 playerPos;
 	glm::mat4 transformMatrix;
 	
@@ -46,6 +54,7 @@ private:
 	Clouds clouds;
 	Snowfall snowfall;
 	Rain rain;
-};
 
-#endif
+	PrecipitationType m_currentPrecipitation;
+	float m_precipitationVisibility;
+};

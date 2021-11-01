@@ -1,8 +1,12 @@
-#ifndef ENTITY_H_INCLUDED
-#define ENTITY_H_INCLUDED
+#pragma once
 
 #include "Maths/Matrix.h"
 #include "Physics/AABB.h"
+#include "World/Block/BlockId.h"
+
+#include <array>
+
+class World;
 
 struct Entity {
     Entity()
@@ -28,11 +32,13 @@ struct Entity {
     {
     }
 
-    glm::vec3 position;
-    glm::vec3 rotation;
-    glm::vec3 velocity;
+	BlockId getBlockEntityStandsOn(World &world);
+	bool isEntityOnWaterSurface(World &world);
+	void getBlocksUnderEntity(World &world, std::array<BlockId, 5> &blocksIDs, float specificHeight = 1.5f);
 
-    AABB box;
+	glm::vec3 position;
+	glm::vec3 rotation;
+	glm::vec3 velocity;
+
+	AABB box;
 };
-
-#endif // ENTITY_H_INCLUDED

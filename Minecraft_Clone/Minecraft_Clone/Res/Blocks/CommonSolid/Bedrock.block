@@ -1,0 +1,23 @@
+Name
+Bedrock
+
+Id
+22
+
+TexAll
+3 1
+
+Opaque
+1
+
+MeshType
+0
+
+ShaderType
+0
+
+Collidable
+1
+
+Hardness
+340282000000000000000000000000000000000

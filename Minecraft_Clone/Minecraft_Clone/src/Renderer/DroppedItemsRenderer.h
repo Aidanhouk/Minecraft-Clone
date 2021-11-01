@@ -11,7 +11,7 @@ class DroppedItemsMesh;
 class DroppedItemsRenderer
 {
 public:
-	void setMeshToDraw(const DroppedItemsMesh &droppedItemsMesh);
+	void addMeshToDraw(const DroppedItemsMesh &droppedItemsMesh);
 	void render(const Camera &camera);
 private:
 	const RenderInfo * m_mesh;

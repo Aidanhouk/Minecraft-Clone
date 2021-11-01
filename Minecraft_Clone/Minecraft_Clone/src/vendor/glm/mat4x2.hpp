@@ -1,5 +1,5 @@
-/// @ref core
-/// @file glm/mat4x2.hpp
+// @ref core
+// @file glm/mat4x2.hpp
 
 #pragma once
 #include "./ext/matrix_double4x2.hpp"
