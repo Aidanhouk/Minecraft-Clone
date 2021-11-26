@@ -39,7 +39,7 @@ private:
     bool shouldMakeLayer(int y);
 
     const ChunkBlock *m_pBlockPtr = nullptr;
-    ChunkSection *m_pChunk = nullptr;
+    ChunkSection *m_pChunkSection = nullptr;
     ChunkMeshCollection *m_pMeshes = nullptr;
     ChunkMesh *m_pActiveMesh = nullptr;
     const BlockDataHolder *m_pBlockData = nullptr;

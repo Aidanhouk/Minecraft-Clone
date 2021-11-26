@@ -17,7 +17,7 @@ Chunk &ChunkManager::getChunk(int x, int z)
 {
     VectorXZ key{x, z};
     if (!chunkExistsAt(x, z)) {
-		// sometimes debugger stops here if transfer { x,z } as an r-value... Probably not now
+		//Chunk chunk{ {x,z}, m_pWorld };
 		sf::Vector2i vector{ x,z };
 		Chunk chunk{ std::move(vector), m_pWorld };
         m_chunks.emplace(key, std::move(chunk));
@@ -62,11 +62,14 @@ void ChunkManager::generateTerrain(int x, int z)
 	for (int nx = -1; nx <= 1; ++nx)
 		for (int nz = -1; nz <= 1; ++nz) {
 			if (skipChunks) {
-				if (x > 5 && z > 5)
+				if (x > 5 && z > 5) {
 					skipChunks = false;
+					loadChunk(x + nx, z + nz);
+				}
 			}
-			else
+			else {
 				loadChunk(x + nx, z + nz);
+			}
 		}
 }
 

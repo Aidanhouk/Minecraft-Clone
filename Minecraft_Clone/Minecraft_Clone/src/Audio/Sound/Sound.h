@@ -46,6 +46,7 @@ public:
 		CLASSIC_HURT,
 		PLAYER_WAS_HIT,
 		BURP,
+		ITEM_BREAK,
 
 		LAST;
 };

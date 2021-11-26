@@ -30,7 +30,6 @@ ChunkSection::ChunkSection(ChunkSection && x)
 {
 	m_aabb.update({ m_location.x * CHUNK_SIZE, m_location.y * CHUNK_SIZE,
 				   m_location.z * CHUNK_SIZE });
-	x.m_pWorld = nullptr;
 }
 
 ChunkSection & ChunkSection::operator=(ChunkSection && x)
@@ -46,7 +45,6 @@ ChunkSection & ChunkSection::operator=(ChunkSection && x)
 	m_location = x.m_location;
 
 	m_pWorld = x.m_pWorld;
-	m_pWorld = nullptr;
 
 	m_hasMesh = x.m_hasMesh;
 

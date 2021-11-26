@@ -142,15 +142,19 @@ void DroppedItemsManager::lookForSameItemsNearby(World &world)
 				{
 					int item1Number = item1->getItemStack().getNumInStack();
 					int item2Number = item2->getItemStack().getNumInStack();
-					item2->setItemStackNumber(item1Number + item2Number);
-					item2->position.y += 0.2f; // item won't be drawn if not change it's position
-					// these are not necessary
-					//item1->position.x += (item2X - item1X) / 2.0f;
-					//item1->position.z += (item2Z - item1Z) / 2.0f;
-					//item1->collisionMove(world);
+					int sum = item1Number + item2Number;
 
-					m_items.erase(item1);
-					updateMesh();
+					if (sum <= item2->getItemStack().getMaxStackSize()) {
+						item2->setItemStackNumber(sum);
+						item2->position.y += 0.2f; // item won't be drawn if not change it's position
+						// these are not necessary
+						//item1->position.x += (item2X - item1X) / 2.0f;
+						//item1->position.z += (item2Z - item1Z) / 2.0f;
+						//item1->collisionMove(world);
+
+						m_items.erase(item1);
+						updateMesh();
+					}
 					return;
 				}
 			}

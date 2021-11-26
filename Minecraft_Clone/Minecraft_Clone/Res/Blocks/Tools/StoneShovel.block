@@ -1,0 +1,20 @@
+Name
+StoneShovel
+
+Id
+72
+
+TexAll
+1 6
+
+Opaque
+0
+
+ItemType
+2
+
+MeshType
+3
+
+EffieciencyCoef
+3.75

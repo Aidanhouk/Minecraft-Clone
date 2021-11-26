@@ -86,6 +86,5 @@ private:
 
 	DroppedItemsManager m_droppedItemManager;
 
-	std::vector<sf::Vector2i> m_chunksToUpdate;
 	std::vector<UnloadedBlock> m_unloadedBlocks;
 };

@@ -82,6 +82,7 @@ void makeBreakSound(BlockId id)
 		soundSet = &SoundSet::BreakGlassSet;
 		break;
 	case BlockId::Stone:
+	case BlockId::Cobblestone:
 	case BlockId::Bedrock:
 	case BlockId::CoalOre:
 	case BlockId::IronOre:
@@ -146,6 +147,11 @@ void makeBreakSound(BlockId id)
 	case BlockId::BirchBark:
 	case BlockId::PalmBark:
 	case BlockId::SpruceBark:
+	case BlockId::OakPlanks:
+	case BlockId::BirchPlanks:
+	case BlockId::PalmPlanks:
+	case BlockId::SprucePlanks:
+	case BlockId::CraftingTable:
 		soundSet = &SoundSet::BreakWoodSet;
 		break;
 	default:
@@ -154,7 +160,6 @@ void makeBreakSound(BlockId id)
 
 	if (soundSet) {
 		g_SoundMaster.setVolumeAll(*soundSet, 50.0f);
-		//g_SoundMaster.setVolumeAll(*soundSet, 100.0f);
 		g_SoundMaster.setPitchAll(*soundSet, 0.8f);
 		g_SoundMaster.playRandom(*soundSet);
 	}
@@ -169,6 +174,7 @@ void makePlaceSound(BlockId id)
 	case BlockId::Ice:
 	case BlockId::Bedrock:
 	case BlockId::Stone:
+	case BlockId::Cobblestone:
 	case BlockId::CoalOre:
 	case BlockId::IronOre:
 	case BlockId::RedstoneOre:
@@ -232,6 +238,11 @@ void makePlaceSound(BlockId id)
 	case BlockId::BirchBark:
 	case BlockId::PalmBark:
 	case BlockId::SpruceBark:
+	case BlockId::OakPlanks:
+	case BlockId::BirchPlanks:
+	case BlockId::PalmPlanks:
+	case BlockId::SprucePlanks:
+	case BlockId::CraftingTable:
 		soundSet = &SoundSet::BreakWoodSet;
 		break;
 	default:
@@ -253,6 +264,7 @@ void makeStepSound(BlockId id)
 	switch (id)
 	{
 	case BlockId::Stone:
+	case BlockId::Cobblestone:
 	case BlockId::Bedrock:
 	case BlockId::Ice:
 	case BlockId::CoalOre:
@@ -286,6 +298,11 @@ void makeStepSound(BlockId id)
 	case BlockId::OakBark:
 	case BlockId::PalmBark:
 	case BlockId::SpruceBark:
+	case BlockId::OakPlanks:
+	case BlockId::BirchPlanks:
+	case BlockId::PalmPlanks:
+	case BlockId::SprucePlanks:
+	case BlockId::CraftingTable:
 		soundSet = &SoundSet::StepWoodSet;
 		break;
 	case BlockId::Cactus:
@@ -309,6 +326,7 @@ void makeFallSound(BlockId id)
 	switch (id)
 	{
 	case BlockId::Stone:
+	case BlockId::Cobblestone:
 	case BlockId::Bedrock:
 	case BlockId::Ice:
 	case BlockId::CoalOre:
@@ -342,6 +360,11 @@ void makeFallSound(BlockId id)
 	case BlockId::BirchBark:
 	case BlockId::PalmBark:
 	case BlockId::SpruceBark:
+	case BlockId::OakPlanks:
+	case BlockId::BirchPlanks:
+	case BlockId::PalmPlanks:
+	case BlockId::SprucePlanks:
+	case BlockId::CraftingTable:
 		soundSet = &SoundSet::StepWoodSet;
 		break;
 	case BlockId::Cactus:
@@ -365,6 +388,7 @@ void makeHitSound(BlockId id)
 	switch (id)
 	{
 	case BlockId::Stone:
+	case BlockId::Cobblestone:
 	case BlockId::Bedrock:
 	case BlockId::Ice:
 	case BlockId::CoalOre:
@@ -427,6 +451,11 @@ void makeHitSound(BlockId id)
 	case BlockId::BirchBark:
 	case BlockId::PalmBark:
 	case BlockId::SpruceBark:
+	case BlockId::OakPlanks:
+	case BlockId::BirchPlanks:
+	case BlockId::PalmPlanks:
+	case BlockId::SprucePlanks:
+	case BlockId::CraftingTable:
 		soundSet = &SoundSet::StepWoodSet;
 		break;
 	case BlockId::Cactus:

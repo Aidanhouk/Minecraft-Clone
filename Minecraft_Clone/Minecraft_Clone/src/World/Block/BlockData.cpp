@@ -47,8 +47,7 @@ BlockData::BlockData(const std::string &fileName)
             inFile >> m_data.isCollidable;
         }
 		else if (line == "ItemType") {
-			// don't want to refactor all created .block files...
-			m_data.itemType = ItemType::Block;
+			//m_data.itemType = ItemType::Block;
 			int id;
 			inFile >> id;
 			m_data.itemType = static_cast<ItemType>(id);
@@ -68,6 +67,22 @@ BlockData::BlockData(const std::string &fileName)
 			inFile >> hardness;
 			m_data.hardness = hardness;
 		}
+		else if (line == "ToolToMine") {
+			int toolToMine;
+			inFile >> toolToMine;
+			m_data.toolToMine = static_cast<ToolToMine>(toolToMine);
+		}
+		else if (line == "ToolLevelToMine") {
+			int toolLevelToMine;
+			inFile >> toolLevelToMine;
+			m_data.toolLevelToMine = static_cast<ToolLevelToMine>(toolLevelToMine);
+		}
+		else if (line == "EffieciencyCoef") {
+			float effieciencyCoef;
+			inFile >> effieciencyCoef;
+			m_data.effieciencyCoef = effieciencyCoef;
+		}
+
 		else if (line == "Hunger") {
 			float hunger;
 			inFile >> hunger;

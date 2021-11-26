@@ -6,8 +6,10 @@ Implemented features:
 -Caves
 -Collision detection
 -Breaking and placing blocks
+-Mining tools with durability
 -Items can be dropped
 -Inventory
+-Crafting
 -Damage, hunger and breathing systems
 -Eating
 -Creating 3D mesh out of 2D texture

@@ -48,6 +48,10 @@ public:
 
 	bool canEat();
 	void eatFood(float hunger, float saturation);
+
+	void loseDurability(int loseDur);
+
+	void openCraftingTable();
 private:
 	void statsUpdate(float dt);
 	void decreaseSaturation();

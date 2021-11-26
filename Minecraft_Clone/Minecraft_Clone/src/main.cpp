@@ -46,6 +46,9 @@ namespace {
 					configFile >> config.renderDistance;
 					if (config.renderDistance < 4)
 						config.renderDistance = 4;
+#ifdef _DEBUG
+					config.renderDistance = 4;
+#endif // _DEBUG
 					std::cout << "Config: Render distance: "
 						<< config.renderDistance << '\n';
 					// formula is not that good, would be nice to hardcore every render distance option

@@ -64,12 +64,13 @@ void Player::handleInput(const sf::RenderWindow &window, Mouse &mouse, Keyboard 
 	mouseInput(window);
 
 	if (keyboard.toggle(sf::Keyboard::E)) {
-		m_Inventory.showOrHideInventory();
+		m_Inventory.showOrHideInventory(InterfaceType::Inventory);
+		//m_Inventory.showOrHideInventory(InterfaceType::CraftingTable);
 	}
 	if (g_PlayerInfo.inventoryCursor) {
 		m_Inventory.mouseInput(window, mouse);
 		if (keyboard.toggle(sf::Keyboard::Escape))
-			m_Inventory.showOrHideInventory();
+			m_Inventory.showOrHideInventory(InterfaceType::Closed);
 		return;
 	}
 
@@ -101,7 +102,7 @@ void Player::handleInput(const sf::RenderWindow &window, Mouse &mouse, Keyboard 
 		m_Inventory.shouldUpdateIcons();
 	}
 	else if (keyboard.toggle(sf::Keyboard::P)) {
-		g_Config.postProcess = !g_Config.postProcess;
+		g_Config.postProcess = !g_Config.postProcess;	
 	}
 	else if (keyboard.toggle(sf::Keyboard::F3)) {
 		g_PlayerInfo.FPS_HUD = !g_PlayerInfo.FPS_HUD;
@@ -205,8 +206,8 @@ void Player::update(float dt, World &world)
 
 	position.y += velocity.y * dt;
 	collide(world, { 0, velocity.y, 0 });
-	//if (position.y < 0)
-	//	position.y = 0;
+	if (position.y < 0)
+		position.y = 0;
 
 
 	movementInWater(world);
@@ -300,6 +301,16 @@ void Player::eatFood(float hunger, float saturation)
 	m_saturationLevel += saturation;
 	if (m_saturationLevel > m_hunger)
 		m_saturationLevel = m_hunger;
+}
+
+void Player::loseDurability(int loseDur)
+{
+	m_Inventory.loseDurability(loseDur);
+}
+
+void Player::openCraftingTable()
+{
+	m_Inventory.showOrHideInventory(InterfaceType::CraftingTable);
 }
 
 void Player::reachCertainSpeed(float neededSpeed, float howFastReachIt)
@@ -398,7 +409,7 @@ void Player::collide(World &world, const glm::vec3 &vel)
 				}
 				else if (block.getId() == Block_t(BlockId::Water))
 					if (!m_isSwimming && position.y < (int)y + 1.94f && velocity.y < -5.2f) {
-						g_SoundMaster.keepPlaying(SoundId::WaterSplashNormal);
+						g_SoundMaster.play(SoundId::WaterSplashNormal);
 					}
 			}
 		}

@@ -134,6 +134,7 @@ bool DroppedItem::move(World &world, float dt)
 			if (m_acceleration.y == 0.0f)
 				itemMoved = false;
 			m_acceleration.y = 0.0f;
+			position.y += 0.001f;
 		}
 		else if (m_acceleration.y == 0.0f)
 			m_acceleration.y = -0.1f;

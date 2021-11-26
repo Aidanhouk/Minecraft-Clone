@@ -25,6 +25,8 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Context.cpp" />
+    <ClCompile Include="src\Crafting\Crafting.cpp" />
+    <ClCompile Include="src\Crafting\CraftRecipes.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Environment\Cloud.cpp" />
     <ClCompile Include="src\Environment\ProcSky.cpp" />
@@ -39,7 +41,12 @@
     <ClCompile Include="src\Input\ToggleKey.cpp" />
     <ClCompile Include="src\Inventory\IconDatabase.cpp" />
     <ClCompile Include="src\Inventory\IconsMesh.cpp" />
-    <ClCompile Include="src\Inventory\Inventory.cpp" />
+    <ClCompile Include="src\Inventory\InventoryFunctions\Inventory.cpp" />
+    <ClCompile Include="src\Inventory\InventoryFunctions\InventoryConstructor.cpp" />
+    <ClCompile Include="src\Inventory\InventoryFunctions\InventoryInterfaceUpdate.cpp" />
+    <ClCompile Include="src\Inventory\InventoryFunctions\InventoryItemCalculations.cpp" />
+    <ClCompile Include="src\Inventory\InventoryFunctions\InventoryMisc.cpp" />
+    <ClCompile Include="src\Inventory\InventoryFunctions\InventoryMouseProcessing.cpp" />
     <ClCompile Include="src\Inventory\ItemIcons\GrabbedItemDrawer.cpp" />
     <ClCompile Include="src\Inventory\ItemIcons\ItemIconsBuilder.cpp" />
     <ClCompile Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.cpp" />
@@ -158,6 +165,8 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Context.h" />
+    <ClInclude Include="src\Crafting\Crafting.h" />
+    <ClInclude Include="src\Crafting\CraftRecipes.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Environment\Cloud.h" />
     <ClInclude Include="src\Environment\ProcSky.h" />
@@ -175,6 +184,7 @@
     <ClInclude Include="src\Inventory\Inventory.h" />
     <ClInclude Include="src\Inventory\ItemIcons\GrabbedItemDrawer.h" />
     <ClInclude Include="src\Inventory\ItemIcons\ItemIconsBuilder.h" />
+    <ClInclude Include="src\Inventory\ItemSlot.h" />
     <ClInclude Include="src\Inventory\PlayerParametersIcons\ParametersBuilder.h" />
     <ClInclude Include="src\Item\DroppedItem\Coordinates.h" />
     <ClInclude Include="src\Item\ItemStack.h" />

@@ -7,7 +7,10 @@
 
 using FaceCoords = std::array<GLfloat, 12>;
 
-const float	ANIMATION_TIME = 1.0f / 5; // 0.2 sec
+const float	ANIMATION_TIME =
+// 0.2 sec
+1.0f / 5;
+//1.0f;
 
 namespace {
 

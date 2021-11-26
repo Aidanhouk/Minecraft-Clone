@@ -45,6 +45,7 @@ void HandRenderer::render()
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.1f, 0.5f, 0.0f));
 
 		if (m_handData->animationType == AnimationType::Breaking) {
+
 			modelMatrix = glm::rotate(modelMatrix, glm::radians(std::min(90.0f * m_handData->animationStage, 60.0f)), glm::vec3(0, 0, 1));
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(
 				cos(m_handData->animationStage * PI) * 0.2f - m_handData->animationStage * 0.5f,
@@ -66,12 +67,32 @@ void HandRenderer::render()
 		else if (m_handData->animationType == AnimationType::Breaking) {
 			modelMatrix = glm::rotate(modelMatrix, glm::radians(-70.0f), glm::vec3(0, 1, 0));
 			modelMatrix = glm::rotate(modelMatrix, glm::radians(20.0f), glm::vec3(0, 0, 1));
-			modelMatrix = glm::translate(modelMatrix, glm::vec3(
-				-1.4f - m_handData->animationStage * 0.7f,
-				-0.4f + m_handData->animationStage * 0.2f,
-				m_handData->animationStage * 0.3f
-			));
-			modelMatrix = glm::rotate(modelMatrix, glm::radians(90 * m_handData->animationStage), glm::vec3(0, 0, 1));
+			const float STAGE_1 = 0.2f;
+			if (m_handData->animationStage < STAGE_1) {
+				modelMatrix = glm::translate(modelMatrix, glm::vec3(
+					//-1.0f -
+					-0.8f
+					-m_handData->animationStage * 0.7f,
+					//0.4f -
+					0.2f
+					+m_handData->animationStage * 0.4f,
+					//0.2f
+					+m_handData->animationStage * 0.2f
+				));
+			}
+			else {
+				modelMatrix = glm::translate(modelMatrix, glm::vec3(
+					-0.8f
+					-m_handData->animationStage * 0.7f,
+					0.2f + 0.3f * 0.4f
+					-(m_handData->animationStage - STAGE_1) * 1.4f,
+					//0.2f
+					+m_handData->animationStage * 0.2f
+				));
+			}
+			modelMatrix = glm::rotate(modelMatrix, glm::radians(120 * m_handData->animationStage), glm::vec3(0, 0, 1));
+
+			modelMatrix = glm::scale(modelMatrix, glm::vec3(0.6f, 0.6f, 0.6f));
 		}
 		else if (m_handData->animationType == AnimationType::Eating) {
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.6f, -0.5f, 0.0f));
@@ -79,6 +100,7 @@ void HandRenderer::render()
 			modelMatrix = glm::rotate(modelMatrix, glm::radians(10.0f), glm::vec3(0, 0, 1));
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, sin(m_handData->animationStage * PI) * 0.15f, 0.0f));
 		}
+
 		break;
 	case HandType::Cube:
 	case HandType::Cactus:
@@ -86,8 +108,9 @@ void HandRenderer::render()
 	
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(-40.0f), glm::vec3(0, 1, 0));
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(0.3f, -0.3f, 0.0f));
-	
+
 		if (m_handData->animationType == AnimationType::Breaking) {
+
 			modelMatrix = glm::translate(modelMatrix, glm::vec3(
 				-m_handData->animationStage * 0.2f,
 				m_handData->animationStage * 0.3f,

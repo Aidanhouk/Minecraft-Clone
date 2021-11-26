@@ -1,9 +1,9 @@
 # Minecraft-Clone
 
-Developed using C++, OpenGL, SFML.
+Developed using C++, OpenGL, SFML, libnoise.
 
 The game without source code:
-https://drive.google.com/file/d/1AJNdjMuOiEjzf3jBeb0GeSYK9McAT-zL/view?usp=sharing
+https://drive.google.com/file/d/1P2GY01l_IuyYwCxVB09JAQqcZ8NPsG4L/view?usp=sharing
 
 Video: https://youtu.be/hgyFcShEzEs
 
@@ -13,12 +13,15 @@ Implemented features:
 -Caves
 -Collision detection
 -Breaking and placing blocks
+-Mining tools with durability
 -Items can be dropped
 -Inventory
+-Crafting
 -Damage, hunger and breathing systems
 -Eating
 -Creating 3D mesh out of 2D texture
 -Swimming
+-Sneaking
 -Post processing
 -Day & night cycle
 -Snow and rain

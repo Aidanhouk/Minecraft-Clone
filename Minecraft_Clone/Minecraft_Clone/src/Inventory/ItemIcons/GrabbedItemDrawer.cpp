@@ -37,7 +37,7 @@ void GrabbedItemDrawer::updateSprite(ItemSlot & grabbedItem)
 	if (grabbedItemId == EMPTY_SLOT_ID)
 		return;
 	if (grabbedItemId != m_item.getBlockId()) {
-		m_item.setData(grabbedItem.item.getBlockId(), 0);
+		m_item.clear();
 
 		ChunkBlock block(grabbedItemId);
 		auto textureCoords = block.getData().texSideCoord;

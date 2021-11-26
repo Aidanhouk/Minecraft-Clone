@@ -110,6 +110,7 @@ Sound Sound::FALL_DAMAGE(SoundId::FallDamage, "Player/fallbig");
 Sound Sound::CLASSIC_HURT(SoundId::ClassicHurt, "Player/classic_hurt");
 Sound Sound::PLAYER_WAS_HIT(SoundId::PlayerWasHit, "Player/player_was_hit");
 Sound Sound::BURP(SoundId::Burp, "Player/burp");
+Sound Sound::ITEM_BREAK(SoundId::ItemBreak, "Misc/itemBreak");
 
 Sound Sound::LAST(SoundId::NUMBER_OF_SOUNDS, "NONE");
 
@@ -131,6 +132,8 @@ Sound & Sound::toSound(SoundId id)
 		return PLAYER_WAS_HIT;
 	case SoundId::Burp:
 		return BURP;
+	case SoundId::ItemBreak:
+		return ITEM_BREAK;
 
 	default:
 		return LAST;

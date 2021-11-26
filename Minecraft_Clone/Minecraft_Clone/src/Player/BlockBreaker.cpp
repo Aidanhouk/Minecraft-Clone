@@ -5,13 +5,20 @@
 #include <iostream>
 
 BlockBreaker::BlockBreaker()
-	: m_playerIsBreaking(false), m_blockPostion{-1, -1, -1}
+	: m_playerIsBreaking(false),
+	m_blockPostion{-1, -1, -1},
+	m_heldItemId(BlockId::Air)
 {
 }
 
-bool BlockBreaker::_break(glm::ivec3 blockPosition, float hardness)
+bool BlockBreaker::_break(BlockId heldItemId, glm::ivec3 blockPosition, float hardness)
 {
-	if (blockPosition != m_blockPostion) {
+	if (heldItemId != m_heldItemId) {
+		m_playerIsBreaking = true;
+		m_heldItemId = heldItemId;
+		m_startBreakingTimer.restart();
+	}
+	else if (blockPosition != m_blockPostion) {
 		m_playerIsBreaking = true;
 		m_blockPostion = blockPosition;
 		m_startBreakingTimer.restart();

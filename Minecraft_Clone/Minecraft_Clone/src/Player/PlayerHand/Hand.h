@@ -14,7 +14,7 @@ class Hand
 public:
 	Hand();
 
-	void hit();
+	void blockHit();
 	void swing();
 	void eat();
 	void stopEating();

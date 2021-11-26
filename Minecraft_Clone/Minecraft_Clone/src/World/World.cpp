@@ -43,11 +43,12 @@ ChunkBlock World::getBlock(int x, int y, int z)
 	auto bp = getBlockXZ(x, z);
 	auto chunkPosition = getChunkXZ(x, z);
 
-	Chunk &chunk = m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z);
-	if (chunk.hasLoaded())
-		return chunk.getBlock(bp.x, y, bp.z);
-	else
-		return BlockId::Air;
+	return m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z).getBlock(bp.x, y, bp.z);
+	//Chunk &chunk = m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z);
+	//if (chunk.hasLoaded())
+	//	return chunk.getBlock(bp.x, y, bp.z);
+	//else
+	//	return BlockId::Air;
 }
 
 void World::setBlock(int x, int y, int z, ChunkBlock block)
@@ -135,6 +136,8 @@ BiomeId World::getBiomeId(int x, int z)
 // Optimize for chunkPositionU usage :thinking:
 void World::loadChunks(const Camera &camera)
 {
+	std::vector<sf::Vector2i> m_chunksToUpdate;
+
 	while (m_isRunning) {
 		int cameraX = camera.position.x / CHUNK_SIZE;
 		int cameraZ = camera.position.z / CHUNK_SIZE;
@@ -174,8 +177,7 @@ void World::updateChunk(int blockX, int blockY, int blockZ)
 {
 	std::unique_lock<std::mutex> lock(m_mainMutex);
 
-	auto addChunkToUpdateBatch = [&](const sf::Vector3i &key,
-		ChunkSection &section) {
+	auto addChunkToUpdateBatch = [&](const sf::Vector3i &key, ChunkSection &section) {
 		m_chunkUpdates.emplace(key, &section);
 	};
 
@@ -184,9 +186,8 @@ void World::updateChunk(int blockX, int blockY, int blockZ)
 
 	sf::Vector3i key(chunkPosition.x, chunkSectionY, chunkPosition.z);
 
-	addChunkToUpdateBatch(
-		key, m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z)
-		.getSection(chunkSectionY));
+	addChunkToUpdateBatch(key,
+		m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z).getSection(chunkSectionY));
 
 	auto sectionBlockXZ = getBlockXZ(blockX, blockZ);
 	auto sectionBlockY = blockY % CHUNK_SIZE;
@@ -283,7 +284,9 @@ VectorXZ World::getChunkXZ(int x, int z)
 void World::updateChunks()
 {
 	std::unique_lock<std::mutex> lock(m_mainMutex);
+	static int i = 1;
 	for (auto &c : m_chunkUpdates) {
+		//return;
 		ChunkSection &s = *c.second;
 		s.makeMesh();
 	}

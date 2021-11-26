@@ -1,41 +1,48 @@
 #pragma once
 
-#include "../World/Block/BlockId.h"
-#include <string>
-
 #include "../Util/NonCopyable.h"
+#include "../World/Block/BlockId.h"
+
+#include <string>
 
 struct Material : public NonCopyable {
     enum ID {
         Nothing,
-        Grass,
-        Dirt,
-        Stone,
-        OakBark,
-        OakLeaf,
-        Sand,
-        Cactus,
-        Rose,
-        TallGrass,
-        DeadShrub,
-		BirchBark,
-		PalmBark,
-		PalmLeaf,
-		BirchLeaf,
-		SugarCane,
-		Snow,
-		SpruceBark,
-		SpruceLeaf,
 		Ice,
-		Dandelion,
-		Bedrock,
-		TundraGrass,
-		Fern,
-		LargeFern1,
-		LargeFern2,
-		LargeFern,
+
+		Grass,
+		Dirt,
+		Stone,
 		Gravel,
 		Clay,
+		Bedrock,
+		TundraGrass,
+		Sand,
+		Snow,
+		Cobblestone,
+
+		OakBark,
+		BirchBark,
+		PalmBark,
+		SpruceBark,
+		OakPlanks,
+		BirchPlanks,
+		PalmPlanks,
+		SprucePlanks,
+
+        OakLeaf,
+		PalmLeaf,
+		BirchLeaf,
+		SpruceLeaf,
+
+		Fern,
+		Cactus,
+		TallGrass,
+		DeadShrub,
+		SugarCane,
+		Rose,
+		Dandelion,
+
 		AzureBluet,
 		BlueOrchid,
 		CornFlower,
@@ -45,6 +52,10 @@ struct Material : public NonCopyable {
 		PinkTulip,
 		RedTulip,
 		WhiteTulip,
+
+		LargeFern1,
+		LargeFern2,
+		LargeFern,
 		Lilac1,
 		Lilac2,
 		Lilac,
@@ -54,33 +65,70 @@ struct Material : public NonCopyable {
 		RoseBush1,
 		RoseBush2,
 		RoseBush,
+
 		CoalOre,
 		IronOre,
 		RedstoneOre,
 		GoldOre,
 		DiamondOre,
 		EmeraldOre,
+
 		WoodenSword,
 		StoneSword,
 		IronSword,
 		GoldSword,
 		DiamondSword,
+
 		Apple,
+
+		Stick,
+
+		Diamond,
+
+		WoodenPickaxe,
+		StonePickaxe,
+		IronPickaxe,
+		GoldPickaxe,
+		DiamondPickaxe,
+		WoodenShovel,
+		StoneShovel,
+		IronShovel,
+		GoldShovel,
+		DiamondShovel,
+		WoodenAxe,
+		StoneAxe,
+		IronAxe,
+		GoldAxe,
+		DiamondAxe,
+
+		CraftingTable,
     };
 
-	const static Material NOTHING, GRASS_BLOCK, DIRT_BLOCK, STONE_BLOCK,
-		OAK_BARK_BLOCK, OAK_LEAF_BLOCK, SAND_BLOCK, CACTUS_BLOCK, ROSE,
-		TALL_GRASS, DEAD_SHRUB, BIRCH_BARK, PALM_BARK, PALM_LEAF, BIRCH_LEAF,
-		SUGAR_CANE, SNOW, SPRUCE_BARK, SPRUCE_LEAF, ICE, DANDELION, BEDROCK,
-		TUNDRA_GRASS, FERN, LARGE_FERN_1, LARGE_FERN_2, LARGE_FERN, GRAVEL,
-		CLAY, AZURE_BLUET, BLUE_ORCHID,	CORN_FLOWER, LILY_OF_THE_VALLEY,
-		ORANGLE_TULIP, OXEYE_DAISY, PINK_TULIP, RED_TULIP, WHITE_TULIP,
-		LILAC_1, LILAC_2, LILAC, PEONY_1, PEONY_2, PEONY, ROSE_BUSH_1,
-		ROSE_BUSH_2, ROSE_BUSH, COAL_ORE, IRON_ORE, REDSTONE_ORE, GOLD_ORE,
-		DIAMOND_ORE, EMERALD_ORE, WOODEN_SWORD, STONE_SWORD, IRON_SWORD,
-		GOLD_SWORD, DIAMOND_SWORD, APPLE;
+	const static Material NOTHING, ICE,
+		GRASS, DIRT, STONE, SAND, BEDROCK, TUNDRA_GRASS, SNOW, GRAVEL, CLAY, COBBLESTONE,
+		OAK_BARK, BIRCH_BARK, SPRUCE_BARK, PALM_BARK,
+		OAK_PLANKS, BIRCH_PLANKS, PALM_PLANKS, SPRUCE_PLANKS,
+		OAK_LEAF, BIRCH_LEAF, SPRUCE_LEAF, PALM_LEAF,
+		CACTUS, SUGAR_CANE,
+		TALL_GRASS, DEAD_SHRUB, FERN, ROSE, DANDELION,
+		AZURE_BLUET, BLUE_ORCHID, CORN_FLOWER, LILY_OF_THE_VALLEY, ORANGLE_TULIP, OXEYE_DAISY, PINK_TULIP, RED_TULIP, WHITE_TULIP,
+		LARGE_FERN_1, LARGE_FERN_2,	LARGE_FERN,
+		LILAC_1, LILAC_2, LILAC,
+		PEONY_1, PEONY_2, PEONY,
+		ROSE_BUSH_1, ROSE_BUSH_2, ROSE_BUSH,
+		COAL_ORE, IRON_ORE, REDSTONE_ORE, GOLD_ORE, DIAMOND_ORE, EMERALD_ORE,
+		APPLE,
+		STICK,
+		DIAMOND,
+		WOODEN_SWORD, WOODEN_PICKAXE, WOODEN_SHOVEL, WOODEN_AXE,
+		STONE_SWORD, STONE_PICKAXE, STONE_SHOVEL, STONE_AXE,
+		IRON_SWORD, IRON_PICKAXE, IRON_SHOVEL, IRON_AXE,
+		GOLD_SWORD, GOLD_PICKAXE, GOLD_SHOVEL, GOLD_AXE,
+		DIAMOND_SWORD, DIAMOND_PICKAXE, DIAMOND_SHOVEL, DIAMOND_AXE,
+		CRAFTING_TABLE
+		;
 
-    Material(Material::ID id, int maxStack, bool isBlock, std::string &&name);
+    Material(Material::ID id, int maxStack, bool isBlock, std::string &&name, int durability = 0);
 
     BlockId toBlockID() const;
 
@@ -90,6 +138,7 @@ struct Material : public NonCopyable {
     const int maxStackSize;
     const bool isBlock;
     const std::string name;
+	const int durability;
 };
 
 namespace std {

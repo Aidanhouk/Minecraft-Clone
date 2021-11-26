@@ -40,6 +40,7 @@ enum SoundId {
 	ClassicHurt,
 	PlayerWasHit,
 	Burp,
+	ItemBreak,
 
 	NUMBER_OF_SOUNDS,
 };

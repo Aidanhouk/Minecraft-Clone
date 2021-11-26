@@ -1,0 +1,35 @@
+Name
+CraftingTable
+
+Id
+81
+
+TexTop
+11 4
+
+TexSide
+10 4
+
+TexBottom
+11 4
+
+Opaque
+1
+
+MeshType
+0
+
+ShaderType
+0
+
+Collidable
+1
+
+Hardness
+3.75
+
+ToolToMine
+3
+
+ToolLevelToMine
+0

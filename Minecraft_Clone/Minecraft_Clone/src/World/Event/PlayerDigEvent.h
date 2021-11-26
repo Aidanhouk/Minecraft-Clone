@@ -18,13 +18,16 @@ public:
     void handle(World &world) override;
 
 private:
-    void dig(World &world);
+    void _handle(World &world);
+	void dropItems(World &world, BlockId blockId, float x, float y, float z, bool &placeNewBlock);
+	void placeBlock(World &world, BlockId heldItemId, float x, float y, float z);
+	
 	void breakBlocksAbove(World &world, const glm::vec3 &pos);
 	void breakDoublePlant(World &world, const glm::vec3 &pos, BlockId brokenPlant);
 
     sf::Mouse::Button m_buttonPress;
     glm::vec3 m_digSpot;
     Player *m_pPlayer;
-	Hand *m_phand;
+	Hand *m_pHand;
 	Random<std::minstd_rand> m_random;
 };

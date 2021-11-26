@@ -21,7 +21,7 @@ Hand::Hand()
 	m_pTexturAtlas->createAtlasPixelsVector();
 }
 
-void Hand::hit()
+void Hand::blockHit()
 {
 	if (m_animationType != AnimationType::Breaking) {
 		m_animationType = AnimationType::Breaking;
@@ -92,6 +92,7 @@ bool Hand::update(ChunkBlock block)
 		m_lastItemInHand = block.getData().id;
 		
 		if (m_animationType != AnimationType::Breaking) {
+
 			m_animationType = AnimationType::Idle;
 			m_handMesh.setAnimationType(m_animationType);
 			m_lastAnimationType = m_animationType;
@@ -287,8 +288,10 @@ void Hand::makeDefaultItemMesh(ChunkBlock& block)
 			pos.x += x * defaultItemData::PIXEL_SIZE;
 			pos.y -= (y + 1) * defaultItemData::PIXEL_SIZE;
 
-			if (m_animationType == AnimationType::Idle || m_animationType == AnimationType::Breaking) {
-
+			switch (m_animationType)
+			{
+			case AnimationType::Idle:
+			case AnimationType::Breaking:
 				if (y == 0)
 					m_handMesh.addFace(defaultItemData::sideFaceTop, pixelTexCoords, pos, LIGHT_TOP);
 				else if (pixels[index - indivTextureSize]->a == 0.0f)
@@ -303,8 +306,8 @@ void Hand::makeDefaultItemMesh(ChunkBlock& block)
 					m_handMesh.addFace(defaultItemData::sideFaceRight, pixelTexCoords, pos, LIGHT_RIGHT);
 				else if (pixels[index + 1]->a == 0.0f)
 					m_handMesh.addFace(defaultItemData::sideFaceRight, pixelTexCoords, pos, LIGHT_RIGHT);
-			}
-			else {
+				break;
+			case AnimationType::Eating:
 				// probably remove
 				if (x == 00)
 					m_handMesh.addFace(defaultItemData::sideFaceLeft, pixelTexCoords, pos, LIGHT_RIGHT);
@@ -320,6 +323,9 @@ void Hand::makeDefaultItemMesh(ChunkBlock& block)
 					m_handMesh.addFace(defaultItemData::sideFaceTop, pixelTexCoords, pos, LIGHT_TOP);
 				else if (pixels[index - indivTextureSize]->a == 0.0f)
 					m_handMesh.addFace(defaultItemData::sideFaceTop, pixelTexCoords, pos, LIGHT_TOP);
+				break;
+			default:
+				break;
 			}
 		}
 	}

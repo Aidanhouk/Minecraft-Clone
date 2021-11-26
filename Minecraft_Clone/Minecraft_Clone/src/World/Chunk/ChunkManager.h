@@ -1,13 +1,15 @@
 #pragma once
 
+#include "SFML/System/Vector2.hpp"
+#include "../../Maths/Vector2XZ.h"
+#include "../Generation/Terrain/TerrainGenerator.h"
+#include "Chunk.h"
+
 #include <functional>
 #include <memory>
 #include <mutex>
 #include <unordered_map>
-
-#include "../../Maths/Vector2XZ.h"
-#include "../Generation/Terrain/TerrainGenerator.h"
-#include "Chunk.h"
+#include <vector>
 
 class World;
 
@@ -25,7 +27,6 @@ public:
 	bool chunkLoadedAt(int x, int z) const;
 	bool chunkExistsAt(int x, int z) const;
 	
-	//bool generateTerrain(int x, int z, const Camera &camera);
 	void generateTerrain(int x, int z);
 	void loadChunk(int x, int z);
 	void unloadChunk(int x, int z);

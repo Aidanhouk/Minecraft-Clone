@@ -20,9 +20,24 @@ enum class BlockMeshType {
 };
 
 enum class BlockShaderType {
-    Chunk = 0,
+    Cube = 0,
     Liquid = 1,
     Flora = 2,
+};
+
+enum class ToolToMine {
+	None = 0,
+	Pickaxe = 1,
+	Shovel = 2,
+	Axe = 3,
+};
+
+enum class ToolLevelToMine {
+	Any = 0,
+	Wood = 1,
+	Stone = 2, // = gold
+	Iron = 3,
+	Diamond = 4,
 };
 
 struct BlockDataHolder : public NonCopyable {
@@ -31,7 +46,7 @@ struct BlockDataHolder : public NonCopyable {
     sf::Vector2i texSideCoord;
     sf::Vector2i texBottomCoord;
 
-	ItemType itemType;
+	ItemType itemType = ItemType::Block;
     BlockMeshType meshType;
     BlockShaderType shaderType;
 
@@ -39,6 +54,10 @@ struct BlockDataHolder : public NonCopyable {
     bool isCollidable;
 
 	float hardness;
+	ToolToMine toolToMine = ToolToMine::None;
+	ToolLevelToMine toolLevelToMine = ToolLevelToMine::Any;
+
+	float effieciencyCoef = 1.0f;
 
 	int hunger;
 	float saturation;

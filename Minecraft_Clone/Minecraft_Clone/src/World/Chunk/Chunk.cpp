@@ -23,7 +23,6 @@ Chunk::Chunk(Chunk && x)
 	m_highestBlocks{ std::move(x.m_highestBlocks) },
 	m_chunksSection{ std::move(x.m_chunksSection) }
 {
-	x.m_pWorld = nullptr;
 }
 
 Chunk & Chunk::operator=(Chunk && x)
@@ -34,7 +33,6 @@ Chunk & Chunk::operator=(Chunk && x)
 	m_isLoaded = x.m_isLoaded;
 
 	m_pWorld = x.m_pWorld;
-	x.m_pWorld = nullptr;
 
 	m_location = x.m_location;
 
@@ -49,7 +47,8 @@ bool Chunk::makeMesh(const Camera &camera)
 {
     for (auto &chunkSection : m_chunksSection) {
         if (!chunkSection.hasMesh() &&
-            camera.getFrustum().isBoxInFrustum(chunkSection.m_aabb)) {
+			camera.getFrustum().isBoxInFrustum(chunkSection.m_aabb)) {
+
 			chunkSection.makeMesh();
             return true;
         }

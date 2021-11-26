@@ -8,6 +8,7 @@
 #include "Player/PlayerInfo.h"
 #include "World/Generation/Biome/Biome.h"
 #include "Item/Material.h"
+#include "World/Block/BlockDatabase.h"
 #include "Audio/SoundMaster.h"
 #include "Audio/SoundFunctions.h"
 
@@ -154,13 +155,13 @@ void StatePlaying::handleInput()
 		if (block != 0 && block.getData().id != BlockId::Water) {
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				m_hand.leftMouseHold();
-				m_hand.hit();
+				m_hand.blockHit();
 
 				eatingTimer.restart();
 				m_hand.stopEating();
 
-				if (g_PlayerInfo.player->isInCreativeMove()) {
-					m_blockBreaker._break(ray.getEnd(), 0.0f);
+				if (m_player.isInCreativeMove()) {
+					m_blockBreaker._break(m_player.getHeldItems().getBlockId(), ray.getEnd(), 0.0f);
 
 					static sf::Clock creativeMoveBreak;
 					if (creativeMoveBreak.getElapsedTime().asSeconds() >= 0.21f) {
@@ -173,9 +174,32 @@ void StatePlaying::handleInput()
 						makeHitSound(block.getData().id);
 						m_makeHitSound = false;
 					}
+					float hardness = block.getData().hardness;
+					ChunkBlock heldItem(m_player.getHeldItems().getBlockId());
+
+					switch (block.getData().toolToMine)
+					{
+					case ToolToMine::None:
+						break;
+					case ToolToMine::Pickaxe:
+						if (BlockDatabase::get().isPickaxe(m_player.getHeldItems().getBlockId())) {
+							if (BlockDatabase::get().canPickaxeMine(heldItemId, block.getData().id))
+								hardness /= heldItem.getData().effieciencyCoef;
+						}
+						break;
+					case ToolToMine::Shovel:
+						if (BlockDatabase::get().isShovel(m_player.getHeldItems().getBlockId()))
+							hardness /= heldItem.getData().effieciencyCoef;
+						break;
+					case ToolToMine::Axe:
+						if (BlockDatabase::get().isAxe(m_player.getHeldItems().getBlockId()))
+							hardness /= heldItem.getData().effieciencyCoef;
+						break;
+					}
 					// if block has been broken
-					if (m_blockBreaker._break(ray.getEnd(), block.getData().hardness)) {
+					if (m_blockBreaker._break(m_player.getHeldItems().getBlockId(), ray.getEnd(), hardness)) {
 						m_world.addEvent<PlayerDigEvent>(sf::Mouse::Left, ray.getEnd(), m_player, m_hand);
+						m_player.loseDurability(1);
 					}
 				}
 			}
@@ -185,7 +209,12 @@ void StatePlaying::handleInput()
 			
 				if (m_placeBlockTimer.getElapsedTime().asSeconds() >= 0.21f) {
 					auto & heldItemMaterial = Material::toMaterial(heldItemId);
-					if (m_player.getHeldItems().getNumInStack() != 0 && heldItemMaterial.isBlock) {
+					if (block.getData().id == BlockId::CraftingTable &&
+						!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+						m_hand.swing();
+						m_player.openCraftingTable();
+					}
+					else if (m_player.getHeldItems().getNumInStack() != 0 && heldItemMaterial.isBlock) {
 						// Not placing block on player's position
 						if (!(
 							m_player.position.x < ceil(lastPosition.x) + m_player.box.dimensions.x	&&
@@ -204,11 +233,12 @@ void StatePlaying::handleInput()
 				}
 			}
 		}
-		// block in front of player wasn't found
+		// if block in front of player wasn't found
 		else {
 			m_blockBreaker.stopBreaking();
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				// Hit enteties damage here
 				m_hand.swing();
 				m_hand.leftMouseHold();
 

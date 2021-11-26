@@ -42,6 +42,37 @@ void ItemIconsBuilder::buildMesh()
 				buildIcon(invSlots[i]);
 			}
 		}
+
+		if (m_pInventory->m_interfaceType == InterfaceType::Inventory) {
+			// For the future
+			//auto &armorSlots = m_pInventory->getArmorSlots();
+			//for (int i = 0; i < armorSlots.size(); ++i) {
+			//	if (armorSlots[i].item.getBlockId() != EMPTY_SLOT_ID) {
+			//		buildIcon(armorSlots[i]);
+			//	}
+			//}
+
+			auto &craftSlots = m_pInventory->getCraftSlots();
+			for (int i = 0; i < craftSlots.size(); ++i) {
+				if (craftSlots[i].item.getBlockId() != EMPTY_SLOT_ID) {
+					buildIcon(craftSlots[i]);
+				}
+			}
+			auto &craftResSlot = m_pInventory->getCraftResultSlot();
+			if (craftResSlot.item.getBlockId() != EMPTY_SLOT_ID)
+				buildIcon(craftResSlot);
+		}
+		else {
+			auto &craftSlots = m_pInventory->getCraftingTableSlots();
+			for (int i = 0; i < craftSlots.size(); ++i) {
+				if (craftSlots[i].item.getBlockId() != EMPTY_SLOT_ID) {
+					buildIcon(craftSlots[i]);
+				}
+			}
+			auto &craftResSlot = m_pInventory->getCraftingTableResultSlot();
+			if (craftResSlot.item.getBlockId() != EMPTY_SLOT_ID)
+				buildIcon(craftResSlot);
+		}
 	}
 	else {
 		for (int i = 0; i < 9; ++i) {
