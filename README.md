@@ -2,11 +2,11 @@
 
 Developed using C++, OpenGL, SFML, libnoise.
 
-The game:
+## The game:
 https://github.com/Aidanhouk/Minecraft-Clone/releases/tag/v1.0
 https://drive.google.com/file/d/1JKHZTW7CWTI9DH2XYHRX3kWUecQYvA31/view?usp=sharing
 
-Video:
+## Video:
 1. https://youtu.be/hgyFcShEzEs
 2. https://youtu.be/BHORDF9_2ek
 
