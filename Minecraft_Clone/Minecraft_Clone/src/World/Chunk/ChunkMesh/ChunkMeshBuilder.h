@@ -1,11 +1,11 @@
 #pragma once
 
+#include "../../Block/ChunkBlock.h"
+
 #include "GL/glew.h"
-
 #include <SFML/Graphics.hpp>
-#include <vector>
 
-#include "../Block/ChunkBlock.h"
+#include <vector>
 
 class ChunkSection;
 class ChunkMesh;
@@ -23,15 +23,22 @@ public:
 private:
     void setActiveMesh(ChunkBlock block);
 
-    void addXBlockToMesh(
-		const sf::Vector2i &textureCoords,
-		const sf::Vector3i &blockPosition);
+	void calculateAO_Top(int x, int y, int z, std::array<GLfloat, 4> &verticesAO);
+	void calculateAO_Bottom(int x, int y, int z, std::array<GLfloat, 4> &verticesAO);
+	void calculateAO_Left(int x, int y, int z, std::array<GLfloat, 4> &verticesAO);
+	void calculateAO_Right(int x, int y, int z, std::array<GLfloat, 4> &verticesAO);
+	void calculateAO_Front(int x, int y, int z, std::array<GLfloat, 4> &verticesAO);
+	void calculateAO_Back(int x, int y, int z, std::array<GLfloat, 4> &verticesAO);
+
+	float vertexAO(bool side1, bool side2, bool corner);
 
 	void tryAddFaceToMesh(const std::array<GLfloat, 12> &blockFace,
 		const sf::Vector2i &textureCoords,
 		const sf::Vector3i &blockPosition,
 		const sf::Vector3i &blockFacing,
-		GLfloat cardinalLight);
+		const std::array<GLfloat, 4> &ambientOcclusion,
+		GLfloat torchLight,
+		GLfloat sunlight);
 
     bool shouldMakeFace(const sf::Vector3i &adjBlockPos,
                         const BlockDataHolder &blockData);

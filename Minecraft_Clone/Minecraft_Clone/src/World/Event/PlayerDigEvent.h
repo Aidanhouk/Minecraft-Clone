@@ -19,8 +19,8 @@ public:
 
 private:
     void _handle(World &world);
-	void dropItems(World &world, BlockId blockId, float x, float y, float z, bool &placeNewBlock);
-	void placeBlock(World &world, BlockId heldItemId, float x, float y, float z);
+	void dropItems(World &world, BlockId blockId, float x, float y, float z, bool &newBlockPlaced);
+	bool placeBlock(World &world, BlockId heldItemId, float x, float y, float z);
 	
 	void breakBlocksAbove(World &world, const glm::vec3 &pos);
 	void breakDoublePlant(World &world, const glm::vec3 &pos, BlockId brokenPlant);

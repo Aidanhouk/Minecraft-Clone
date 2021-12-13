@@ -20,12 +20,12 @@ ChunkBlock MountainBiome::getTopBlock(Rand &rand, int y) const
 
 ChunkBlock MountainBiome::getUnderGroundBlock(Rand & rand) const
 {
-	return BlockId::Stone;
+	return { BlockId::Stone, 0x00 };
 }
 
 ChunkBlock MountainBiome::getUnderWaterBlock(Rand &rand) const
 {
-	return BlockId::Dirt;
+	return { BlockId::Dirt, 0x00 };
 }
 
 ChunkBlock MountainBiome::getWaterSurfaceBlock(Rand & rand) const

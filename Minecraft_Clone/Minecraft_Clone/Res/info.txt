@@ -10,9 +10,11 @@ Implemented features:
 -Items can be dropped
 -Inventory
 -Crafting
+-Sunlight and torchlight
+-Ambient occlusion
 -Damage, hunger and breathing systems
 -Eating
--Creating 3D mesh out of 2D texture
+-Creating 3D item meshes out of 2D textures
 -Swimming
 -Sneaking
 -Post processing
@@ -20,6 +22,12 @@ Implemented features:
 -Snow and rain
 -Fog
 -Surround sound and music!
+
+Features are missing:
+-Chunk/game saves
+-Main menu
+-Water physics
+-Enemies
 
 Please view 'controls.txt' for controls!
 

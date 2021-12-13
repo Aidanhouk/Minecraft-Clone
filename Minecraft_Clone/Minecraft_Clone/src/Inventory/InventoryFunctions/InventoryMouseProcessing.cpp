@@ -7,6 +7,9 @@ void Inventory::mouseInput(const sf::RenderWindow & window, Mouse &mouse)
 	auto mouseCoords = sf::Mouse::getPosition(window);
 	m_pPointedSlot = getPointedSlot(mouseCoords);
 
+	if (m_pPointedSlot)
+		m_highlightSlotSquare.setPosition(m_pPointedSlot->position.x, m_pPointedSlot->position.y);
+
 	if (!isGrabbedSlotEmpty()) {
 		m_grabbedSlot.position = mouseCoords;
 		updateGrabbedItemIcon();
@@ -14,10 +17,7 @@ void Inventory::mouseInput(const sf::RenderWindow & window, Mouse &mouse)
 
 		if (mouse.toggle(sf::Mouse::Left)) {
 			if (m_pPointedSlot) {
-				if (m_interfaceType == InterfaceType::Inventory)
-					leftMouseWithGrabbedItemInventoryUpdate(m_pPointedSlot);
-				else
-					leftMouseWithGrabbedItemCraftingTableUpdate(m_pPointedSlot);
+				leftMouseWithGrabbedItemUpdate(mouseCoords);
 			}
 			// throw itemstack behind interface borders
 			else if (
@@ -34,10 +34,7 @@ void Inventory::mouseInput(const sf::RenderWindow & window, Mouse &mouse)
 
 		else if (mouse.toggle(sf::Mouse::Right)) {
 			if (m_pPointedSlot) {
-				if (m_interfaceType == InterfaceType::Inventory)
-					rightMouseWithGrabbedItemInventoryUpdate(m_pPointedSlot);
-				else
-					rightMouseWithGrabbedItemCraftingTableUpdate(m_pPointedSlot);
+				rightMouseWithGrabbedItemUpdate(mouseCoords);
 			}
 			// throw 1 item behind interface borders
 			else if (
@@ -62,10 +59,7 @@ void Inventory::mouseInput(const sf::RenderWindow & window, Mouse &mouse)
 				return;
 			if (isSlotEmpty(m_pPointedSlot))
 				return;
-			if (m_interfaceType == InterfaceType::Inventory)
-				leftMouseNoGrabbedItemInventoryUpdate(mouseCoords, m_pPointedSlot);
-			else
-				leftMouseNoGrabbedItemCraftingTableUpdate(mouseCoords, m_pPointedSlot);
+			leftMouseNoGrabbedItemUpdate(mouseCoords);
 		}
 
 		else if (mouse.toggle(sf::Mouse::Right)) {
@@ -73,10 +67,7 @@ void Inventory::mouseInput(const sf::RenderWindow & window, Mouse &mouse)
 				return;
 			if (isSlotEmpty(m_pPointedSlot))
 				return;
-			if (m_interfaceType == InterfaceType::Inventory)
-				rightMouseNoGrabbedItemInventoryUpdate(mouseCoords, m_pPointedSlot);
-			else
-				rightMouseNoGrabbedItemCraftingTableUpdate(mouseCoords, m_pPointedSlot);
+			rightMouseNoGrabbedItemUpdate(mouseCoords);
 		}
 		updateInventoryText(mouseCoords);
 
@@ -175,46 +166,63 @@ int Inventory::getPointedSlotColumn(int mousePosX)
 
 
 
-
-void Inventory::leftMouseWithGrabbedItemInventoryUpdate(ItemSlot * pointedSlot)
+void Inventory::leftMouseWithGrabbedItemUpdate(sf::Vector2i &mousePos)
 {
-	if (m_pPointedSlot != &m_craftResultSlot) {
+	ItemSlot *craftResultSlot;
+	if (m_interfaceType == InterfaceType::Inventory) {
+		craftResultSlot = &m_craftResultSlot;
+	}
+	else {
+		craftResultSlot = &m_craftingTableResultSlot;
+	}
+
+	if (m_pPointedSlot != craftResultSlot) {
 
 		if (isSlotEmpty(m_pPointedSlot)) {
 			std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
 		}
 		else {
-			if (doSlotsHaveSameItem(&m_grabbedSlot, m_pPointedSlot)) {
-				tryAddItem(m_pPointedSlot, &m_grabbedSlot);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+				tryMovePointedItem(mousePos);
 			}
 			else {
-				std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
+				tryAddItem(m_pPointedSlot, &m_grabbedSlot);
 			}
 		}
 
-		for (auto & slot : m_craftSlots)
-			if (&slot == m_pPointedSlot) {
-				computeCrafting();
-				break;
-			}
+		checkForCraftingCompute();
 	}
 	// if pointed at craft result slot
 	else {
-		if (isGrabbedSlotEmpty()) {
-			std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-			removeCraftSpentItems();
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			craftMaxItems(craftResultSlot);
 		}
-		else if (doSlotsHaveSameItem(&m_grabbedSlot, m_pPointedSlot)) {
-			tryAddItem(&m_grabbedSlot, m_pPointedSlot);
+		else {
+			if (isGrabbedSlotEmpty())
+				std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
+			else {
+				tryAddItem(&m_grabbedSlot, m_pPointedSlot);
+				if (m_grabbedSlot.item.getNumInStack() < m_grabbedSlot.item.getMaxStackSize())
+					removeCraftSpentItems(craftResultSlot);
+			}
 		}
+
 		computeCrafting();
 	}
 	shouldUpdateIcons();
 }
 
-void Inventory::rightMouseWithGrabbedItemInventoryUpdate(ItemSlot * pointedSlot)
+void Inventory::rightMouseWithGrabbedItemUpdate(sf::Vector2i &mousePos)
 {
-	if (m_pPointedSlot != &m_craftResultSlot) {
+	ItemSlot *craftResultSlot;
+	if (m_interfaceType == InterfaceType::Inventory) {
+		craftResultSlot = &m_craftResultSlot;
+	}
+	else {
+		craftResultSlot = &m_craftingTableResultSlot;
+	}
+
+	if (m_pPointedSlot != craftResultSlot) {
 
 		if (isSlotEmpty(m_pPointedSlot)) {
 			m_pPointedSlot->item.setData(m_grabbedSlot.item.getBlockId(), 1);
@@ -235,201 +243,91 @@ void Inventory::rightMouseWithGrabbedItemInventoryUpdate(ItemSlot * pointedSlot)
 			}
 		}
 
-		for (auto & slot : m_craftSlots)
-			if (&slot == m_pPointedSlot) {
-				computeCrafting();
-				break;
-			}
+		checkForCraftingCompute();
 	}
 	// if pointed at craft result slot
 	else {
-		if (isGrabbedSlotEmpty()) {
+		if (isGrabbedSlotEmpty())
 			std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-			removeCraftSpentItems();
-		}
-		else if (doSlotsHaveSameItem(&m_grabbedSlot, m_pPointedSlot)) {
+		else {
 			tryAddItem(&m_grabbedSlot, m_pPointedSlot);
+			if (m_grabbedSlot.item.getNumInStack() < m_grabbedSlot.item.getMaxStackSize())
+				removeCraftSpentItems(craftResultSlot);
 		}
+
 		computeCrafting();
 	}
 
 	shouldUpdateIcons();
 }
 
-void Inventory::leftMouseWithGrabbedItemCraftingTableUpdate(ItemSlot * pointedSlot)
+void Inventory::leftMouseNoGrabbedItemUpdate(sf::Vector2i & mousePos)
 {
-	if (m_pPointedSlot != &m_craftingTableResultSlot) {
+	ItemSlot *craftResultSlot;
+	if (m_interfaceType == InterfaceType::Inventory) {
+		craftResultSlot = &m_craftResultSlot;
+	}
+	else {
+		craftResultSlot = &m_craftingTableResultSlot;
+	}
 
-		if (isSlotEmpty(m_pPointedSlot)) {
-			std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
+	if (m_pPointedSlot != craftResultSlot) {
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			tryMovePointedItem(mousePos);
 		}
 		else {
-			if (doSlotsHaveSameItem(&m_grabbedSlot, m_pPointedSlot)) {
-				tryAddItem(m_pPointedSlot, &m_grabbedSlot);
-			}
-			else {
-				std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-			}
-		}
-
-		for (auto & slot : m_craftingTableSlots)
-			if (&slot == m_pPointedSlot) {
-				computeCrafting();
-				break;
-			}
-	}
-	// if pointed at craft result slot
-	else {
-		if (isGrabbedSlotEmpty()) {
 			std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-			removeCraftingTableSpentItems();
 		}
-		else if (doSlotsHaveSameItem(&m_grabbedSlot, m_pPointedSlot)) {
-			tryAddItem(&m_grabbedSlot, m_pPointedSlot);
-		}
-		computeCrafting();
+
+		m_grabbedSlot.position = mousePos;
+
+		checkForCraftingCompute();
 	}
-	shouldUpdateIcons();
-}
-
-void Inventory::rightMouseWithGrabbedItemCraftingTableUpdate(ItemSlot * pointedSlot)
-{
-	if (m_pPointedSlot != &m_craftingTableResultSlot) {
-
-		if (isSlotEmpty(m_pPointedSlot)) {
-			m_pPointedSlot->item.setData(m_grabbedSlot.item.getBlockId(), 1);
-			m_grabbedSlot.item.remove(1);
+	else {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			craftMaxItems(craftResultSlot);
 		}
 		else {
-			// if the same material
-			if (doSlotsHaveSameItem(&m_grabbedSlot, m_pPointedSlot)) {
-				if (m_pPointedSlot->item.getNumInStack() != m_pPointedSlot->item.getMaxStackSize()) {
-					m_pPointedSlot->item.add(1);
-					m_grabbedSlot.item.remove(1);
-					if (m_grabbedSlot.item.getNumInStack() == 0)
-						m_grabbedSlot.item.clear();
-				}
-			}
-			else {
-				std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-			}
-		}
-
-		for (auto & slot : m_craftingTableSlots)
-			if (&slot == m_pPointedSlot) {
-				computeCrafting();
-				break;
-			}
-	}
-	// if pointed at craft result slot
-	else {
-		if (isGrabbedSlotEmpty()) {
 			std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-			removeCraftingTableSpentItems();
+			removeCraftSpentItems(craftResultSlot);
+
+			m_grabbedSlot.position = mousePos;
 		}
-		else if (doSlotsHaveSameItem(&m_grabbedSlot, m_pPointedSlot)) {
-			tryAddItem(&m_grabbedSlot, m_pPointedSlot);
-		}
+
 		computeCrafting();
 	}
-
-	shouldUpdateIcons();
 }
 
-void Inventory::leftMouseNoGrabbedItemInventoryUpdate(sf::Vector2i & mouseCoords, ItemSlot * pointedSlot)
+void Inventory::rightMouseNoGrabbedItemUpdate(sf::Vector2i & mousePos)
 {
-	if (m_pPointedSlot != &m_craftResultSlot) {
-		std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-		m_grabbedSlot.position = mouseCoords;
-
-		for (auto & slot : m_craftSlots)
-			if (&slot == m_pPointedSlot) {
-				computeCrafting();
-				break;
-			}
+	ItemSlot *craftResultSlot;
+	if (m_interfaceType == InterfaceType::Inventory) {
+		craftResultSlot = &m_craftResultSlot;
 	}
 	else {
-		std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-		removeCraftSpentItems();
-
-		m_grabbedSlot.position = mouseCoords;
-		computeCrafting();
+		craftResultSlot = &m_craftingTableResultSlot;
 	}
-}
 
-void Inventory::rightMouseNoGrabbedItemInventoryUpdate(sf::Vector2i & mouseCoords, ItemSlot * pointedSlot)
-{
-	if (m_pPointedSlot != &m_craftResultSlot) {
+	if (m_pPointedSlot != craftResultSlot) {
 		int leftStack = m_pPointedSlot->item.getNumInStack() / 2;
 		int grabbedStack = m_pPointedSlot->item.getNumInStack() - leftStack;
 
 		m_grabbedSlot.item.setData(m_pPointedSlot->item.getBlockId(), grabbedStack);
-		m_grabbedSlot.position = mouseCoords;
+		m_grabbedSlot.position = mousePos;
 
 		m_pPointedSlot->item.remove(grabbedStack);
 		if (m_pPointedSlot->item.getNumInStack() == 0)
 			m_pPointedSlot->item.clear();
 
-		for (auto & slot : m_craftSlots)
-			if (&slot == m_pPointedSlot) {
-				computeCrafting();
-				break;
-			}
+		checkForCraftingCompute();
 	}
 	else {
 		std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-		removeCraftSpentItems();
+		tryAddItem(&m_grabbedSlot, m_pPointedSlot);
+		removeCraftSpentItems(craftResultSlot);
 
-		m_grabbedSlot.position = mouseCoords;
-		computeCrafting();
-	}
-}
-
-void Inventory::leftMouseNoGrabbedItemCraftingTableUpdate(sf::Vector2i & mouseCoords, ItemSlot * pointedSlot)
-{
-	if (m_pPointedSlot != &m_craftingTableResultSlot) {
-		std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-		m_grabbedSlot.position = mouseCoords;
-
-		for (auto & slot : m_craftingTableSlots)
-			if (&slot == m_pPointedSlot) {
-				computeCrafting();
-				break;
-			}
-	}
-	else {
-		std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-		removeCraftingTableSpentItems();
-
-		m_grabbedSlot.position = mouseCoords;
-		computeCrafting();
-	}
-}
-
-void Inventory::rightMouseNoGrabbedItemCraftingTableUpdate(sf::Vector2i & mouseCoords, ItemSlot * pointedSlot)
-{
-	if (m_pPointedSlot != &m_craftingTableResultSlot) {
-		int leftStack = m_pPointedSlot->item.getNumInStack() / 2;
-		int grabbedStack = m_pPointedSlot->item.getNumInStack() - leftStack;
-
-		m_grabbedSlot.item.setData(m_pPointedSlot->item.getBlockId(), grabbedStack);
-		m_grabbedSlot.position = mouseCoords;
-
-		m_pPointedSlot->item.remove(grabbedStack);
-		if (m_pPointedSlot->item.getNumInStack() == 0)
-			m_pPointedSlot->item.clear();
-
-		for (auto & slot : m_craftingTableSlots)
-			if (&slot == m_pPointedSlot) {
-				computeCrafting();
-				break;
-			}
-	}
-	else {
-		std::swap(m_grabbedSlot.item, m_pPointedSlot->item);
-		removeCraftingTableSpentItems();
-
-		m_grabbedSlot.position = mouseCoords;
+		m_grabbedSlot.position = mousePos;
 		computeCrafting();
 	}
 }

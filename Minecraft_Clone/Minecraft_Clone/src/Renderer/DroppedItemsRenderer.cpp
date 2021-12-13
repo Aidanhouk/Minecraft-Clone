@@ -24,6 +24,7 @@ void DroppedItemsRenderer::render(const Camera & camera)
 	m_shader.loadViewMatrix(camera.getViewMatrix());
 
 	m_shader.loadTime(g_Info.dayTime);
+	// @TODO do smth here
 	m_shader.loadLighting(g_Info.lighting);
 	m_shader.loadFog(g_Info.fog);
 	m_shader.loadFogDensity(g_Config.fogDensity);

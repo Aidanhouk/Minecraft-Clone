@@ -4,6 +4,7 @@
 #include "../Generation/Terrain/SuperFlatGenerator.h"
 #include "Item/DroppedItem/DroppedItemsManager.h"
 
+#include <future>
 #include <iostream>
 
 ChunkManager::ChunkManager(World *world)
@@ -20,6 +21,7 @@ Chunk &ChunkManager::getChunk(int x, int z)
 		//Chunk chunk{ {x,z}, m_pWorld };
 		sf::Vector2i vector{ x,z };
 		Chunk chunk{ std::move(vector), m_pWorld };
+
         m_chunks.emplace(key, std::move(chunk));
     }
 
@@ -48,15 +50,14 @@ bool ChunkManager::chunkLoadedAt(int x, int z) const
 
 bool ChunkManager::chunkExistsAt(int x, int z) const
 {
-    return m_chunks.find({x, z}) != m_chunks.end();
+	return m_chunks.find({ x, z }) != m_chunks.end();
 }
 
-//bool ChunkManager::generateTerrain(int x, int z, const Camera &camera)
 void ChunkManager::generateTerrain(int x, int z)
 {
 	// @TODO fix this
 	// skip chunks close to zero coords
-	// there also chunks with big coords... x and z = 1600+
+	// there are also chunks with big coords... x and z = 1600+
 	static bool skipChunks = true;
 
 	for (int nx = -1; nx <= 1; ++nx)
@@ -75,15 +76,18 @@ void ChunkManager::generateTerrain(int x, int z)
 
 void ChunkManager::loadChunk(int x, int z)
 {
-	//getChunk(x, z).load(*m_terrainGenerator);
 	Chunk &ch = getChunk(x, z);
-	if (ch.hasLoaded())
+
+	if (ch.hasLoaded()) {
+		ch.setUnloadedBlocks(ch);
 		return;
+	}
 
 	Chunk newChunk({ x,z }, m_pWorld);
 	newChunk.load(*m_terrainGenerator);
+	newChunk.setUnloadedBlocks(ch);
 
-	std::unique_lock<std::mutex> lock(m_mainMutex);
+	std::unique_lock<std::mutex> lock(m_genMutex);
 	ch = std::move(newChunk);
 }
 

@@ -1,7 +1,7 @@
 #include "DroppedItem.h"
 
 #include "Util/Random.h"
-#include "World/World.h"
+#include "World/World/World.h"
 #include "Player/Player.h"
 
 #include "Player/PlayerInfo.h"

@@ -6,7 +6,7 @@ BlockDatabase::BlockDatabase()
     : textureAtlas("DefaultPack", 256, 16)
 {
     m_blocks[(int)BlockId::Air] =				std::make_unique<DefaultBlock>("Air");
-	m_blocks[(int)BlockId::CaveAir] =			std::make_unique<DefaultBlock>("Air");
+	//m_blocks[(int)BlockId::CaveAir] =			std::make_unique<DefaultBlock>("Air");
     m_blocks[(int)BlockId::Water] =				std::make_unique<DefaultBlock>("Water");
 	m_blocks[(int)BlockId::Ice] =				std::make_unique<DefaultBlock>("Ice");
 
@@ -34,6 +34,7 @@ BlockDatabase::BlockDatabase()
 	m_blocks[(int)BlockId::Gravel] =			std::make_unique<DefaultBlock>("CommonSolid/Gravel");
 	m_blocks[(int)BlockId::Clay] =				std::make_unique<DefaultBlock>("CommonSolid/Clay");
 	m_blocks[(int)BlockId::Cobblestone] =		std::make_unique<DefaultBlock>("CommonSolid/Cobblestone");
+	m_blocks[(int)BlockId::Glowstone] =			std::make_unique<DefaultBlock>("CommonSolid/Glowstone");
 
     m_blocks[(int)BlockId::Cactus] =			std::make_unique<DefaultBlock>("Plants/Cactus");
     m_blocks[(int)BlockId::TallGrass] =			std::make_unique<DefaultBlock>("Plants/TallGrass");
@@ -79,6 +80,7 @@ BlockDatabase::BlockDatabase()
 	m_blocks[(int)BlockId::Stick] =				std::make_unique<DefaultBlock>("Misc/Stick");
 
 	m_blocks[(int)BlockId::Diamond] =			std::make_unique<DefaultBlock>("Material/Diamond");
+	m_blocks[(int)BlockId::Coal] =				std::make_unique<DefaultBlock>("Material/Coal");
 
 	m_blocks[(int)BlockId::WoodenSword] =		std::make_unique<DefaultBlock>("Tools/WoodenSword");
 	m_blocks[(int)BlockId::WoodenPickaxe] =		std::make_unique<DefaultBlock>("Tools/WoodenPickaxe");

@@ -31,7 +31,10 @@ int main()
 	std::cout << "Loading game...\n";
 
 	Application app(config);
+
 	app.runLoop();;
+
+	return EXIT_SUCCESS;
 }
 
 namespace {

@@ -107,23 +107,23 @@ void StatePlaying::handleInput()
 	if (g_PlayerInfo.inventoryCursor)
 		return;
 
-	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-		if (m_keyboard.toggle(sf::Keyboard::Add)) {
-			++g_Config.renderDistance;
-			m_world.reloadChunks();
-		}
-		if (m_keyboard.toggle(sf::Keyboard::Subtract)) {
-			--g_Config.renderDistance;
-			if (g_Config.renderDistance < 4)
-				g_Config.renderDistance = 4;
-			m_world.reloadChunks();
-		}
-		if (m_keyboard.toggle(sf::Keyboard::C)) {
-			m_world.reloadChunks();
-		}
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+	//	if (m_keyboard.toggle(sf::Keyboard::Add)) {
+	//		++g_Config.renderDistance;
+	//		m_world.reloadChunks();
+	//	}
+	//	if (m_keyboard.toggle(sf::Keyboard::Subtract)) {
+	//		--g_Config.renderDistance;
+	//		if (g_Config.renderDistance < 4)
+	//			g_Config.renderDistance = 4;
+	//		m_world.reloadChunks();
+	//	}
+	//}
+	if (m_keyboard.toggle(sf::Keyboard::C)) {
+		m_world.reloadChunks();
 	}
 
-	glm::vec3 lastPosition;
+	glm::vec3 lastPosition{ 0 };
 
 	static sf::Clock eatingTimer;
 	BlockId heldItemId = m_player.getHeldItems().getBlockId();
@@ -238,7 +238,8 @@ void StatePlaying::handleInput()
 			m_blockBreaker.stopBreaking();
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				// Hit enteties damage here
+				// @TODO
+				// Hit enteties and deal damage here
 				m_hand.swing();
 				m_hand.leftMouseHold();
 

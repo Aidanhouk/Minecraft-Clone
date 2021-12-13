@@ -9,7 +9,6 @@
 #include "Calculations/MovementFOV.h"
 #include "Calculations/SneakingCamera.h"
 #include "Calculations/CameraShaking.h"
-#include "Calculations/ScreenDarkening.h"
 
 #include <vector>
 
@@ -111,5 +110,4 @@ private:
 	MovementFOV m_movementFOV;
 	SneakingCamera m_sneakingCamera;
 	CameraShaking m_cameraShaking;
-	ScreenDarkening m_screenDarkening;
 };

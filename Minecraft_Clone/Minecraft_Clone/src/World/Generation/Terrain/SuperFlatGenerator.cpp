@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "../../Chunk/Chunk.h"
-#include "../../WorldConstants.h"
+#include "../../World/WorldConstants.h"
 
 void SuperFlatGenerator::generateTerrainFor(Chunk &chunk)
 {

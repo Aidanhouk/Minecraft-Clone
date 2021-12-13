@@ -10,14 +10,8 @@ Inventory::Inventory(Player &player, Application &app)
 {
 	m_slots[8].item.setData(BlockId::Apple, 10);
 
-	//m_slots[0].item.setData(BlockId::DiamondSword, 1);
-	//m_slots[1].item.setData(BlockId::WoodenPickaxe, 1);
-	//m_slots[2].item.setData(BlockId::IronShovel, 1);
-	//m_slots[3].item.setData(BlockId::GoldAxe, 1);
-
-	//m_slots[11].item.setData(BlockId::IronOre, 64);
-	//m_slots[12].item.setData(BlockId::GoldOre, 64);
-	//m_slots[13].item.setData(BlockId::Diamond, 64);
+	m_slots[1].item.setData(BlockId::Glowstone, 64);
+	//m_slots[2].item.setData(BlockId::Sand, 64);
 
 	m_inventoryGUITexture.loadFromFile("Res/Textures/Interface/inventoryGUI.png");
 	m_inventoryGUI.setTexture(&m_inventoryGUITexture);
@@ -27,10 +21,10 @@ Inventory::Inventory(Player &player, Application &app)
 	m_toolbar.setTexture(&m_toolbarTexture);
 	m_heldItemFrameTexture.loadFromFile("Res/Textures/Interface/toolbarHeldItem.png");
 	m_heldItemFrame.setTexture(&m_heldItemFrameTexture);
-
-	m_font.loadFromFile("Res/Fonts/MinecraftRegular.otf");
 	m_itemTextBackgroundTexture.loadFromFile("Res/Textures/Interface/textBackground.png");
 	m_itemTextBackground.setTexture(&m_itemTextBackgroundTexture);
+
+	m_font.loadFromFile("Res/Fonts/MinecraftRegular.otf");
 
 	setInterfacePositions(app);
 
@@ -41,6 +35,10 @@ Inventory::Inventory(Player &player, Application &app)
 	m_grabbedItemDrawer.setSizes(m_invSlotSize);
 
 	setToolDurabilityBarSettings();
+
+	m_highlightSlotSquare.setFillColor(sf::Color(255, 255, 255, 127));
+	m_highlightSlotSquare.setOrigin(0.0f, m_invSlotSize);
+	m_highlightSlotSquare.setSize({ m_invSlotSize * 1.05f, m_invSlotSize * 1.05f });
 }
 
 void Inventory::setInterfacePositions(const Application &app)

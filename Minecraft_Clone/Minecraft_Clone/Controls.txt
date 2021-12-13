@@ -3,22 +3,21 @@
 | Left mouse button             | Break block                                                    |
 | Right mouse button            | Place block                                                    |
 | W, A, S, D                    | Move                                                           |
-| Space                         | Jump  / swim up  / fly up                                      |
-| Left Shift                    | Sneak / swim down/ fly down                                    |
+| Space                         | Jump  / swim up   / fly up                                     |
+| Left Shift                    | Sneak / swim down / fly down                                   |
 | Hold Ctrl                     | Sprint                                                         |
 | Tab                           | Toggle creative mode                                           |
-| F                             | Toggle flying (only in creative mode)                          |
+| F                             | Toggle flying (in creative mode)                               |
 | E                             | Open/Close inventory                                           |
 | Q                             | Drop held item                                                 |
 | Mouse wheel                   | Previous/next item in toolbar                                  |
 | 0-9                           | Select item in toolbar                                         |
-| Left Control and +/-          | +/- 0.5 hour                                                   |
-| +/-                           | +/- Render distance                                            |
+| +/-          			| Add/subtract 0.5 hour                                          |
 | C                             | Reload chunks                                                  |
 | L                             | Lock mouse                                                     |
-| P                             | Toggle postprocessing                                          |
+| P                             | Toggle post-processing                                         |
 | F3                            | Hide/show HUD                                                  |
 | F4                            | Toggle fog                                                     |
-| F5                            | Turn on weather                                                |
-| Esc                           | Close/pause the game                                           |
+| F5                            | Toggle weather                                                 |
+| Esc                           | Pause the game                                                 |
 | Enter                         | Unpause the game                                               |

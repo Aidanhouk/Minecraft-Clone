@@ -8,7 +8,7 @@
 #include "World/Block/ChunkBlock.h"
 #include "World/Block/BlockData.h"
 #include "World/Block/BlockDatabase.h"
-#include "World/World.h"
+#include "World/World/World.h"
 
 #include "RenderSettings.h"
 #include "Config.h"

@@ -22,12 +22,12 @@ ChunkBlock ValleyBiome::getTopBlock(Rand &rand, int y) const
 
 ChunkBlock ValleyBiome::getUnderGroundBlock(Rand & rand) const
 {
-	return BlockId::Dirt;
+	return { BlockId::Dirt, 0x00 };
 }
 
 ChunkBlock ValleyBiome::getUnderWaterBlock(Rand &rand) const
 {
-    return BlockId::Dirt;
+    return { BlockId::Dirt, 0x00 };
 }
 
 ChunkBlock ValleyBiome::getPlant(Rand &rand) const

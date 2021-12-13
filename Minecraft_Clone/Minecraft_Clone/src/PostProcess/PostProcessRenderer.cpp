@@ -100,7 +100,7 @@ void PostProcessRender::finalize()
 	if (g_PlayerInfo.darkScreen)
 		m_shader.loadDarkScreen(0.4f); // default value of screen darkness when inventory is opened
 	else
-		m_shader.loadDarkScreen(g_PlayerInfo.caveLighting);
+		m_shader.loadDarkScreen(1.0f);
 
 	// shaking effect
 	glm::mat4 trans = glm::rotate(glm::mat4(1.0f), glm::radians(g_PlayerInfo.cameraRotation), glm::vec3(0.0, 0.0, 1.0));

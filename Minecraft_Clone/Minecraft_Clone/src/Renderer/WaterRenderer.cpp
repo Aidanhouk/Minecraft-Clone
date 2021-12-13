@@ -3,7 +3,7 @@
 #include "../Application.h"
 #include "../Camera.h"
 #include "../World/Block/BlockDatabase.h"
-#include "../World/Chunk/ChunkMesh.h"
+#include "../World/Chunk/ChunkMesh/ChunkMesh.h"
 
 void WaterRenderer::add(const ChunkMesh &mesh)
 {

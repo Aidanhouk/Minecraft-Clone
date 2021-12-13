@@ -42,7 +42,7 @@ bool operator==(const BlockId & element2, const CraftingElement & element1)
 const std::vector<const Recipe4*> Recipe4::ALL_RESIPES
 {
 	&Recipe4::OAK_PLANKS, &Recipe4::BIRCH_PLANKS, &Recipe4::PALM_PLANKS, &Recipe4::SPRUCE_PLANKS,
-	&Recipe4::STICK, &Recipe4::CRAFTING_TABLE
+	&Recipe4::STICK, &Recipe4::CRAFTING_TABLE, &Recipe4::TORCHES
 };
 
 const Recipe4 Recipe4::OAK_PLANKS(
@@ -84,6 +84,13 @@ const Recipe4 Recipe4::CRAFTING_TABLE(
 	BlockId::OakPlanks, BlockId::OakPlanks },
 	// result
 	{ BlockId::CraftingTable, 1 }
+);
+
+const Recipe4 Recipe4::TORCHES(
+	{ BlockId::Coal, BlockId::Air,
+	BlockId::Stick, BlockId::Air },
+	// result
+	{ BlockId::Glowstone, 4 }
 );
 
 

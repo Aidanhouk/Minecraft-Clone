@@ -22,12 +22,12 @@ ChunkBlock TundraBiome::getTopBlock(Rand &rand, int y) const
 
 ChunkBlock TundraBiome::getUnderGroundBlock(Rand & rand) const
 {
-	return BlockId::Dirt;
+	return { BlockId::Dirt, 0x00 };
 }
 
 ChunkBlock TundraBiome::getUnderWaterBlock(Rand &rand) const
 {
-    return BlockId::Dirt;
+    return { BlockId::Dirt, 0x00 };
 }
 
 ChunkBlock TundraBiome::getWaterSurfaceBlock(Rand & rand) const

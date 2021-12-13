@@ -8,7 +8,9 @@
 struct Material : public NonCopyable {
     enum ID {
         Nothing,
+
 		Ice,
+		Glowstone,
 
 		Grass,
 		Dirt,
@@ -84,6 +86,7 @@ struct Material : public NonCopyable {
 		Stick,
 
 		Diamond,
+		Coal,
 
 		WoodenPickaxe,
 		StonePickaxe,
@@ -104,7 +107,8 @@ struct Material : public NonCopyable {
 		CraftingTable,
     };
 
-	const static Material NOTHING, ICE,
+	const static Material NOTHING,
+		ICE, GLOWSTONE,
 		GRASS, DIRT, STONE, SAND, BEDROCK, TUNDRA_GRASS, SNOW, GRAVEL, CLAY, COBBLESTONE,
 		OAK_BARK, BIRCH_BARK, SPRUCE_BARK, PALM_BARK,
 		OAK_PLANKS, BIRCH_PLANKS, PALM_PLANKS, SPRUCE_PLANKS,
@@ -119,7 +123,7 @@ struct Material : public NonCopyable {
 		COAL_ORE, IRON_ORE, REDSTONE_ORE, GOLD_ORE, DIAMOND_ORE, EMERALD_ORE,
 		APPLE,
 		STICK,
-		DIAMOND,
+		DIAMOND, COAL,
 		WOODEN_SWORD, WOODEN_PICKAXE, WOODEN_SHOVEL, WOODEN_AXE,
 		STONE_SWORD, STONE_PICKAXE, STONE_SHOVEL, STONE_AXE,
 		IRON_SWORD, IRON_PICKAXE, IRON_SHOVEL, IRON_AXE,

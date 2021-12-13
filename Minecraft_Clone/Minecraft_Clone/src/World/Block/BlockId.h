@@ -59,7 +59,7 @@ enum class BlockId : Block_t {
 	GoldOre = 51,
 	DiamondOre = 52,
 	EmeraldOre = 53,
-	CaveAir = 54,
+	Coal = 54,
 	WoodenSword = 55,
 	StoneSword = 56,
 	IronSword = 57,
@@ -89,6 +89,7 @@ enum class BlockId : Block_t {
 	CraftingTable = 81,
 	Cobblestone = 82,
 	Diamond = 83,
+	Glowstone = 84,
 
     NUM_TYPES
 };

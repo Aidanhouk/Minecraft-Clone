@@ -21,17 +21,17 @@ ChunkBlock OceanBiome::getTopBlock(Rand &rand, int y) const
 
 ChunkBlock OceanBiome::getUnderGroundBlock(Rand & rand) const
 {
-	return BlockId::Dirt;
+	return { BlockId::Dirt, 0x00 };
 }
 
 ChunkBlock OceanBiome::getUnderWaterBlock(Rand &rand) const
 {
-    return BlockId::Sand;
+    return { BlockId::Sand, 0x00 };
 }
 
-ChunkBlock OceanBiome::getPlant(Rand &rand) const
+ChunkBlock OceanBiome::getPlant(Rand & rand) const
 {
-	return BlockId::Cactus;
+	return BlockId::DeadShrub;
 }
 
 void OceanBiome::makeTree(Rand &rand, Chunk &chunk, int x, int y, int z) const

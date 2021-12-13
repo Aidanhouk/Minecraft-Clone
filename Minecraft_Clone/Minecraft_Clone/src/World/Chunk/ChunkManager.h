@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SFML/System/Vector2.hpp"
-#include "../../Maths/Vector2XZ.h"
+#include "Maths/Vector2XZ.h"
 #include "../Generation/Terrain/TerrainGenerator.h"
 #include "Chunk.h"
 
@@ -38,7 +38,7 @@ private:
 	ChunkMap m_chunks;
 	std::unique_ptr<TerrainGenerator> m_terrainGenerator;
 
-	std::mutex m_mainMutex;
+	mutable std::mutex m_genMutex;
 	
 	World *m_pWorld;
 };

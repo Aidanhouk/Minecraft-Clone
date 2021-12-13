@@ -68,6 +68,7 @@ void Application::handleEvents()
                     case sf::Keyboard::Enter:
 						if (g_PlayerInfo.gameState == GameState::PAUSED) {
 							g_PlayerInfo.gameState = GameState::PLAYING;
+							g_PlayerInfo.darkScreen = false;
 						}
                         break;
 					case sf::Keyboard::Escape:
@@ -78,6 +79,7 @@ void Application::handleEvents()
 						else if (!g_PlayerInfo.inventoryCursor) {
 							g_PlayerInfo.gameState = GameState::PAUSED;
 							g_PlayerInfo.playerState = PlayerState::NOT_MOVING;
+							g_PlayerInfo.darkScreen = true;
 						}
 						break;
 

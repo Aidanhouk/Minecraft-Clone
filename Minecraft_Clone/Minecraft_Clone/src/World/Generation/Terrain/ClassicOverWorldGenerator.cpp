@@ -213,29 +213,29 @@ void ClassicOverWorldGenerator::setBlocks(int maxHeight)
 						m_pChunk->setBlock(x, y, z, getBiome(x, z).getUnderGroundBlock(m_random));
 				}
 				else if (y == 0) {
-					m_pChunk->setBlock(x, y, z, BlockId::Bedrock);
+					m_pChunk->setBlock(x, y, z, { BlockId::Bedrock, 0x00 });
 				}
 				else if (y == 1) {
 					if (m_pChunk->getBlock(x, y, z) == 0) {
 						int rand = m_random.intInRange(0, 2);
 						if (rand == 0)
-							m_pChunk->setBlock(x, y, z, BlockId::Stone);
+							m_pChunk->setBlock(x, y, z, { BlockId::Stone, 0x00 });
 						else
-							m_pChunk->setBlock(x, y, z, BlockId::Bedrock);
+							m_pChunk->setBlock(x, y, z, { BlockId::Bedrock, 0x00 });
 					}
 				}
 				else if (y == 2) {
 					if (m_pChunk->getBlock(x, y, z) == 0) {
 						int rand = m_random.intInRange(0, 2);
 						if (rand == 0)
-							m_pChunk->setBlock(x, y, z, BlockId::Bedrock);
+							m_pChunk->setBlock(x, y, z, { BlockId::Bedrock, 0x00 });
 						else
-							m_pChunk->setBlock(x, y, z, BlockId::Stone);
+							m_pChunk->setBlock(x, y, z, { BlockId::Stone, 0x00 });
 					}
 				}
 				else {
-					if (m_pChunk->getBlock(x, y, z).getData().id == BlockId::Air) {
-						m_pChunk->setBlock(x, y, z, BlockId::Stone);
+					if (m_pChunk->getBlock(x, y, z) == 0) {
+						m_pChunk->setBlock(x, y, z, { BlockId::Stone, 0x00 });
 					}
 				}
 			}

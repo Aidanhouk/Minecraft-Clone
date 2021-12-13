@@ -2,6 +2,7 @@
 
 #include "World/Block/BlockDatabase.h"
 #include "GlobalInfo.h"
+#include "Player/PlayerInfo.h"
 #include "Camera.h"
 #include "Player/PlayerHand/HandMesh.h"
 #include "RenderSettings.h"
@@ -128,7 +129,7 @@ void HandRenderer::render()
 	m_shader.loadModelMatrix(modelMatrix);
 	m_shader.loadProjectionMatrix(m_handProjMatrix);
 
-	m_shader.loadLighting(g_Info.lighting);
+	m_shader.loadLighting(g_PlayerInfo.playerLighting);
 	m_shader.loadTime(g_Info.elapsedTime);
 
 	GL::bindVAO(m_mesh->vao);

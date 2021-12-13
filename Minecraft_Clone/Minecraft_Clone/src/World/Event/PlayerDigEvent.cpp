@@ -2,7 +2,7 @@
 
 #include "../../Item/Material.h"
 #include "../../Player/Player.h"
-#include "../World.h"
+#include "../World/World.h"
 #include "World/Block/BlockDatabase.h"
 #include "Player/PlayerHand/Hand.h"
 #include "Audio/SoundMaster.h"
@@ -41,17 +41,17 @@ void PlayerDigEvent::_handle(World &world)
 		if ((int)y == 0)
 			return;
 
-		const auto& blockData = world.getBlock(x, y, z).getData();
-		BlockId blockId = blockData.id;
+		ChunkBlock block = world.getBlock(x, y, z);
+		BlockId blockId = block.getData().id;
 
 		if (BlockDatabase::get().isDoublePlant(blockId)) {
 			breakDoublePlant(world, glm::vec3(x, y, z), blockId);
 		}
 		else {
 			bool blockDrops = false;
-			bool placeNewBlock = false;
+			bool newBlockPlaced = false;
 
-			switch (blockData.toolToMine)
+			switch (block.getData().toolToMine)
 			{
 			case ToolToMine::None:
 			case ToolToMine::Shovel:
@@ -64,17 +64,31 @@ void PlayerDigEvent::_handle(World &world)
 				break;
 			}
 
-			if (blockDrops)
-				dropItems(world, blockId, x, y, z, placeNewBlock);
+			auto lightChar = world.getBlock(x, y, z).light;
 
-			if (!placeNewBlock)
+			if (blockDrops)
+				dropItems(world, blockId, x, y, z, newBlockPlaced);
+
+			if (!newBlockPlaced)
 				world.setBlock(x, y, z, 0);
+
+			if (block.getData().isOpaque &&
+				block.getData().id != BlockId::Glowstone) { // @TODO refactor to get rid of glowstone while calculating sun light
+
+				if ((int)(lightChar & 0xF) > 0) {
+					world.setTorchLight(x, y, z, (int)lightChar);
+					world.updateLitChunks(x, y, z);
+				}
+				if ((int)((lightChar >> 4) & 0xF) > 0) {
+					world.updateSunLight(x, y, z);
+				}
+			}
 
 			breakBlocksAbove(world, glm::vec3(x, y + 1, z));
 		}
 
 		makeBreakSound(blockId);
-		return;
+		break;
 	}
 
 	case sf::Mouse::Button::Right: {
@@ -87,17 +101,19 @@ void PlayerDigEvent::_handle(World &world)
 				world.getBlock(x, y, z - 1).getData().id == BlockId::Cactus)
 				return;
 
-			placeBlock(world, heldItemId, x, y, z);
+			bool blockPlaced = placeBlock(world, heldItemId, x, y, z);
 
-			world.checkForDroppedItems(glm::vec3(floor(x), floor(y), floor(z)));
-			m_pPlayer->removeHeldItem(1);
-			m_pHand->swing();
-			makePlaceSound(heldItemId);
+			if (blockPlaced) {
+				world.checkForDroppedItems(glm::vec3(floor(x), floor(y), floor(z)));
+				m_pPlayer->removeHeldItem(1);
+				m_pHand->swing();
+				makePlaceSound(heldItemId);
+			}
 		}
-		return;
+		break;
 	}
 	default:
-		return;
+		break;
 	}
 }
 
@@ -169,12 +185,16 @@ void PlayerDigEvent::breakDoublePlant(World & world, const glm::vec3 & pos, Bloc
 			world.setBlock(pos.x, pos.y + secondPartPosition, pos.z, 0);
 }
 
-void PlayerDigEvent::dropItems(World &world, BlockId blockId, float x, float y, float z, bool &placeNewBlock)
+void PlayerDigEvent::dropItems(World &world, BlockId blockId, float x, float y, float z, bool &newBlockPlaced)
 {
 	switch (blockId)
 	{
 	case BlockId::Stone:
 		world.addDroppedItem({ BlockId::Cobblestone, 1 },
+			glm::vec3(floor(x) + 0.5f, floor(y) + 0.5f, floor(z) + 0.5f));
+		break;
+	case BlockId::CoalOre:
+		world.addDroppedItem({ BlockId::Coal, 1 },
 			glm::vec3(floor(x) + 0.5f, floor(y) + 0.5f, floor(z) + 0.5f));
 		break;
 	case BlockId::DiamondOre:
@@ -192,8 +212,14 @@ void PlayerDigEvent::dropItems(World &world, BlockId blockId, float x, float y, 
 	case BlockId::Ice:
 		if (y <= WATER_LEVEL + 1) {
 			world.setBlock(x, y, z, BlockId::Water);
-			placeNewBlock = true;
+			newBlockPlaced = true;
 		}
+		break;
+	case BlockId::Glowstone:
+		world.addDroppedItem({ blockId, 1 },
+			glm::vec3(floor(x) + 0.5f, floor(y) + 0.5f, floor(z) + 0.5f));
+		world.removeTorchLight(x, y, z);
+		world.updateLitChunks(x, y, z);
 		break;
 	default:
 		world.addDroppedItem({ blockId, 1 },
@@ -202,31 +228,31 @@ void PlayerDigEvent::dropItems(World &world, BlockId blockId, float x, float y, 
 	}
 }
 
-void PlayerDigEvent::placeBlock(World & world, BlockId heldItemId, float x, float y, float z)
+bool PlayerDigEvent::placeBlock(World & world, BlockId heldItemId, float x, float y, float z)
 {
 	switch (heldItemId)
 	{
 	case BlockId::LargeFern:
 		if (world.getBlock(x, y + 1, z) != 0)
-			return;
+			return false;
 		world.setBlock(x, y, z, { BlockId::LargeFern1 });
 		world.setBlock(x, y + 1, z, { BlockId::LargeFern2 });
 		break;
 	case BlockId::Lilac:
 		if (world.getBlock(x, y + 1, z) != 0)
-			return;
+			return false;
 		world.setBlock(x, y, z, { BlockId::Lilac1 });
 		world.setBlock(x, y + 1, z, { BlockId::Lilac2 });
 		break;
 	case BlockId::Peony:
 		if (world.getBlock(x, y + 1, z) != 0)
-			return;
+			return false;
 		world.setBlock(x, y, z, { BlockId::Peony1 });
 		world.setBlock(x, y + 1, z, { BlockId::Peony2 });
 		break;
 	case BlockId::RoseBush:
 		if (world.getBlock(x, y + 1, z) != 0)
-			return;
+			return false;
 		world.setBlock(x, y, z, { BlockId::RoseBush1 });
 		world.setBlock(x, y + 1, z, { BlockId::RoseBush2 });
 		break;
@@ -236,11 +262,19 @@ void PlayerDigEvent::placeBlock(World & world, BlockId heldItemId, float x, floa
 			world.getBlock(x, y, z + 1) != 0 ||
 			world.getBlock(x, y, z - 1) != 0)
 		{
-			return;
+			return false;
 		}
 		world.setBlock(x, y, z, heldItemId);
 		break;
+	case BlockId::Glowstone:
+		world.setTorchLight(x, y, z, 15);
+		world.setBlock(x, y, z, heldItemId);
+		world.updateLitChunks(x, y, z);
+		break;
 	default:
 		world.setBlock(x, y, z, heldItemId);
+		break;
 	}
+
+	return true;
 }

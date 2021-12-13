@@ -71,16 +71,10 @@ private:
 	void updateToolsDurBarGrabbedItem();
 	void createToolDurabilityBar(ItemSlot * itemSlot);
 
-	// These are funny functions
-	void leftMouseWithGrabbedItemInventoryUpdate(ItemSlot *pointedSlot);
-	void rightMouseWithGrabbedItemInventoryUpdate(ItemSlot *pointedSlot);
-	void leftMouseWithGrabbedItemCraftingTableUpdate(ItemSlot *pointedSlot);
-	void rightMouseWithGrabbedItemCraftingTableUpdate(ItemSlot *pointedSlot);
-
-	void leftMouseNoGrabbedItemInventoryUpdate(sf::Vector2i &mousePos, ItemSlot *pointedSlot);
-	void rightMouseNoGrabbedItemInventoryUpdate(sf::Vector2i &mousePos, ItemSlot *pointedSlot);
-	void leftMouseNoGrabbedItemCraftingTableUpdate(sf::Vector2i &mousePos, ItemSlot *pointedSlot);
-	void rightMouseNoGrabbedItemCraftingTableUpdate(sf::Vector2i &mousePos, ItemSlot *pointedSlot);
+	void leftMouseWithGrabbedItemUpdate(sf::Vector2i &mousePos);
+	void rightMouseWithGrabbedItemUpdate(sf::Vector2i &mousePos);
+	void leftMouseNoGrabbedItemUpdate(sf::Vector2i &mousePos);
+	void rightMouseNoGrabbedItemUpdate(sf::Vector2i &mousePos);
 
 	ItemSlot* getPointedSlot(sf::Vector2i &mousePos);
 	bool isMousePointedOnSlot(sf::Vector2i & mousePos, ItemSlot *itemSlot);
@@ -99,10 +93,12 @@ private:
 
 	void tryAddItem(ItemSlot* slotToAddTo, ItemSlot* slotToTakeFrom);
 	bool doSlotsHaveSameItem(ItemSlot* slot1, ItemSlot* slot2);
+	void tryMovePointedItem(sf::Vector2i &mousePos);
+	void craftMaxItems(ItemSlot* craftResultSlot);
 
+	void checkForCraftingCompute();
 	void computeCrafting();
-	void removeCraftSpentItems();
-	void removeCraftingTableSpentItems();
+	void removeCraftSpentItems(ItemSlot* craftResultSlot);
 
 
 
@@ -144,6 +140,8 @@ private:
 	sf::RectangleShape		m_itemTextBackground;
 	sf::Texture				m_itemTextBackgroundTexture;
 	float					m_backgroundHeightOneString;
+
+	sf::RectangleShape		m_highlightSlotSquare;
 	
 	float					m_invPixelSize;
 	float					m_invSlotSize;

@@ -4,7 +4,7 @@
 #include "../../../Util/Random.h"
 #include "../../Block/ChunkBlock.h"
 #include "Util/Array2D.h"
-#include "World/WorldConstants.h"
+#include "World/World/WorldConstants.h"
 
 enum class BiomeId
 {

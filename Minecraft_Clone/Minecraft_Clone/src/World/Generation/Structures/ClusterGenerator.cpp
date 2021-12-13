@@ -309,7 +309,7 @@ namespace CreateOreVein {
 					if (chunk.getBlock(xx, yy, zz) != 0 &&
 						chunk.getBlock(xx, yy, zz).getData().id != BlockId::Bedrock)
 						if (rand.intInRange(1, 27) <= 10)
-							chunk.setBlock(xx, yy, zz, BlockId::CoalOre);
+							chunk.setBlock(xx, yy, zz, { BlockId::CoalOre, 0x00 });
 				}
 	}
 
@@ -321,7 +321,7 @@ namespace CreateOreVein {
 					if (chunk.getBlock(xx, yy, zz) != 0 &&
 						chunk.getBlock(xx, yy, zz).getData().id != BlockId::Bedrock)
 						if (rand.intInRange(1, 16) <= 11)
-							chunk.setBlock(xx, yy, zz, BlockId::IronOre);
+							chunk.setBlock(xx, yy, zz, { BlockId::IronOre, 0x00 });
 				}
 	}
 
@@ -333,7 +333,7 @@ namespace CreateOreVein {
 					if (chunk.getBlock(xx, yy, zz) != 0 &&
 						chunk.getBlock(xx, yy, zz).getData().id != BlockId::Bedrock)
 						if (rand.intInRange(1, 24) <= 11)
-							chunk.setBlock(xx, yy, zz, BlockId::RedstoneOre);
+							chunk.setBlock(xx, yy, zz, { BlockId::RedstoneOre, 0x00 });
 				}
 	}
 
@@ -345,7 +345,7 @@ namespace CreateOreVein {
 					if (chunk.getBlock(xx, yy, zz) != 0 &&
 						chunk.getBlock(xx, yy, zz).getData().id != BlockId::Bedrock)
 						if (rand.intInRange(1, 40) <= 31)
-							chunk.setBlock(xx, yy, zz, BlockId::GoldOre);
+							chunk.setBlock(xx, yy, zz, { BlockId::GoldOre, 0x00 });
 				}
 	}
 
@@ -357,7 +357,7 @@ namespace CreateOreVein {
 					if (chunk.getBlock(xx, yy, zz) != 0 &&
 						chunk.getBlock(xx, yy, zz).getData().id != BlockId::Bedrock)
 						if (rand.intInRange(1, 24) <= 11)
-							chunk.setBlock(xx, yy, zz, BlockId::DiamondOre);
+							chunk.setBlock(xx, yy, zz, { BlockId::DiamondOre, 0x00 });
 				}
 	}
 
@@ -365,7 +365,7 @@ namespace CreateOreVein {
 	{
 		if (chunk.getBlock(x, y, z) != 0 &&
 			chunk.getBlock(x, y, z).getData().id != BlockId::Bedrock)
-			chunk.setBlock(x, y, z, BlockId::EmeraldOre);
+			chunk.setBlock(x, y, z, { BlockId::EmeraldOre, 0x00 });
 	}
 
 }

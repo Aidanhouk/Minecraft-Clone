@@ -1,6 +1,6 @@
 #include "NoiseGenerator.h"
 
-#include "../World/WorldConstants.h"
+#include "../World/World/WorldConstants.h"
 
 #include <cmath>
 

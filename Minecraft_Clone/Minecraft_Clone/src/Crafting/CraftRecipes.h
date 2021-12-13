@@ -31,7 +31,7 @@ struct Recipe4 : public Recipe
 
 	const static Recipe4
 		OAK_PLANKS, BIRCH_PLANKS, PALM_PLANKS, SPRUCE_PLANKS,
-		STICK, CRAFTING_TABLE
+		STICK, CRAFTING_TABLE, TORCHES
 		;
 };
 

@@ -1,18 +1,18 @@
 #pragma once
 
-#include "../Player/Player.h"
+#include "Player/Player.h"
 #include "StateBase.h"
 
-#include "../Input/Keyboard.h"
-#include "../Input/Mouse.h"
-#include "../Util/FPSCounter.h"
-#include "../World/Chunk/Chunk.h"
-#include "../World/World.h"
+#include "Input/Keyboard.h"
+#include "Input/Mouse.h"
+#include "Util/FPSCounter.h"
+#include "World/Chunk/Chunk.h"
+#include "World/World/World.h"
 
-#include "../Tick/TickManager.h"
-#include "../Environment/SkyManager.h"
-#include "../Player/BlockBreaker.h"
-#include "../Player/PlayerHand/Hand.h"
+#include "Tick/TickManager.h"
+#include "Environment/SkyManager.h"
+#include "Player/BlockBreaker.h"
+#include "Player/PlayerHand/Hand.h"
 
 extern std::shared_ptr<SkyManager> m_sky;
 

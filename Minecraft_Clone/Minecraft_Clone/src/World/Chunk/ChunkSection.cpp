@@ -2,8 +2,8 @@
 
 #include "../Block/BlockId.h"
 
-#include "../World.h"
-#include "ChunkMeshBuilder.h"
+#include "../World/World.h"
+#include "ChunkMesh/ChunkMeshBuilder.h"
 
 #include <fstream>
 #include <iostream>
@@ -14,8 +14,7 @@ ChunkSection::ChunkSection(const sf::Vector3i &location, World *world)
     , m_location(location)
     , m_pWorld(world)
 {
-    m_aabb.update({location.x * CHUNK_SIZE, location.y * CHUNK_SIZE,
-                   location.z * CHUNK_SIZE});
+	m_aabb.update({ location.x * CHUNK_SIZE, location.y * CHUNK_SIZE, location.z * CHUNK_SIZE });
 }
 
 ChunkSection::ChunkSection(ChunkSection && x)
@@ -28,8 +27,7 @@ ChunkSection::ChunkSection(ChunkSection && x)
 	m_hasMesh{ x.m_hasMesh },
 	m_hasBufferedMesh{ x.m_hasBufferedMesh }
 {
-	m_aabb.update({ m_location.x * CHUNK_SIZE, m_location.y * CHUNK_SIZE,
-				   m_location.z * CHUNK_SIZE });
+	m_aabb.update({ m_location.x * CHUNK_SIZE, m_location.y * CHUNK_SIZE, m_location.z * CHUNK_SIZE });
 }
 
 ChunkSection & ChunkSection::operator=(ChunkSection && x)
@@ -39,15 +37,11 @@ ChunkSection & ChunkSection::operator=(ChunkSection && x)
 
 	m_blocks = std::move(x.m_blocks);
 	m_layers = std::move(x.m_layers);
-
 	m_meshes = std::move(x.m_meshes);
-
 	m_location = x.m_location;
-
+	m_aabb.update({ m_location.x * CHUNK_SIZE, m_location.y * CHUNK_SIZE, m_location.z * CHUNK_SIZE });
 	m_pWorld = x.m_pWorld;
-
 	m_hasMesh = x.m_hasMesh;
-
 	m_hasBufferedMesh = x.m_hasBufferedMesh;
 
 	return *this;
@@ -66,14 +60,53 @@ void ChunkSection::setBlock(int x, int y, int z, ChunkBlock block)
 	m_blocks[getIndex(x, y, z)] = block;
 }
 
+void ChunkSection::setBlockInSection(int x, int y, int z, ChunkBlock block)
+{
+	m_layers[y].update(block);
+
+	m_blocks[getIndex(x, y, z)] = block;
+}
+
 ChunkBlock ChunkSection::getBlock(int x, int y, int z) const
 {
 	if (outOfBounds(x) || outOfBounds(y) || outOfBounds(z)) {
 	    auto location = toWorldPosition(x, y, z);
+		if (location.x < 0 || location.z < 0)
+			return 0;
+
 	    return m_pWorld->getBlock(location.x, location.y, location.z);
 	}
 	
 	return m_blocks[getIndex(x, y, z)];
+}
+
+ChunkBlock & ChunkSection::getBlockInSectionRef(int x, int y, int z)
+{
+	return m_blocks[getIndex(x, y, z)];
+}
+
+// Get the bits XXXX0000
+int ChunkSection::getSunLight(int x, int y, int z) const
+{
+	return (m_blocks[getIndex(x, y, z)].light >> 4) & 0xF;
+}
+
+// Set the bits XXXX0000
+void ChunkSection::setSunLight(int x, int y, int z, int value)
+{
+	m_blocks[getIndex(x, y, z)].light = (m_blocks[getIndex(x, y, z)].light & 0xF) | (value << 4);
+}
+
+// Get the bits 0000XXXX
+int ChunkSection::getTorchLight(int x, int y, int z) const
+{
+	return m_blocks[getIndex(x, y, z)].light & 0xF;
+}
+
+// Set the bits 0000XXXX
+void ChunkSection::setTorchLight(int x, int y, int z, int value)
+{
+	m_blocks[getIndex(x, y, z)].light = (m_blocks[getIndex(x, y, z)].light & 0xF0) | value;
 }
 
 const sf::Vector3i ChunkSection::getLocation() const

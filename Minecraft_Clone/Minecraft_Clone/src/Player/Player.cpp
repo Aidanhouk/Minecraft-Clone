@@ -7,12 +7,12 @@
 #include <memory>
 #include <thread>
 
-#include "../Input/Keyboard.h"
-#include "../Input/Mouse.h"
-#include "../Input/ToggleKey.h"
-#include "../Renderer/RenderMaster.h"
-#include "../World/World.h"
-#include "../RenderSettings.h"
+#include "Input/Keyboard.h"
+#include "Input/Mouse.h"
+#include "Input/ToggleKey.h"
+#include "Renderer/RenderMaster.h"
+#include "World/World/World.h"
+#include "RenderSettings.h"
 #include "PlayerInfo.h"
 #include "GlobalInfo.h"
 #include "PlayerHand/Hand.h"
@@ -65,7 +65,6 @@ void Player::handleInput(const sf::RenderWindow &window, Mouse &mouse, Keyboard 
 
 	if (keyboard.toggle(sf::Keyboard::E)) {
 		m_Inventory.showOrHideInventory(InterfaceType::Inventory);
-		//m_Inventory.showOrHideInventory(InterfaceType::CraftingTable);
 	}
 	if (g_PlayerInfo.inventoryCursor) {
 		m_Inventory.mouseInput(window, mouse);
@@ -90,14 +89,6 @@ void Player::handleInput(const sf::RenderWindow &window, Mouse &mouse, Keyboard 
 			m_isFlying = false;
 			m_lastTopPosition = position.y;
 		}
-
-		//m_hp = 20;
-		//m_oxygen = 20;
-		//m_hunger = 20;
-		//if (!m_creativeMode) {
-		//	m_isFlying = false;
-		//	m_lastTopPosition = position.y;
-		//}
 
 		m_Inventory.shouldUpdateIcons();
 	}
@@ -165,6 +156,29 @@ void Player::mouseScrollEvent(int delta)
 
 void Player::update(float dt, World &world)
 {
+	const float MIN_LIGHT_VALUE = 0.1f;
+	const float	LIGHT_MULTIPLY_COEF = (1.0f - MIN_LIGHT_VALUE) / 15.0f; // 15 here is max light value
+
+	//VectorXZ chunkPos = { (int)position.x / CHUNK_SIZE, (int)position.z / CHUNK_SIZE };
+	//Chunk &chunk = world.getChunkManager().getChunk(chunkPos.x, chunkPos.z);
+	//VectorXZ blockPos = { (int)position.x % CHUNK_SIZE, (int)position.z % CHUNK_SIZE };
+	//ChunkBlock playerBlock = chunk.getBlock(blockPos.x, position.y, blockPos.z);
+	//
+	//if (position.y > chunk.getHeightAt(blockPos.x, blockPos.z)) {
+	//	g_PlayerInfo.playerLighting = std::max(
+	//		15 * g_Info.lighting,
+	//		(float)playerBlock.getTorchLight()) * LIGHT_MULTIPLY_COEF + MIN_LIGHT_VALUE;
+	//}
+	//else {
+	//	g_PlayerInfo.playerLighting = std::max(
+	//		playerBlock.getSunLight() * g_Info.lighting,
+	//		(float)playerBlock.getTorchLight()) * LIGHT_MULTIPLY_COEF + MIN_LIGHT_VALUE;
+	//}
+	ChunkBlock playerBlock = world.getBlock(position.x, position.y, position.z);
+	g_PlayerInfo.playerLighting = std::max(
+		playerBlock.getSunLight() * g_Info.lighting,
+		(float)playerBlock.getTorchLight()) * LIGHT_MULTIPLY_COEF + MIN_LIGHT_VALUE;
+
 	if (g_PlayerInfo.gameState != GameState::PLAYING)
 		return;
 
@@ -194,17 +208,25 @@ void Player::update(float dt, World &world)
 		m_isOnGround = false;
 	}
 
+	//static bool r = true;
+	//static ToggleKey R(sf::Keyboard::R);
+	//if (R.isKeyPressed())
+	//	r = !r;
+
 	position.x += velocity.x * dt;
+	//if (r)
 	collide(world, { velocity.x, 0, 0 });
 	if (position.x < 0)
 		position.x = 0;
 
 	position.z += velocity.z * dt;
+	//if (r)
 	collide(world, { 0, 0, velocity.z });
 	if (position.z < 0)
 		position.z = 0;
 
 	position.y += velocity.y * dt;
+	//if (r)
 	collide(world, { 0, velocity.y, 0 });
 	if (position.y < 0)
 		position.y = 0;
@@ -218,11 +240,6 @@ void Player::update(float dt, World &world)
 
 	if (!m_isMoving)
 		m_cameraShaking.defaultPosition();
-
-	if (world.getBlock(position.x, position.y, position.z).id == (Block_t)BlockId::CaveAir)
-		m_screenDarkening.makeScreenDarker();
-	else
-		m_screenDarkening.makeScreenLighter();
 
 	if (!m_creativeMode)
 		statsUpdate(dt);
@@ -263,7 +280,6 @@ void Player::statsUpdate(float dt)
 		/ 2;
 
 	if (m_exhaustionLevel >= 4.0f) {
-		//m_exhaustionLevel -= 4.0f;
 		m_exhaustionLevel = 0.0f;
 		decreaseSaturation();
 	}
@@ -837,6 +853,7 @@ void Player::mouseInput(const sf::RenderWindow &window)
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
 			|| sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 			g_PlayerInfo.gameState = GameState::PLAYING;
+			g_PlayerInfo.darkScreen = false;
 		}
 		if (g_PlayerInfo.gameState == GameState::NOT_STARTED)
 			return;
@@ -948,8 +965,8 @@ void Player::drawGUI(RenderMaster &master)
 		<< std::boolalpha
 		<< "\n <F4>   Fog - " << g_Info.fog
 		<< "\n <F5>   Weather - " << g_Info.weather
-		<< "\n <+/->  Render distance - " << g_Config.renderDistance
-		<< "\n <LCtrl +/-> Time : ";
+		//<< "\n <LCtrl +/->  Render distance - " << g_Config.renderDistance
+		<< "\n <+/-> Time : ";
 	if (g_Info.dayTime >= 18000)
 		stream << g_Info.dayTime / 1000 - 18 << " AM";
 	else if (g_Info.dayTime < 6000)

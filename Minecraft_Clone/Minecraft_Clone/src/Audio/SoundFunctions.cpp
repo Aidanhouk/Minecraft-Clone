@@ -79,6 +79,7 @@ void makeBreakSound(BlockId id)
 	switch (id)
 	{
 	case BlockId::Ice:
+	case BlockId::Glowstone:
 		soundSet = &SoundSet::BreakGlassSet;
 		break;
 	case BlockId::Stone:
@@ -172,6 +173,7 @@ void makePlaceSound(BlockId id)
 	switch (id)
 	{
 	case BlockId::Ice:
+	case BlockId::Glowstone:
 	case BlockId::Bedrock:
 	case BlockId::Stone:
 	case BlockId::Cobblestone:
@@ -267,6 +269,7 @@ void makeStepSound(BlockId id)
 	case BlockId::Cobblestone:
 	case BlockId::Bedrock:
 	case BlockId::Ice:
+	case BlockId::Glowstone:
 	case BlockId::CoalOre:
 	case BlockId::IronOre:
 	case BlockId::RedstoneOre:
@@ -329,6 +332,7 @@ void makeFallSound(BlockId id)
 	case BlockId::Cobblestone:
 	case BlockId::Bedrock:
 	case BlockId::Ice:
+	case BlockId::Glowstone:
 	case BlockId::CoalOre:
 	case BlockId::IronOre:
 	case BlockId::RedstoneOre:
@@ -391,6 +395,7 @@ void makeHitSound(BlockId id)
 	case BlockId::Cobblestone:
 	case BlockId::Bedrock:
 	case BlockId::Ice:
+	case BlockId::Glowstone:
 	case BlockId::CoalOre:
 	case BlockId::IronOre:
 	case BlockId::RedstoneOre:

@@ -66,7 +66,6 @@
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Physics\AABB.cpp" />
     <ClCompile Include="src\Player\Calculations\CameraShaking.cpp" />
-    <ClCompile Include="src\Player\Calculations\ScreenDarkening.cpp" />
     <ClCompile Include="src\Player\PlayerHand\Hand.cpp" />
     <ClCompile Include="src\Player\Calculations\MovementFOV.cpp" />
     <ClCompile Include="src\player\Player.cpp" />
@@ -134,8 +133,9 @@
     <ClCompile Include="src\world\block\ChunkBlock.cpp" />
     <ClCompile Include="src\world\Chunk\Chunk.cpp" />
     <ClCompile Include="src\world\Chunk\ChunkManager.cpp" />
-    <ClCompile Include="src\world\Chunk\ChunkMesh.cpp" />
-    <ClCompile Include="src\world\Chunk\ChunkMeshBuilder.cpp" />
+    <ClCompile Include="src\World\Chunk\ChunkMesh\ChunkMesh.cpp" />
+    <ClCompile Include="src\World\Chunk\ChunkMesh\ChunkMeshBuilder.cpp" />
+    <ClCompile Include="src\World\Chunk\ChunkMesh\ChunkMeshBuilderAO.cpp" />
     <ClCompile Include="src\world\Chunk\ChunkSection.cpp" />
     <ClCompile Include="src\world\Event\PlayerDigEvent.cpp" />
     <ClCompile Include="src\Player\Calculations\DamageMaster.cpp" />
@@ -154,7 +154,10 @@
     <ClCompile Include="src\world\Generation\Structures\TreeGenerator.cpp" />
     <ClCompile Include="src\world\Generation\Terrain\ClassicOverWorldGenerator.cpp" />
     <ClCompile Include="src\World\Generation\Terrain\SuperFlatGenerator.cpp" />
-    <ClCompile Include="src\world\World.cpp" />
+    <ClCompile Include="src\World\World\World.cpp" />
+    <ClCompile Include="src\World\World\WorldAmbientOcclusion.cpp" />
+    <ClCompile Include="src\World\World\WorldGeneration.cpp" />
+    <ClCompile Include="src\World\World\WorldLighting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
@@ -210,7 +213,6 @@
     <ClInclude Include="src\other\Singleton.h" />
     <ClInclude Include="src\Physics\AABB.h" />
     <ClInclude Include="src\Player\Calculations\CameraShaking.h" />
-    <ClInclude Include="src\Player\Calculations\ScreenDarkening.h" />
     <ClInclude Include="src\Player\PlayerHand\Hand.h" />
     <ClInclude Include="src\Player\Calculations\MovementFOV.h" />
     <ClInclude Include="src\Player\PlayerHand\HandAnimationData.h" />
@@ -573,10 +575,11 @@
     <ClInclude Include="src\world\block\ChunkBlock.h" />
     <ClInclude Include="src\world\Chunk\Chunk.h" />
     <ClInclude Include="src\world\Chunk\ChunkManager.h" />
-    <ClInclude Include="src\world\Chunk\ChunkMesh.h" />
-    <ClInclude Include="src\world\Chunk\ChunkMeshBuilder.h" />
+    <ClInclude Include="src\World\Chunk\ChunkMesh\ChunkMesh.h" />
+    <ClInclude Include="src\World\Chunk\ChunkMesh\ChunkMeshBuilder.h" />
     <ClInclude Include="src\world\Chunk\ChunkSection.h" />
     <ClInclude Include="src\world\Chunk\IChunk.h" />
+    <ClInclude Include="src\World\Chunk\UnloadedBlock.h" />
     <ClInclude Include="src\world\Event\IWorldEvent.h" />
     <ClInclude Include="src\world\Event\PlayerDigEvent.h" />
     <ClInclude Include="src\Player\Calculations\DamageMaster.h" />
@@ -596,8 +599,8 @@
     <ClInclude Include="src\world\Generation\Terrain\ClassicOverWorldGenerator.h" />
     <ClInclude Include="src\World\Generation\Terrain\SuperFlatGenerator.h" />
     <ClInclude Include="src\world\Generation\Terrain\TerrainGenerator.h" />
-    <ClInclude Include="src\world\World.h" />
-    <ClInclude Include="src\world\WorldConstants.h" />
+    <ClInclude Include="src\World\World\World.h" />
+    <ClInclude Include="src\World\World\WorldConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl" />

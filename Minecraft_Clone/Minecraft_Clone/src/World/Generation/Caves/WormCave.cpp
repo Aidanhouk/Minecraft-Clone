@@ -1,7 +1,8 @@
 #include "WormCave.h"
 
 #include <noise/mathconsts.h>
-#include "World/Chunk/Chunk.h"
+//#include "World/Chunk/Chunk.h"
+#include "World/World/World.h"
 
 #include <iostream>
 
@@ -10,7 +11,7 @@ const int CAVE_SEGMENT_COUNT = 50;
 const int CAVE_THICKNESS = 6;
 const float CAVE_TWISTINESS = (1.0f / 64.0f);
 
-const BlockId CAVE_BLOCK = BlockId::CaveAir;
+const ChunkBlock CAVE_BLOCK(BlockId::Air, 0x00);
 
 enum class Rotation
 {
@@ -90,39 +91,6 @@ void WormCave::createCave(Chunk &chunk)
 		offsetPos.y = sin(noiseValueY * 0.25 * noise::PI);
 
 		Rotation rotation = Rotation::NONE; // NONE if offset x and z == 0
-		
-		//if (offsetPos.x != 0.0f && offsetPos.z != 0.0f) {
-		//	if (offsetPos.x > 0.0f) {
-		//		float ratio = offsetPos.x / offsetPos.z;
-		//		if (ratio >= 1.0f)
-		//			rotation = Rotation::Right;
-		//		else
-		//			rotation = Rotation::Forward;
-		//	}
-		//	else {
-		//		float ratio = offsetPos.x / -offsetPos.z;
-		//		if (ratio >= 1.0f)
-		//			rotation = Rotation::Right;
-		//		else
-		//			rotation = Rotation::Backward;
-		//	}
-		//}
-		//else {
-		//	if (offsetPos.z > 0.0f) {
-		//		float ratio = -offsetPos.x / offsetPos.z;
-		//		if (ratio >= 1.0f)
-		//			rotation = Rotation::Left;
-		//		else
-		//			rotation = Rotation::Backward;
-		//	}
-		//	else {
-		//		float ratio = -offsetPos.x / -offsetPos.z;
-		//		if (ratio >= 1.0f)
-		//			rotation = Rotation::Left;
-		//		else
-		//			rotation = Rotation::Forward;
-		//	}
-		//}
 
 		if (offsetPos.x != 0.0f && offsetPos.z != 0.0f) {
 			if (offsetPos.x > 0.0f) {
@@ -171,51 +139,72 @@ void WormCave::createCave(Chunk &chunk)
 		case Rotation::Backward:
 			for (int yy = curSegmentPos.y - thicknessHalf; yy < curSegmentPos.y + thicknessHalf2; ++yy)
 				for (int xx = curSegmentPos.x - thicknessHalf; xx < curSegmentPos.x + thicknessHalf2; ++xx) {
-					chunk.setBlock(xx, yy, curSegmentPos.z, CAVE_BLOCK);
+					chunk.getWorldPtr()->addUnloadedBlock(xx, yy, curSegmentPos.z, CAVE_BLOCK);
+					//chunk.setBlock(xx, yy, curSegmentPos.z, CAVE_BLOCK);
 				}
 			break;
 		case Rotation::Right:
 		case Rotation::Left:
 			for (int yy = curSegmentPos.y - thicknessHalf; yy < curSegmentPos.y + thicknessHalf2; ++yy)
-				for (int zz = curSegmentPos.z - thicknessHalf; zz < curSegmentPos.z + thicknessHalf2; ++zz)
-					chunk.setBlock(curSegmentPos.x, yy, zz, CAVE_BLOCK);
+				for (int zz = curSegmentPos.z - thicknessHalf; zz < curSegmentPos.z + thicknessHalf2; ++zz) {
+					chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x, yy, zz, CAVE_BLOCK);
+					//chunk.setBlock(curSegmentPos.x, yy, zz, CAVE_BLOCK);
+				}
 			break;
 		
 		case Rotation::ForwardRight:
 			for (int yy = curSegmentPos.y - thicknessHalf; yy < curSegmentPos.y + thicknessHalf2; ++yy) {
-				for (int xz = -thicknessHalf; xz <= thicknessHalf2; ++xz)
-					chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z - xz, CAVE_BLOCK);
-				for (int xz = -thicknessHalf + 1; xz <= thicknessHalf2; ++xz)
-					chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + 1 - xz, CAVE_BLOCK);
+				for (int xz = -thicknessHalf; xz <= thicknessHalf2; ++xz) {
+					chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x + xz, yy, curSegmentPos.z - xz, CAVE_BLOCK);
+					//chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z - xz, CAVE_BLOCK);
+				}
+				for (int xz = -thicknessHalf + 1; xz <= thicknessHalf2; ++xz) {
+					chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + 1 - xz, CAVE_BLOCK);
+					//chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + 1 - xz, CAVE_BLOCK);
+				}
 			}
 			break;
 		case Rotation::BackwardLeft:
 			for (int yy = curSegmentPos.y - thicknessHalf; yy < curSegmentPos.y + thicknessHalf2; ++yy) {
-				for (int xz = -thicknessHalf; xz <= thicknessHalf2; ++xz)
-					chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
-				for (int xz = -thicknessHalf + 1; xz <= thicknessHalf2; ++xz)
-					chunk.setBlock(curSegmentPos.x - 1 + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+				for (int xz = -thicknessHalf; xz <= thicknessHalf2; ++xz) {
+					chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+					//chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+				}
+				for (int xz = -thicknessHalf + 1; xz <= thicknessHalf2; ++xz) {
+					chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x - 1 + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+					//chunk.setBlock(curSegmentPos.x - 1 + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+				}
 			}
 			break;
 		case Rotation::BackwardRight:
 			for (int yy = curSegmentPos.y - thicknessHalf; yy < curSegmentPos.y + thicknessHalf2; ++yy) {
-				for (int xz = -thicknessHalf; xz <= thicknessHalf2; ++xz)
-					chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
-				for (int xz = -thicknessHalf + 1; xz <= thicknessHalf2; ++xz)
-					chunk.setBlock(curSegmentPos.x - 1 + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+				for (int xz = -thicknessHalf; xz <= thicknessHalf2; ++xz) {
+					chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+					//chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+				}
+				for (int xz = -thicknessHalf + 1; xz <= thicknessHalf2; ++xz) {
+					chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x - 1 + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+					//chunk.setBlock(curSegmentPos.x - 1 + xz, yy, curSegmentPos.z + xz, CAVE_BLOCK);
+				}
 			}
 			break;
 		case Rotation::ForwardLeft:
 			for (int yy = curSegmentPos.y - thicknessHalf; yy < curSegmentPos.y + thicknessHalf2; ++yy) {
-				for (int xz = -thicknessHalf; xz <= thicknessHalf2; ++xz)
-					chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z - xz, CAVE_BLOCK);
-				for (int xz = -thicknessHalf + 1; xz <= thicknessHalf2; ++xz)
-					chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + 1 - xz, CAVE_BLOCK);
+				for (int xz = -thicknessHalf; xz <= thicknessHalf2; ++xz) {
+					chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x + xz, yy, curSegmentPos.z - xz, CAVE_BLOCK);
+					//chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z - xz, CAVE_BLOCK);
+				}
+				for (int xz = -thicknessHalf + 1; xz <= thicknessHalf2; ++xz) {
+					chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + 1 - xz, CAVE_BLOCK);
+					//chunk.setBlock(curSegmentPos.x + xz, yy, curSegmentPos.z + 1 - xz, CAVE_BLOCK);
+				}
 			}
 			break;
 		case Rotation::NONE:
-			for (int yy = curSegmentPos.y - thicknessHalf; yy < curSegmentPos.y + thicknessHalf2; ++yy)
-				chunk.setBlock(curSegmentPos.x, yy, curSegmentPos.z, CAVE_BLOCK);
+			for (int yy = curSegmentPos.y - thicknessHalf; yy < curSegmentPos.y + thicknessHalf2; ++yy) {
+				chunk.getWorldPtr()->addUnloadedBlock(curSegmentPos.x, yy, curSegmentPos.z, CAVE_BLOCK);
+				//chunk.setBlock(curSegmentPos.x, yy, curSegmentPos.z, CAVE_BLOCK);
+			}
 			break;
 		default:
 			break;

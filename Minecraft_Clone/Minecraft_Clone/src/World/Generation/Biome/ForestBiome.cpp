@@ -22,12 +22,12 @@ ChunkBlock ForestBiome::getTopBlock(Rand &rand, int y) const
 
 ChunkBlock ForestBiome::getUnderGroundBlock(Rand & rand) const
 {
-	return BlockId::Dirt;
+	return { BlockId::Dirt, 0x00 };
 }
 
 ChunkBlock ForestBiome::getUnderWaterBlock(Rand &rand) const
 {
-    return BlockId::Dirt;
+    return { BlockId::Dirt, 0x00 };
 }
 
 ChunkBlock ForestBiome::getPlant(Rand &rand) const

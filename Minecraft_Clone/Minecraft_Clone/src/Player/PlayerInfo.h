@@ -31,9 +31,9 @@ struct PlayerInfo {
 	int breakingStage;
 	float cameraPosition;
 	float cameraRotation;
-	float caveLighting;
 	GameState gameState;
 	PlayerState playerState;
+	float playerLighting;
 };
 
 extern PlayerInfo g_PlayerInfo;

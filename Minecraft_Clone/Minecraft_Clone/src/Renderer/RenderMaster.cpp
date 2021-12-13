@@ -5,7 +5,7 @@
 
 #include "../Application.h"
 #include "../Context.h"
-#include "../World/Chunk/ChunkMesh.h"
+#include "../World/Chunk/ChunkMesh/ChunkMesh.h"
 #include "../World/Chunk/ChunkSection.h"
 
 #include "../Config.h"

@@ -21,12 +21,12 @@ ChunkBlock DesertBiome::getTopBlock(Rand &rand, int y) const
 
 ChunkBlock DesertBiome::getUnderGroundBlock(Rand & rand) const
 {
-	return BlockId::Sand;
+	return { BlockId::Sand, 0x00 };
 }
 
 ChunkBlock DesertBiome::getUnderWaterBlock(Rand &rand) const
 {
-    return BlockId::Sand;
+    return { BlockId::Sand, 0x00 };
 }
 
 ChunkBlock DesertBiome::getPlant(Rand &rand) const

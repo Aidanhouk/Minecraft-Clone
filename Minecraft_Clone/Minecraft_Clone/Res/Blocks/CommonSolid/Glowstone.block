@@ -1,20 +1,14 @@
 Name
-CaveAir
+Glowstone
 
 Id
-54
+84
 
-TexTop
-0 0
-
-TexSide
-0 0
-
-TexBottom
-0 0
+TexAll
+15 4
 
 Opaque
-0
+1
 
 MeshType
 0
@@ -23,7 +17,7 @@ ShaderType
 0
 
 Collidable
-0
+1
 
 Hardness
-0
+0.45

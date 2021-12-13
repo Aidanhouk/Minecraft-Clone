@@ -22,7 +22,7 @@ void Inventory::shouldUpdateIcons()
 
 bool Inventory::isSlotEmpty(ItemSlot * slot)
 {
-	return (slot->item.getBlockId() == EMPTY_SLOT_ID);
+	return slot->item.getBlockId() == EMPTY_SLOT_ID;
 }
 
 bool Inventory::isGrabbedSlotEmpty()

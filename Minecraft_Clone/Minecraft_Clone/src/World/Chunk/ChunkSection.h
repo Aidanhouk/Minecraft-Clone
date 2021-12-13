@@ -3,9 +3,9 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 
-#include "../WorldConstants.h"
+#include "../World/WorldConstants.h"
 #include "../Block/ChunkBlock.h"
-#include "ChunkMesh.h"
+#include "ChunkMesh/ChunkMesh.h"
 #include "IChunk.h"
 
 #include "../../Physics/AABB.h"
@@ -41,9 +41,17 @@ public:
 
 	ChunkSection& operator=(const ChunkSection& x) = delete;
 	ChunkSection& operator=(ChunkSection&& x);
-	
+
 	void setBlock(int x, int y, int z, ChunkBlock block) override;
+	// use this function if you 100% know the block is in this chunk
+	void setBlockInSection(int x, int y, int z, ChunkBlock block);
 	ChunkBlock getBlock(int x, int y, int z) const override;
+	ChunkBlock& getBlockInSectionRef(int x, int y, int z);
+
+	int getSunLight(int x, int y, int z) const;
+	void setSunLight(int x, int y, int z, int value);
+	int getTorchLight(int x, int y, int z) const;
+	void setTorchLight(int x, int y, int z, int value);
 	
 	const sf::Vector3i getLocation() const;
 	
@@ -51,6 +59,7 @@ public:
 	bool hasBuffered() const;
 	
 	void makeMesh();
+	//void setMeshUnloaded() { m_hasMesh = false; }
 	void bufferMesh();
 	
 	const Layer &getLayer(int y) const;

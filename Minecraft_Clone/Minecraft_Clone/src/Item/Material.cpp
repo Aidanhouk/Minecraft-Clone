@@ -1,11 +1,14 @@
 #include "Material.h"
 
 const Material Material::NOTHING(ID::Nothing,						0, false, "None");
+
+const Material Material::ICE(ID::Ice,								64, true, "Ice");
+const Material Material::GLOWSTONE(ID::Glowstone,					64, true, "Glowstone");
+
 const Material Material::GRASS(ID::Grass,							64, true, "Grass Block");
 const Material Material::DIRT(ID::Dirt,								64, true, "Dirt");
 const Material Material::STONE(ID::Stone,							64, true, "Stone");
 const Material Material::SAND(ID::Sand,								64, true, "Sand");
-const Material Material::ICE(ID::Ice,								64, true, "Ice");
 const Material Material::BEDROCK(ID::Bedrock,						64, true, "Bedrock");
 const Material Material::TUNDRA_GRASS(ID::TundraGrass,				64, true, "Tundra Grass");
 const Material Material::SNOW(ID::Snow,								64, true, "Snow");
@@ -71,6 +74,7 @@ const Material Material::APPLE(ID::Apple,							64, false, "Apple");
 const Material Material::STICK(ID::Stick,							64, false, "Stick");
 
 const Material Material::DIAMOND(ID::Diamond,						64, false, "Diamond");
+const Material Material::COAL(ID::Coal,						64, false, "Coal");
 
 const Material Material::WOODEN_SWORD(ID::WoodenSword,				1, false, "Wooden Sword", 59);
 const Material Material::WOODEN_PICKAXE(ID::WoodenPickaxe,			1, false, "Wooden Pickaxe", 59);
@@ -114,6 +118,11 @@ BlockId Material::toBlockID() const
         case Nothing:
             return BlockId::Air;
 
+		case Ice:
+			return BlockId::Ice;
+		case Glowstone:
+			return BlockId::Glowstone;
+
         case Grass:
             return BlockId::Grass;
         case Dirt:
@@ -122,8 +131,6 @@ BlockId Material::toBlockID() const
             return BlockId::Stone;
 		case Sand:
 			return BlockId::Sand;
-		case Ice:
-			return BlockId::Ice;
 		case Bedrock:
 			return BlockId::Bedrock;
 		case TundraGrass:
@@ -244,6 +251,8 @@ BlockId Material::toBlockID() const
 
 		case Diamond:
 			return BlockId::Diamond;
+		case Coal:
+			return BlockId::Coal;
 
 		case WoodenSword:
 			return BlockId::WoodenSword;
@@ -301,6 +310,11 @@ BlockId Material::toBlockID() const
 const Material &Material::toMaterial(BlockId id)
 {
     switch (id) {
+		case BlockId::Ice:
+			return ICE;
+		case BlockId::Glowstone:
+			return GLOWSTONE;
+
         case BlockId::Grass:
             return GRASS;
         case BlockId::Dirt:
@@ -309,8 +323,6 @@ const Material &Material::toMaterial(BlockId id)
             return STONE;
 		case BlockId::Sand:
 			return SAND;
-		case BlockId::Ice:
-			return ICE;
 		case BlockId::Bedrock:
 			return BEDROCK;
 		case BlockId::TundraGrass:
@@ -427,9 +439,11 @@ const Material &Material::toMaterial(BlockId id)
 
 		case BlockId::Stick:
 			return STICK;
-
+			
 		case BlockId::Diamond:
 			return DIAMOND;
+		case BlockId::Coal:
+			return COAL;
 
 		case BlockId::WoodenSword:
 			return WOODEN_SWORD;

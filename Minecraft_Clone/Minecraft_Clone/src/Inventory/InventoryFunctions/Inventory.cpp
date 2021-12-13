@@ -93,9 +93,11 @@ void Inventory::draw(RenderMaster & master)
 				}
 		}
 		else {
-
 			m_grabbedItemDrawer.draw(master);
 		}
+
+		if (m_pPointedSlot)
+			master.drawSFML(m_highlightSlotSquare);
 	}
 	else {
 		master.drawSFML(m_toolbar);

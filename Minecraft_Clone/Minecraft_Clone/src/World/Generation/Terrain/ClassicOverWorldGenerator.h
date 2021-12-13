@@ -6,7 +6,7 @@
 #include "../../../Util/Random.h"
 
 #include "../../../Maths/NoiseGenerator.h"
-#include "../../WorldConstants.h"
+#include "../../World/WorldConstants.h"
 
 #include "../Biome/DesertBiome.h"
 #include "../Biome/ValleyBiome.h"
