@@ -20,9 +20,11 @@ Implemented features:
 -Items can be dropped
 -Inventory
 -Crafting
+-Sunlight and torchlight
+-Ambient occlusion
 -Damage, hunger and breathing systems
 -Eating
--Creating 3D mesh out of 2D texture
+-Creating 3D item meshes out of 2D textures
 -Swimming
 -Sneaking
 -Post processing
@@ -42,18 +44,17 @@ Implemented features:
 | Left Shift                    | Sneak / swim down/ fly down                                    |
 | Hold Ctrl                     | Sprint                                                         |
 | Tab                           | Toggle creative mode                                           |
-| F                             | Toggle flying (only in creative mode)                          |
+| F                             | Toggle flying (in creative mode)                               |
 | E                             | Open/Close inventory                                           |
 | Q                             | Drop held item                                                 |
 | Mouse wheel                   | Previous/next item in toolbar                                  |
 | 0-9                           | Select item in toolbar                                         |
-| Left Control and +/-          | +/- 0.5 hour                                                   |
-| +/-                           | +/- Render distance                                            |
+| +/-          			| Add/subtract 0.5 hour                                          |
 | C                             | Reload chunks                                                  |
 | L                             | Lock mouse                                                     |
 | P                             | Toggle postprocessing                                          |
 | F3                            | Hide/show HUD                                                  |
 | F4                            | Toggle fog                                                     |
 | F5                            | Turn on weather                                                |
-| Esc                           | Close/pause the game                                           |
+| Esc                           | Pause the game                                                 |
 | Enter                         | Unpause the game                                               |
