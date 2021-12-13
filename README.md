@@ -2,10 +2,13 @@
 
 Developed using C++, OpenGL, SFML, libnoise.
 
-The game without source code:
-https://drive.google.com/file/d/1P2GY01l_IuyYwCxVB09JAQqcZ8NPsG4L/view?usp=sharing
+The game:
+https://github.com/Aidanhouk/Minecraft-Clone/releases/tag/v1.0
+https://drive.google.com/file/d/1JKHZTW7CWTI9DH2XYHRX3kWUecQYvA31/view?usp=sharing
 
-Video: https://youtu.be/hgyFcShEzEs
+Video:
+#1. https://youtu.be/hgyFcShEzEs
+#2. https://youtu.be/BHORDF9_2ek
 
 Implemented features:
 -Procedural world generation
