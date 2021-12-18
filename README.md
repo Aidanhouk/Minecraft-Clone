@@ -7,8 +7,7 @@ https://github.com/Aidanhouk/Minecraft-Clone/releases/tag/v1.0
 https://drive.google.com/file/d/1JKHZTW7CWTI9DH2XYHRX3kWUecQYvA31/view?usp=sharing
 
 ## Video:
-1. https://youtu.be/hgyFcShEzEs
-2. https://youtu.be/BHORDF9_2ek
+https://youtube.com/playlist?list=PLlqmWU1ThvSpI_KBOWY2OALfcfpfgZbJR
 
 ## Implemented features:
 - Procedural world generation
