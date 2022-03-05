@@ -54,14 +54,13 @@ void PostProcessRender::render(const Camera& camera, FrameBufferObject& fbo)
 		glBlitFramebuffer(0, 0, g_RenderSettings.resolutionX, g_RenderSettings.resolutionY, 0, 0
 			, g_RenderSettings.resolutionX, g_RenderSettings.resolutionY, GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	}
-	// doesn't work
-	//if (g_ShaderSettings.bloom) {
-	//	bloom.render(fbo.getColorTex());
-	//	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo.m_fbo);
-	//	glBindFramebuffer(GL_READ_FRAMEBUFFER, bloom.renderer.fbo.m_fbo);
-	//	glBlitFramebuffer(0, 0, g_RenderSettings.resolutionX, g_RenderSettings.resolutionY, 0, 0
-	//		, g_RenderSettings.resolutionX, g_RenderSettings.resolutionY, GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	//}
+	if (g_ShaderSettings.bloom) {
+		bloom.render(fbo.getColorTex());
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo.m_fbo);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, bloom.renderer.fbo.m_fbo);
+		glBlitFramebuffer(0, 0, g_RenderSettings.resolutionX, g_RenderSettings.resolutionY, 0, 0
+			, g_RenderSettings.resolutionX, g_RenderSettings.resolutionY, GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	}
 
 	glBindTexture(GL_TEXTURE_2D, fbo.getColorTex()); //Bind final image
 	finalize();

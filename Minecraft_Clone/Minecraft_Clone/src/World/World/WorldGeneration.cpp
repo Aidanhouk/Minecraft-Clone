@@ -22,12 +22,12 @@ void World::setAllUnloadedBlocks()
 
 		m_mainMutex.lock();
 		auto &chunk = m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z);
-		bool isBusy = chunk.isBusy();
-		chunk.setIsBusy(true);
+		chunk.addBusyLevel();
 		if (chunk.hasLoaded()) {
 			chunk.setBlockInChunk(bp.x, iter->pos.y, bp.z, iter->block);
 			m_mainMutex.unlock();
 			updateAmbientOcclusion(bp.x, iter->pos.y, bp.z, &chunk);
+
 			// @TODO update lighting
 			// doesn't work
 			//updateSunLight(iter->pos.x, iter->pos.y, iter->pos.z);
@@ -42,7 +42,7 @@ void World::setAllUnloadedBlocks()
 			iter->pos.z = bp.z;
 			chunk.addUnloadedBlock(std::move(*iter));
 		}
-		chunk.setIsBusy(isBusy);
+		chunk.subtractBusyLevel();
 	}
 
 	m_unloadedBlocks.clear();
@@ -69,7 +69,7 @@ void World::loadChunks(const Camera &camera)
 					m_chunkManager.generateTerrain(x, z);
 					if (x >= 0 && z >= 0) {
 						auto &chunk = m_chunkManager.getChunk(x, z);
-						chunk.setIsBusy(true);
+						chunk.addBusyLevel();
 						m_chunksToUpdate.emplace_back(&chunk);
 					}
 				}
@@ -85,7 +85,7 @@ void World::loadChunks(const Camera &camera)
 				calculateAmbientOcclusion(chunk);
 			std::unique_lock<std::mutex> lock(m_mainMutex);
 			chunk->makeMesh(camera);
-			chunk->setIsBusy(false);
+			chunk->subtractBusyLevel();
 		}
 		m_chunksToUpdate.clear();
 		m_chunksToUpdate.shrink_to_fit();

@@ -77,29 +77,30 @@ void RenderMaster::finishRender(sf::RenderWindow &window, const Camera &camera)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	if (g_Info.fog) {
-		m_sky->renderSkyBox(camera);
+	//if (g_Info.fog) {
+	//	m_sky->renderSkyBox(camera);
+	//	m_chunkRenderer.render(camera);
+	//	m_delineateBlockRenderer.render(camera);
+	//	m_floraRenderer.render(camera);
+	//	m_droppedItemsRenderer.render(camera);
+	//	m_breakBlockRenderer.render(camera);
+	//	m_waterRenderer.render(camera);
+	//	m_sky->render(camera);
+	//}
+	//else {
 		m_chunkRenderer.render(camera);
 		m_delineateBlockRenderer.render(camera);
 		m_floraRenderer.render(camera);
 		m_droppedItemsRenderer.render(camera);
-		m_breakBlockRenderer.render(camera);
-		m_waterRenderer.render(camera);
-		m_sky->render(camera);
-	}
-	else {
-		m_chunkRenderer.render(camera);
-		m_delineateBlockRenderer.render(camera);
-		m_floraRenderer.render(camera);
-		m_droppedItemsRenderer.render(camera);
 		m_waterRenderer.render(camera);
 		m_sky->render(camera);
 		m_breakBlockRenderer.render(camera);
-	}
+	//}
 	
 	m_handRenderer.render();
-	if (postProc)
+	if (postProc) {
 		m_postRenderer.render(camera, m_fbo);
+	}
 	
 	m_sfmlRenderer.render(window);
 	m_2D_Renderer.render();

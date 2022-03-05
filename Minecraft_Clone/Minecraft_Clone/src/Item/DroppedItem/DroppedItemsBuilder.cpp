@@ -37,16 +37,20 @@ void DroppedItemsBuilder::buildMesh(World * world)
 			continue;
 		}
 
+		ChunkBlock blockForLighting = world->getBlock(position.x, position.y, position.z);
+		float torchLight = blockForLighting.getTorchLight();
+		float sunLight = blockForLighting.getSunLight();
+
 		// add shadow texture
 		if (item.getAcceleration().y == 0.0f) {
 			std::array<GLfloat, 8> texCoords;
 			BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, { 0, 15 });
-			m_pDroppedItemsMesh->addFace(shadow, texCoords, position);
+			m_pDroppedItemsMesh->addFace(shadow, texCoords, position, torchLight, sunLight);
 		}
 		else if (world) {
 			float newY = position.y + 0.3f;
 			for (int i = position.y - 1; i >= 0; --i) {
-				if (world->getBlock(position.x, i, position.z).getData().isCollidable == true) {
+				if (world->getBlock(position.x, i, position.z).getData().isCollidable) {
 					newY = i + 1.3f;
 					break;
 				}
@@ -54,64 +58,76 @@ void DroppedItemsBuilder::buildMesh(World * world)
 
 			std::array<GLfloat, 8> texCoords;
 			BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, { 0, 15 });
-			m_pDroppedItemsMesh->addFace(shadow, texCoords, { position.x, newY, position.z });
+			m_pDroppedItemsMesh->addFace(shadow, texCoords, { position.x, newY, position.z }, torchLight, sunLight);
 		}
 
 		ChunkBlock block(item.getItemStack().getBlockId());
 
 		if (block.getData().meshType == BlockMeshType::Cube) {
-			buildCubeMesh(block, position);
+			buildCubeMesh(block, position, torchLight, sunLight);
 		}
 		else if (block.getData().meshType == BlockMeshType::Cactus) {
-			buildCactusMesh(block, position);
+			buildCactusMesh(block, position, torchLight, sunLight);
 		}
 		else { // X or Default
-			buildDefaultItemMesh(block, position);
+			buildDefaultItemMesh(block, position, torchLight, sunLight);
 		}
 	}
 }
 
-void DroppedItemsBuilder::buildCubeMesh(ChunkBlock & block, glm::vec3& position)
+void DroppedItemsBuilder::buildCubeMesh(
+	ChunkBlock& block,
+	glm::vec3& position,
+	float torchLight,
+	float sunlight)
 {
 	auto &data = block.getData();
 
 	std::array<GLfloat, 8> texCoords;
 
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texBottomCoord);
-	m_pDroppedItemsMesh->addFace(cubeFaces::bottomFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cubeFaces::bottomFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texTopCoord);
-	m_pDroppedItemsMesh->addFace(cubeFaces::topFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cubeFaces::topFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
-	m_pDroppedItemsMesh->addFace(cubeFaces::leftFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cubeFaces::leftFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
-	m_pDroppedItemsMesh->addFace(cubeFaces::rightFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cubeFaces::rightFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
-	m_pDroppedItemsMesh->addFace(cubeFaces::frontFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cubeFaces::frontFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
-	m_pDroppedItemsMesh->addFace(cubeFaces::backFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cubeFaces::backFace, texCoords, position, torchLight, sunlight);
 }
 
-void DroppedItemsBuilder::buildCactusMesh(ChunkBlock & block, glm::vec3& position)
+void DroppedItemsBuilder::buildCactusMesh(
+	ChunkBlock& block,
+	glm::vec3& position,
+	float torchLight,
+	float sunlight)
 {
 	auto &data = block.getData();
 
 	std::array<GLfloat, 8> texCoords;
 
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texBottomCoord);
-	m_pDroppedItemsMesh->addFace(cactusFaces::bottomFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cactusFaces::bottomFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texTopCoord);
-	m_pDroppedItemsMesh->addFace(cactusFaces::topFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cactusFaces::topFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
-	m_pDroppedItemsMesh->addFace(cactusFaces::leftFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cactusFaces::leftFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
-	m_pDroppedItemsMesh->addFace(cactusFaces::rightFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cactusFaces::rightFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
-	m_pDroppedItemsMesh->addFace(cactusFaces::frontFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cactusFaces::frontFace, texCoords, position, torchLight, sunlight);
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texSideCoord);
-	m_pDroppedItemsMesh->addFace(cactusFaces::backFace, texCoords, position);
+	m_pDroppedItemsMesh->addFace(cactusFaces::backFace, texCoords, position, torchLight, sunlight);
 }
 
-void DroppedItemsBuilder::buildDefaultItemMesh(ChunkBlock & block, glm::vec3& position)
+void DroppedItemsBuilder::buildDefaultItemMesh(
+	ChunkBlock& block,
+	glm::vec3& position,
+	float torchLight,
+	float sunlight)
 {
 	auto &data = block.getData();
 
@@ -120,8 +136,8 @@ void DroppedItemsBuilder::buildDefaultItemMesh(ChunkBlock & block, glm::vec3& po
 	position.y += 0.1f;
 
 	BlockDatabase::get().textureAtlas.getTextureCoords(texCoords, data.texTopCoord);
-	m_pDroppedItemsMesh->addFace(defaultItemFaces::mainFace1, texCoords, position);
-	m_pDroppedItemsMesh->addFace(defaultItemFaces::mainFace2, texCoords, position);
+	m_pDroppedItemsMesh->addFace(defaultItemFaces::mainFace1, texCoords, position, torchLight, sunlight);
+	m_pDroppedItemsMesh->addFace(defaultItemFaces::mainFace2, texCoords, position, torchLight, sunlight);
 
 	auto pixels = BlockDatabase::get().textureAtlas.getIndivTexturePixels(data.texTopCoord);
 	position.x -= HALF_SIZE * defaultItemFaces::ENLARGEMENT_COEF;
@@ -154,24 +170,24 @@ void DroppedItemsBuilder::buildDefaultItemMesh(ChunkBlock & block, glm::vec3& po
 			pos.y -= (y + 1) * defaultItemFaces::PIXEL_SIZE;
 
 			if (x == 0)
-				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceLeft, pixelTexCoords, pos);
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceLeft, pixelTexCoords, pos, torchLight, sunlight);
 			else if (pixels[index - 1]->a == 0.0f)
-				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceLeft, pixelTexCoords, pos);
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceLeft, pixelTexCoords, pos, torchLight, sunlight);
 
 			if (x == indivTextureSize - 1)
-				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceRight, pixelTexCoords, pos);
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceRight, pixelTexCoords, pos, torchLight, sunlight);
 			else if (pixels[index + 1]->a == 0.0f)
-				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceRight, pixelTexCoords, pos);
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceRight, pixelTexCoords, pos, torchLight, sunlight);
 
 			if (y == 0)
-				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceTop, pixelTexCoords, pos);
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceTop, pixelTexCoords, pos, torchLight, sunlight);
 			else if (pixels[index - indivTextureSize]->a == 0.0f)
-				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceTop, pixelTexCoords, pos);
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceTop, pixelTexCoords, pos, torchLight, sunlight);
 
 			if (y == indivTextureSize - 1)
-				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceBottom, pixelTexCoords, pos);
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceBottom, pixelTexCoords, pos, torchLight, sunlight);
 			else if (pixels[index + indivTextureSize]->a == 0.0f)
-				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceBottom, pixelTexCoords, pos);
+				m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceBottom, pixelTexCoords, pos, torchLight, sunlight);
 
 			//m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceLeft, pixelTexCoords, pos);
 			//m_pDroppedItemsMesh->addFace(defaultItemFaces::sideFaceRight, pixelTexCoords, pos);

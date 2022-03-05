@@ -5,8 +5,8 @@
 class MaskShader : public BasicShader{
 public:
     MaskShader();
-    void loadLuma(float luma);
+    //void loadLuma(float luma);
 private:
     void getUniforms() override;
-    GLuint m_luma;
+    //GLuint m_luma;
 };

@@ -9,10 +9,10 @@ MaskShader::MaskShader()
 void MaskShader::getUniforms()
 {
     BasicShader::getUniforms();
-    m_luma = glGetUniformLocation(m_id, "requestedLuminance");
+    //m_luma = glGetUniformLocation(m_id, "requestedLuminance");
 }
 
-void MaskShader::loadLuma(float luma)
-{
-    loadFloat(m_luma, luma);
-}
+//void MaskShader::loadLuma(float luma)
+//{
+//    loadFloat(m_luma, luma);
+//}

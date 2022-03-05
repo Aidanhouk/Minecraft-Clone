@@ -8,6 +8,11 @@
 
 #include <iostream>
 
+DroppedItemsManager::DroppedItemsManager(World * world)
+	: m_pWorld(world)
+{
+}
+
 void DroppedItemsManager::addItem(const ItemStack & itemstack, const glm::vec3 & pos)
 {
 	m_items.emplace_back(itemstack, pos);
@@ -26,16 +31,16 @@ void DroppedItemsManager::blockBrokenUpdate(const glm::vec3 & pos, World &world)
 {
 	for (auto & item : m_items) {
 		if (item.position == pos)
-			item.startFalling(world);
+			item.startFalling(*m_pWorld);
 	}
 }
 
-void DroppedItemsManager::update(Player &player, World &world, float dt)
+void DroppedItemsManager::update(Player &player, float dt)
 {
 	checkItemsLifetime();
 	checkIfPlayerCanGrabItem(player);
-	itemsMove(world, dt);
-	lookForSameItemsNearby(world);
+	itemsMove(dt);
+	lookForSameItemsNearby();
 }
 
 void DroppedItemsManager::addToRender(RenderMaster & renderer)
@@ -44,7 +49,7 @@ void DroppedItemsManager::addToRender(RenderMaster & renderer)
 	m_droppedItemsMesh.bufferMesh();
 }
 
-void DroppedItemsManager::checkForDroppedItems(const glm::vec3 pos, World &world)
+void DroppedItemsManager::checkForDroppedItems(const glm::vec3 pos)
 {
 	for (auto &item : m_items) {
 		if (
@@ -56,16 +61,15 @@ void DroppedItemsManager::checkForDroppedItems(const glm::vec3 pos, World &world
 			&& item.position.y < pos.y + 1
 			)
 		{
-			item.collisionMove(world);
+			item.collisionMove(*m_pWorld);
 		}
 	}
-	updateMesh(&world);
+	updateMesh();
 }
 
-void DroppedItemsManager::updateMesh(World *world)
+void DroppedItemsManager::updateMesh()
 {
-	m_droppedItemsMesh.deleteData();
-	DroppedItemsBuilder(*this, m_droppedItemsMesh).buildMesh(world);
+	DroppedItemsBuilder(*this, m_droppedItemsMesh).buildMesh(m_pWorld);
 }
 
 void DroppedItemsManager::checkItemsLifetime()
@@ -114,7 +118,7 @@ void DroppedItemsManager::checkIfPlayerCanGrabItem(Player & player)
 	}
 }
 
-void DroppedItemsManager::lookForSameItemsNearby(World &world)
+void DroppedItemsManager::lookForSameItemsNearby()
 {
 	for (auto item1 = m_items.begin(); item1 != m_items.end(); ++item1) {
 		if (item1->isMoving())
@@ -147,10 +151,6 @@ void DroppedItemsManager::lookForSameItemsNearby(World &world)
 					if (sum <= item2->getItemStack().getMaxStackSize()) {
 						item2->setItemStackNumber(sum);
 						item2->position.y += 0.2f; // item won't be drawn if not change it's position
-						// these are not necessary
-						//item1->position.x += (item2X - item1X) / 2.0f;
-						//item1->position.z += (item2Z - item1Z) / 2.0f;
-						//item1->collisionMove(world);
 
 						m_items.erase(item1);
 						updateMesh();
@@ -162,18 +162,15 @@ void DroppedItemsManager::lookForSameItemsNearby(World &world)
 	}
 }
 
-void DroppedItemsManager::itemsMove(World &world, float dt)
+void DroppedItemsManager::itemsMove(float dt)
 {
-	bool shouldUpdateMesh = false;
 	for (auto item = m_items.begin(); item != m_items.end(); ++item) {
 		//if (item->position.y < 0) {
-		//	m_items.erase(item);
-		//	shouldUpdateMesh = true;
-		//	break;
+		//	item = m_items.erase(item);
+		//	continue;
 		//}
-		if (item->move(world, dt))
-			shouldUpdateMesh = true;
+		item->move(*m_pWorld, dt);
 	}
-	if (shouldUpdateMesh)
-		updateMesh(&world);
+	
+	updateMesh();
 }

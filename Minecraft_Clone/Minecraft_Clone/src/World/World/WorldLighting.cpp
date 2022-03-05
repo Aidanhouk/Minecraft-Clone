@@ -202,8 +202,11 @@ void World::updateSunLight(int x, int y, int z)
 	auto chunkPosition = getChunkXZ(x, z);
 	std::unique_lock<std::mutex> lock(m_genMutex);
 	auto &chunk = m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z);
-	if (!chunk.hasLoaded())
+	chunk.addBusyLevel();
+	if (!chunk.hasLoaded()) {
+		chunk.subtractBusyLevel();
 		return;
+	}
 	auto blockPositionInChunk = getBlockXZ(x, z);
 	x = blockPositionInChunk.x, z = blockPositionInChunk.z;
 
@@ -225,6 +228,7 @@ void World::updateSunLight(int x, int y, int z)
 	propagateSunLightUpdate();
 
 	chunk.setSunLightLoaded(true);
+	chunk.subtractBusyLevel();
 }
 
 void World::removeSunLight(int x, int y, int z)

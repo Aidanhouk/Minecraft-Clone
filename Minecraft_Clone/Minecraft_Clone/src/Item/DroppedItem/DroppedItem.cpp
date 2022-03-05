@@ -69,7 +69,7 @@ void DroppedItem::setAcceleration(float x, float y)
 		m_acceleration.y = -x / 15.0f;
 }
 
-bool DroppedItem::move(World &world, float dt)
+void DroppedItem::move(World &world, float dt)
 {
 	// if player is far from item then item isn't moving
 	if (
@@ -78,10 +78,8 @@ bool DroppedItem::move(World &world, float dt)
 		glm::pow(position.z - g_PlayerInfo.player->position.z, 2) >
 		glm::pow(std::max(g_Config.renderDistance - 3, 1) * 16, 2)
 		) {
-		return false;
+		return;
 	}
-
-	bool itemMoved = true;
 
 	// if the item hasn't stopped moving
 	if (m_acceleration.y != 0.0f) {
@@ -131,8 +129,6 @@ bool DroppedItem::move(World &world, float dt)
 
 		auto blockBelow = world.getBlock(position.x, position.y - box.dimensions.y, position.z);
 		if (blockBelow.getData().isCollidable) {
-			if (m_acceleration.y == 0.0f)
-				itemMoved = false;
 			m_acceleration.y = 0.0f;
 			position.y += 0.001f;
 		}
@@ -145,8 +141,6 @@ bool DroppedItem::move(World &world, float dt)
 			m_acceleration.y = -0.01f;
 		}
 	}
-
-	return itemMoved;
 }
 
 void DroppedItem::startFalling(World & world)

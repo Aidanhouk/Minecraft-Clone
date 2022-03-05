@@ -10,9 +10,12 @@ public:
 
 	DroppedItemsMesh() = default;
 
-	void addFace(const std::array<GLfloat, 12> &verticesPosition,
+	void addFace(
+		const std::array<GLfloat, 12> &verticesPosition,
 		const std::array<GLfloat, 8> &textureCoords,
-		const glm::vec3 &itemPosition);
+		const glm::vec3 &itemPosition,
+		GLfloat torchLight,
+		GLfloat sunlight);
 
 	void bufferMesh();
 
@@ -23,4 +26,7 @@ private:
 	Mesh m_mesh;
 	Model m_model;
 	GLuint m_indexIndex = 0;
+
+	std::vector<GLfloat> m_torchLight;
+	std::vector<GLfloat> m_sunLight;
 };

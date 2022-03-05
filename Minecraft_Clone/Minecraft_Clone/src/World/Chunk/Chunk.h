@@ -28,8 +28,8 @@ public:
 	// use this function if you 100% know the block is in this chunk
 	void setBlockInChunk(int x, int y, int z, ChunkBlock block);
 	ChunkBlock getBlock(int x, int y, int z) const noexcept override;
-	ChunkBlock getBlockInChunk(int x, int y, int z) const noexcept;
-	ChunkBlock& getBlockInChunkRef(int x, int y, int z) noexcept;
+	ChunkBlock getBlockInChunk(int x, int y, int z) const;
+	ChunkBlock& getBlockInChunkRef(int x, int y, int z);
 	int getHeightAt(int x, int z);
 	World *getWorldPtr() { return m_pWorld; }
 	int getChunkSectionsSize() { return m_chunkSections.size(); }
@@ -61,8 +61,9 @@ public:
 	void setAmbientOcclusionLoaded(bool f) { m_ambientOcclusionLoaded = f; }
 	bool isAmbientOcclusionLoaded() { return m_ambientOcclusionLoaded; }
 
-	void setIsBusy(bool f) { m_busy = f; }
-	bool isBusy() { return m_busy; }
+	void addBusyLevel() { ++m_busyLevel; }
+	void subtractBusyLevel() { --m_busyLevel; }
+	int getBusyLevel() { return m_busyLevel; }
 private:
 	void addSectionsBlockTarget(int blockY);
 	void addSectionsIndexTarget(int index);
@@ -81,7 +82,7 @@ private:
 	// better get rid of it later
 	World *m_pWorld;
 	
-	bool m_busy = false;
+	int m_busyLevel = 0;
 
 	bool m_isLoaded = false;
 	bool m_updateMesh = false;

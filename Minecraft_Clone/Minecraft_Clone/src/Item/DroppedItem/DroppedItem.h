@@ -15,7 +15,7 @@ public:
 
 	void setRandomAcceleration();
 	void setAcceleration(float x, float y);
-	bool move(World &world, float dt);
+	void move(World &world, float dt);
 	void startFalling(World &world);
 	void collisionMove(World &world);
 	void setItemStackNumber(int number);

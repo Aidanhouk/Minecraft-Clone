@@ -6,8 +6,8 @@ class MotionBlur : public BasicShader{
 public:
     MotionBlur();
 
-    void loadT1();
-    void loadT2();
+    void loadT1(GLuint tt1);
+    void loadT2(GLuint tt2);
     void loadPrevProj(glm::mat4 prev);
     void loadCurrProj(glm::mat4 curr);
     void loadRes(glm::vec2 res);

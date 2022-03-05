@@ -9,5 +9,5 @@ void main()
 {
     vec4 colour = texture(texSampler, passTextureCoord);
     
-    outColour = colour;
+    outColour = colour * 1.01;
 }

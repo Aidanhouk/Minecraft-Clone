@@ -9,7 +9,7 @@ Bloom::Bloom()
 void Bloom::render(GLuint texture)
 {
     m_shader.useProgram();
-    m_shader.loadLuma(0.99f);
+    //m_shader.loadLuma(0.99f);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
 

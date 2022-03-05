@@ -1,6 +1,7 @@
 # Minecraft-Clone
 
 Developed using C++, OpenGL, SFML, libnoise.
+OpenGL 3.3 or later is required.
 
 ## The game:
 https://github.com/Aidanhouk/Minecraft-Clone/releases/tag/v1.0

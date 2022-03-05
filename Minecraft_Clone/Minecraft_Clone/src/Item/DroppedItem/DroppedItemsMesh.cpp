@@ -2,9 +2,12 @@
 
 #include <iostream>
 
-void DroppedItemsMesh::addFace(const std::array<GLfloat, 12> &verticesPosition,
+void DroppedItemsMesh::addFace(
+	const std::array<GLfloat, 12> &verticesPosition,
 	const std::array<GLfloat, 8> &textureCoords,
-	const glm::vec3 &itemPosition)
+	const glm::vec3 &itemPosition,
+	GLfloat torchLight,
+	GLfloat sunlight)
 {
 	auto &verticies = m_mesh.vertexPositions;
 	auto &texCoords = m_mesh.textureCoords;
@@ -16,6 +19,8 @@ void DroppedItemsMesh::addFace(const std::array<GLfloat, 12> &verticesPosition,
 		verticies.push_back(verticesPosition[index++] + itemPosition.x);
 		verticies.push_back(verticesPosition[index++] + itemPosition.y);
 		verticies.push_back(verticesPosition[index++] + itemPosition.z);
+		m_torchLight.push_back(torchLight);
+		m_sunLight.push_back(sunlight);
 	}
 
 	indices.insert(indices.end(),
@@ -27,22 +32,27 @@ void DroppedItemsMesh::addFace(const std::array<GLfloat, 12> &verticesPosition,
 void DroppedItemsMesh::bufferMesh()
 {
 	m_model.addData(m_mesh);
+	m_model.addVBO(1, m_torchLight);
+	m_model.addVBO(1, m_sunLight);
+
+	m_mesh.vertexPositions.clear();
+	m_mesh.textureCoords.clear();
+	m_mesh.indices.clear();
+	m_torchLight.clear();
+	m_sunLight.clear();
+
+	m_mesh.vertexPositions.shrink_to_fit();
+	m_mesh.textureCoords.shrink_to_fit();
+	m_mesh.indices.shrink_to_fit();
+	m_torchLight.shrink_to_fit();
+	m_sunLight.shrink_to_fit();
 
 	m_indexIndex = 0;
 }
 
 void DroppedItemsMesh::deleteData()
 {
-	m_mesh.vertexPositions.clear();
-	m_mesh.textureCoords.clear();
-	m_mesh.indices.clear();
-
-	m_mesh.vertexPositions.shrink_to_fit();
-	m_mesh.textureCoords.shrink_to_fit();
-	m_mesh.indices.shrink_to_fit();
-
-	// ???
-	//m_model.deleteData();
+	m_model.deleteData();
 }
 
 const Model &DroppedItemsMesh::getModel() const

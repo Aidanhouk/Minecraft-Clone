@@ -17,7 +17,6 @@ void Caves::createCaves(Chunk &chunk, Random<std::minstd_rand> &rand, Array2D<in
 
 		int startChunkX = (CHUNK_SIZE - 1) >> 1;
 		int startChunkZ = (CHUNK_SIZE - 1) >> 1;
-		//int startY = rand.intInRange(10, heightMap.get(startX, startZ) - 5);
 		int startY = rand.intInRange(10, heightMap.get(startChunkX, startChunkZ) + 5);
 		int startX = chunk.getLocation().x * CHUNK_SIZE + startChunkX;
 		int startZ = chunk.getLocation().y * CHUNK_SIZE + startChunkZ;
@@ -27,7 +26,5 @@ void Caves::createCaves(Chunk &chunk, Random<std::minstd_rand> &rand, Array2D<in
 		wormCave.SetSegmentCount(500);
 		wormCave.SetThickness(rand.intInRange(3, 4));
 		wormCave.createCave(chunk);
-
-		//chunk.setBlock(startChunkX, heightMap.get(startChunkX, startChunkZ) + 5 + i, startChunkZ, BlockId::Bedrock);
 	}
 }

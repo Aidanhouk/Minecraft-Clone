@@ -32,12 +32,10 @@ void IconsMesh::deleteData()
 	m_mesh.textureCoords.clear();
 	m_mesh.indices.clear();
 	
-	// not sure if these needed in this case
 	m_mesh.vertexPositions.shrink_to_fit();
 	m_mesh.textureCoords.shrink_to_fit();
 	m_mesh.indices.shrink_to_fit();
 
-	// ???
 	//m_model.deleteData();
 }
 

@@ -16,10 +16,12 @@ void CombineShader::getUniforms()
 
 void CombineShader::loadTex(GLuint tt1)
 {
-    glUniform1i(t1, 0);
+	//glUniform1i(t1, tt1);
+	glUniform1i(t1, 0);
 }
 
 void CombineShader::loadTex2(GLuint tt2)
 {
-    glUniform1i(t2, 2);
+	//glUniform1i(t2, tt2);
+	glUniform1i(t2, 2);
 }

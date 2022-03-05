@@ -34,8 +34,7 @@ public:
 	World& operator=(const World& x) = delete;
 
 	ChunkBlock getBlock(int x, int y, int z);
-	// Do not use if not sure chunk is loaded
-	ChunkBlock& getBlockRef(int x, int y, int z);
+	std::pair<Chunk*, ChunkBlock*> getBlockRef(int x, int y, int z);
     void setBlock(int x, int y, int z, ChunkBlock block);
 	void addUnloadedBlock(int x, int y, int z, ChunkBlock block);
 	void setAllUnloadedBlocks();
@@ -101,12 +100,12 @@ private:
 	void tryAddSunLightRemovalNode(int x, int y, int z, int lightLevel, Chunk * chunk);
 
 	void calculateAmbientOcclusion(Chunk * chunk);
-	void calculateAO_Top(int x, int y, int z, Chunk * chunk, ChunkBlock &block);
-	void calculateAO_Bottom(int x, int y, int z, Chunk * chunk, ChunkBlock &block);
-	void calculateAO_Left(int x, int y, int z, Chunk * chunk, ChunkBlock &block);
-	void calculateAO_Right(int x, int y, int z, Chunk * chunk, ChunkBlock &block);
-	void calculateAO_Back(int x, int y, int z, Chunk * chunk, ChunkBlock &block);
-	void calculateAO_Front(int x, int y, int z, Chunk * chunk, ChunkBlock &block);
+	void calculateAO_Top(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
+	void calculateAO_Bottom(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
+	void calculateAO_Left(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
+	void calculateAO_Right(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
+	void calculateAO_Back(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
+	void calculateAO_Front(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
 	int vertexAO(bool side1, bool side2, bool corner);
 
 

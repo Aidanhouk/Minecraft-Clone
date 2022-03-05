@@ -121,7 +121,7 @@ ChunkBlock Chunk::getBlock(int x, int y, int z) const noexcept
     return m_chunkSections[y / CHUNK_SIZE].getBlock(x, y % CHUNK_SIZE, z);
 }
 
-ChunkBlock Chunk::getBlockInChunk(int x, int y, int z) const noexcept
+ChunkBlock Chunk::getBlockInChunk(int x, int y, int z) const
 {
 	if (outOfHeightBounds(y))
 		return BlockId::Air;
@@ -129,7 +129,7 @@ ChunkBlock Chunk::getBlockInChunk(int x, int y, int z) const noexcept
 	return m_chunkSections[y / CHUNK_SIZE].getBlock(x, y % CHUNK_SIZE, z);
 }
 
-ChunkBlock & Chunk::getBlockInChunkRef(int x, int y, int z) noexcept
+ChunkBlock & Chunk::getBlockInChunkRef(int x, int y, int z)
 {
 	//@TODO fix this one day
 	static ChunkBlock dummy(0);

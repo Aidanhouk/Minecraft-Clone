@@ -10,7 +10,7 @@ Inventory::Inventory(Player &player, Application &app)
 {
 	m_slots[8].item.setData(BlockId::Apple, 10);
 
-	m_slots[1].item.setData(BlockId::Glowstone, 64);
+	m_slots[7].item.setData(BlockId::Glowstone, 64);
 	//m_slots[2].item.setData(BlockId::Sand, 64);
 
 	m_inventoryGUITexture.loadFromFile("Res/Textures/Interface/inventoryGUI.png");

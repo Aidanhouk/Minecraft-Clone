@@ -18,7 +18,6 @@ Chunk &ChunkManager::getChunk(int x, int z)
 {
     VectorXZ key{x, z};
     if (!chunkExistsAt(x, z)) {
-		//Chunk chunk{ {x,z}, m_pWorld };
 		sf::Vector2i vector{ x,z };
 		Chunk chunk{ std::move(vector), m_pWorld };
 

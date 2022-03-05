@@ -21,11 +21,12 @@ bool operator== (const UnloadedBlock &block1, const UnloadedBlock &block2)
 World::World(const Camera &camera, const Config &config, Player &player)
 	: m_chunkManager(this)
 	, m_renderDistance(config.renderDistance)
+	, m_droppedItemManager(this)
 {
 	setSpawnPoint();
 	player.position = m_playerSpawnPoint;
 
-	//std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	m_unloadedBlocks.reserve(100000);
 	m_chunkLoadThreads.emplace_back([&]() { loadChunks(camera); });
 }
@@ -42,29 +43,42 @@ ChunkBlock World::getBlock(int x, int y, int z)
 {
 	auto bp = getBlockXZ(x, z);
 	auto chunkPosition = getChunkXZ(x, z);
-
 	Chunk &chunk = m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z);
-	if (chunk.hasLoaded())
-		return chunk.getBlockInChunk(bp.x, y, bp.z);
-	else
+
+	chunk.addBusyLevel();
+	if (chunk.hasLoaded()) {
+		auto block = chunk.getBlockInChunk(bp.x, y, bp.z);
+		chunk.subtractBusyLevel();
+		return block;
+	}
+	else {
+		chunk.subtractBusyLevel();
 		return BlockId::Air;
+	}
 }
 
-ChunkBlock & World::getBlockRef(int x, int y, int z)
+std::pair<Chunk*, ChunkBlock*> World::getBlockRef(int x, int y, int z)
 {
 	//@TODO fix this one day
 	static ChunkBlock dummy(0);
 
-	if (x < 0 || z < 0)
-		return dummy;
+	if (x < 0 || z < 0) {
+		return { nullptr, &dummy };
+	}
 
 	auto bp = getBlockXZ(x, z);
 	auto chunkPosition = getChunkXZ(x, z);
-	Chunk &chunk = m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z);
-	if (chunk.hasLoaded())
-		return chunk.getBlockInChunkRef(bp.x, y, bp.z);
-	else
-		return dummy;
+	Chunk * chunk = &m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z);
+	chunk->addBusyLevel();
+	if (chunk->hasLoaded()) {
+		auto &bl = chunk->getBlockInChunkRef(bp.x, y, bp.z);
+		chunk->subtractBusyLevel();
+		return { chunk, &bl };
+	}
+	else {
+		chunk->subtractBusyLevel();
+		return { chunk, &dummy };
+	}
 }
 
 void World::setBlock(int x, int y, int z, ChunkBlock block)
@@ -103,7 +117,7 @@ void World::setBlock(int x, int y, int z, ChunkBlock block)
 
 void World::update(Player &player, float dt)
 {
-	m_droppedItemManager.update(player, *this, dt);
+	m_droppedItemManager.update(player, dt);
 
 	if (m_reloadChunks) {
 		m_reloadChunks = false;
@@ -135,7 +149,7 @@ void World::blockBroken(const glm::vec3 & pos, World &world)
 
 void World::checkForDroppedItems(const glm::vec3 & pos)
 {
-	m_droppedItemManager.checkForDroppedItems(pos, *this);
+	m_droppedItemManager.checkForDroppedItems(pos);
 }
 
 BiomeId World::getBiomeId(int x, int z)
@@ -225,7 +239,7 @@ void World::renderWorld(RenderMaster &renderer, const Camera &camera)
 		// delete chunk if it's far from player
 		if (minX > location.x || maxX < location.x ||
 			minZ > location.y || maxZ < location.y) {
-			if (!itr->second.isBusy())
+			if (itr->second.getBusyLevel() == 0)
 				itr = chunkMap.erase(itr);
 			else
 				++itr;

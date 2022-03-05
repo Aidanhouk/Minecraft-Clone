@@ -15,9 +15,21 @@ public:
 
 	void buildMesh(World *world);
 private:
-	void buildCubeMesh(ChunkBlock& block, glm::vec3& position);
-	void buildCactusMesh(ChunkBlock& block, glm::vec3& position);
-	void buildDefaultItemMesh(ChunkBlock& block, glm::vec3& position);
+	void buildCubeMesh(
+		ChunkBlock& block,
+		glm::vec3& position,
+		float torchLight,
+		float sunlight);
+	void buildCactusMesh(
+		ChunkBlock& block,
+		glm::vec3& position,
+		float torchLight,
+		float sunlight);
+	void buildDefaultItemMesh(
+		ChunkBlock& block,
+		glm::vec3& position,
+		float torchLight,
+		float sunlight);
 
 	DroppedItemsManager *m_pDroppedItemsManager = nullptr;
 	DroppedItemsMesh *m_pDroppedItemsMesh = nullptr;

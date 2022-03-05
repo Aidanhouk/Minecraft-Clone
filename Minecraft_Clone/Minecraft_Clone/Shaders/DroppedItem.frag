@@ -3,10 +3,10 @@
 out vec4 outColour;
 
 in vec2 passTextureCoord;
+in float passCardinalLight;
 in float visibility;
 
 uniform sampler2D texSampler;
-uniform float lighting;
 uniform int fog;
 
 void main()
@@ -15,10 +15,10 @@ void main()
     if (colour.a == 0) discard;
 	
 	if (fog == 1) {
-		outColour = vec4(colour.rgb * lighting, colour.a * visibility);
+		outColour = vec4(colour.rgb * passCardinalLight, colour.a * visibility);
 		if (outColour.a == 0) discard;
 	}
 	else {
-		outColour = vec4(colour.rgb * lighting, colour.a);
+		outColour = vec4(colour.rgb * passCardinalLight, colour.a);
 	}
 }
