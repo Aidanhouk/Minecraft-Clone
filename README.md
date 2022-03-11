@@ -1,8 +1,8 @@
 # Minecraft-Clone
 
-Developed using C++, OpenGL, SFML, libnoise.
-OpenGL 3.3 or later is required.
-All textures, music and sound belong to the creators of Minecraft.
+Developed using C++, OpenGL, SFML, libnoise.<br/>
+OpenGL 3.3 or later is required.<br/>
+All textures, music and sound belong to the creators of Minecraft.<br/>
 
 ## The game:
 https://github.com/Aidanhouk/Minecraft-Clone/releases/tag/v1.0
