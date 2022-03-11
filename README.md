@@ -2,6 +2,7 @@
 
 Developed using C++, OpenGL, SFML, libnoise.
 OpenGL 3.3 or later is required.
+All textures, music and sound belong to the creators of Minecraft.
 
 ## The game:
 https://github.com/Aidanhouk/Minecraft-Clone/releases/tag/v1.0
