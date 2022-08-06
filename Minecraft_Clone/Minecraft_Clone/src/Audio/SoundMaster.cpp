@@ -6,6 +6,7 @@
 #include "Player/PlayerInfo.h"
 
 #include <iostream>
+#include <functional>
 
 SoundMaster g_SoundMaster;
 
