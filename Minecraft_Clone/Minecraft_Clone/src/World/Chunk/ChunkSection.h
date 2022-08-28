@@ -6,14 +6,13 @@
 #include "../World/WorldConstants.h"
 #include "../Block/ChunkBlock.h"
 #include "ChunkMesh/ChunkMesh.h"
-#include "IChunk.h"
 
 #include "../../Physics/AABB.h"
 #include "../Block/BlockData.h"
 
 class World;
 
-class ChunkSection : public IChunk
+class ChunkSection
 {
 
 private:
@@ -45,10 +44,10 @@ public:
 	ChunkSection& operator=(const ChunkSection& x) = delete;
 	ChunkSection& operator=(ChunkSection&& x);
 
-	void setBlock(int x, int y, int z, ChunkBlock block) override;
+    ChunkBlock* setBlock(int x, int y, int z, ChunkBlock block);
 	// use this function if you 100% know the block is in this chunk
-	void setBlockInSection(int x, int y, int z, ChunkBlock block);
-	ChunkBlock getBlock(int x, int y, int z) const override;
+    ChunkBlock* setBlockInSection(int x, int y, int z, ChunkBlock block);
+	ChunkBlock getBlock(int x, int y, int z) const;
 	ChunkBlock& getBlockInSectionRef(int x, int y, int z);
 
 	int getSunLight(int x, int y, int z) const;

@@ -6,7 +6,6 @@ BlockDatabase::BlockDatabase()
     : textureAtlas("DefaultPack", 256, 16)
 {
     m_blocks[(int)BlockId::Air] =				std::make_unique<DefaultBlock>("Air");
-	//m_blocks[(int)BlockId::CaveAir] =			std::make_unique<DefaultBlock>("Air");
     m_blocks[(int)BlockId::Water] =				std::make_unique<DefaultBlock>("Water");
 	m_blocks[(int)BlockId::Ice] =				std::make_unique<DefaultBlock>("Ice");
 

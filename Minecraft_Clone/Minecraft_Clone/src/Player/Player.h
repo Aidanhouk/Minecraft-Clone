@@ -20,7 +20,7 @@ class Application;
 class DroppedItemsManager;
 class Hand;
 
-class Player : public Entity
+class Player : public Entity, NonCopyable
 {
 
 public:

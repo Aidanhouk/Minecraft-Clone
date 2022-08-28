@@ -27,7 +27,7 @@ public:
 	SkyManager();
 	
 public:
-	void tickUpdate(unsigned int tickTime);
+	void tickUpdate(unsigned int tickTime) override;
 	void update(glm::vec3 playerPosition, PrecipitationType precipitaionType);
 	
 	void setTime(unsigned int time);

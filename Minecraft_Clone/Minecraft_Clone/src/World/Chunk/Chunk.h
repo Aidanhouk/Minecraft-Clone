@@ -4,14 +4,18 @@
 #include "Util/NonCopyable.h"
 #include "ChunkSection.h"
 #include "UnloadedBlock.h"
+#include "../Block/LiquidBlock.h"
 
 #include <vector>
+#include <unordered_map>
 
 class RenderMaster;
 class Camera;
 class TerrainGenerator;
 
-class Chunk : public IChunk {
+class Chunk
+{
+
 public:
 	Chunk() = default;
 	Chunk(const sf::Vector2i &location, World* world);
@@ -22,17 +26,20 @@ public:
 	Chunk& operator=(const Chunk& x) = delete;
 	Chunk& operator=(Chunk&& x);
 
+public:
 	void makeMesh(const Camera &camera);
 
-	void setBlock(int x, int y, int z, ChunkBlock block) override;
+	void setBlock(int x, int y, int z, ChunkBlock block, uint8_t waterLevel = 0);
 	// use this function if you 100% know the block is in this chunk
-	void setBlockInChunk(int x, int y, int z, ChunkBlock block);
-	ChunkBlock getBlock(int x, int y, int z) const noexcept override;
+	void setBlockInChunk(int x, int y, int z, ChunkBlock block, uint8_t waterLevel = 0);
+    inline void setLiquidBlock(ChunkBlock* block, uint8_t waterLevel);
+	ChunkBlock getBlock(int x, int y, int z) const noexcept;
 	ChunkBlock getBlockInChunk(int x, int y, int z) const;
 	ChunkBlock& getBlockInChunkRef(int x, int y, int z);
 	int getHeightAt(int x, int z);
 	World *getWorldPtr() { return m_pWorld; }
 	int getChunkSectionsSize() { return m_chunkSections.size(); }
+    std::unordered_map<ChunkBlock*, LiquidBlock>& getLiqiudBlocks() { return m_liquidBlocks; }
 
 	void addUnloadedBlock(UnloadedBlock&& block);
 	void setUnloadedBlocks(Chunk &chunk);
@@ -50,6 +57,7 @@ public:
 
 	void shouldUpdateMesh() { m_updateMesh = true; }
 
+public:
 	void setTorchLight(int x, int y, int z, int value);
 	int getTorchLight(int x, int y, int z);
 	void setSunLight(int x, int y, int z, int value);
@@ -61,9 +69,11 @@ public:
 	void setAmbientOcclusionLoaded(bool f) { m_ambientOcclusionLoaded = f; }
 	bool isAmbientOcclusionLoaded() { return m_ambientOcclusionLoaded; }
 
+public:
 	void addBusyLevel() { ++m_busyLevel; }
 	void subtractBusyLevel() { --m_busyLevel; }
 	int getBusyLevel() { return m_busyLevel; }
+
 private:
 	void addSectionsBlockTarget(int blockY);
 	void addSectionsIndexTarget(int index);
@@ -74,10 +84,12 @@ private:
 	bool outOfHeightBounds(int y) const noexcept;
 	sf::Vector2i toWorldPosition(int x, int z) const;
 	
+private:
 	std::vector<ChunkSection> m_chunkSections;
 	Array2D<int, CHUNK_SIZE> m_highestBlocks;
 	sf::Vector2i m_location;
 	std::vector<UnloadedBlock> m_unloadedBlocks;
+    std::unordered_map<ChunkBlock*, LiquidBlock> m_liquidBlocks;
 	
 	// better get rid of it later
 	World *m_pWorld;

@@ -14,6 +14,7 @@ Chunk::Chunk(const sf::Vector2i &location, World* world)
     , m_pWorld(world)
 {
     m_highestBlocks.setAll(0);
+    m_liquidBlocks.reserve(10000);
 }
 
 Chunk::Chunk(Chunk && x)
@@ -25,7 +26,8 @@ Chunk::Chunk(Chunk && x)
 	, m_location{ x.m_location }
 	, m_highestBlocks{ std::move(x.m_highestBlocks) }
 	, m_chunkSections{ std::move(x.m_chunkSections) }
-	, m_unloadedBlocks{ std::move(x.m_unloadedBlocks) }
+    , m_unloadedBlocks{ std::move(x.m_unloadedBlocks) }
+    , m_liquidBlocks{ std::move(x.m_liquidBlocks) }
 {
 }
 
@@ -43,6 +45,7 @@ Chunk & Chunk::operator=(Chunk && x)
 	m_highestBlocks = std::move(x.m_highestBlocks);
 	m_chunkSections = std::move(x.m_chunkSections);
 	m_unloadedBlocks = std::move(x.m_unloadedBlocks);
+    m_liquidBlocks = std::move(x.m_liquidBlocks);
 
 	return *this;
 }
@@ -60,7 +63,7 @@ void Chunk::makeMesh(const Camera &camera)
     }
 }
 
-void Chunk::setBlock(int x, int y, int z, ChunkBlock block)
+void Chunk::setBlock(int x, int y, int z, ChunkBlock block, uint8_t waterLevel/* = 0*/)
 {
 	addSectionsBlockTarget(y);
 
@@ -73,7 +76,8 @@ void Chunk::setBlock(int x, int y, int z, ChunkBlock block)
 		return;
 	}
 	
-	m_chunkSections[y / CHUNK_SIZE].setBlock(x, y % CHUNK_SIZE, z, block);
+	auto _block = m_chunkSections[y / CHUNK_SIZE].setBlock(x, y % CHUNK_SIZE, z, block);
+    setLiquidBlock(_block, waterLevel);
 
 	// if the highest block was destroyed
 	if (y == m_highestBlocks.get(x, z)) {
@@ -88,11 +92,12 @@ void Chunk::setBlock(int x, int y, int z, ChunkBlock block)
 	}
 }
 
-void Chunk::setBlockInChunk(int x, int y, int z, ChunkBlock block)
+void Chunk::setBlockInChunk(int x, int y, int z, ChunkBlock block, uint8_t waterLevel/* = 0*/)
 {
 	addSectionsBlockTarget(y);
 
-	m_chunkSections[y / CHUNK_SIZE].setBlockInSection(x, y % CHUNK_SIZE, z, block);
+    auto _block = m_chunkSections[y / CHUNK_SIZE].setBlockInSection(x, y % CHUNK_SIZE, z, block);
+    setLiquidBlock(_block, waterLevel);
 
 	// if the highest block was destroyed
 	if (y == m_highestBlocks.get(x, z)) {
@@ -105,6 +110,20 @@ void Chunk::setBlockInChunk(int x, int y, int z, ChunkBlock block)
 	else if (y > m_highestBlocks.get(x, z)) {
 		m_highestBlocks.get(x, z) = y;
 	}
+}
+
+inline void Chunk::setLiquidBlock(ChunkBlock* block, uint8_t waterLevel)
+{
+    // @TODO change check for smth like isLiquid()
+    if (!block || !block->isShaderLiquid())
+        return;
+
+    m_liquidBlocks[block] = { waterLevel };
+    //static int maxSize = 0;
+    //if (m_liquidBlocks.size() > maxSize) {
+    //    maxSize = m_liquidBlocks.size();
+    //    //std::cout << maxSize << "\n";
+    //}
 }
 
 ChunkBlock Chunk::getBlock(int x, int y, int z) const noexcept

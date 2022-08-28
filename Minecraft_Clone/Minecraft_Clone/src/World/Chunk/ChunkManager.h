@@ -15,10 +15,13 @@ class World;
 
 using ChunkMap = std::unordered_map<VectorXZ, Chunk>;
 
-class ChunkManager {
+class ChunkManager
+{
+
 public:
 	ChunkManager(World *world);
 	
+public:
 	Chunk &getChunk(int x, int z);
 	ChunkMap &getChunks();
 	
@@ -34,6 +37,7 @@ public:
 	const TerrainGenerator &getTerrainGenerator() const noexcept;
 
 	BiomeId getBiomeId(int x, int z);
+
 private:
 	ChunkMap m_chunks;
 	std::unique_ptr<TerrainGenerator> m_terrainGenerator;

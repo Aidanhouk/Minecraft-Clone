@@ -151,11 +151,12 @@ void ClassicOverWorldGenerator::setBlocks(int maxHeight)
 				if (y > height) {
 					if (y < WATER_LEVEL) {
 						if (m_pChunk->getBlock(x, y, z) == 0)
-							m_pChunk->setBlock(x, y, z, biome.getWaterBlock(m_random));
+							m_pChunk->setBlock(x, y, z, biome.getWaterBlock(m_random), 15);
 					}
-					else if (y == WATER_LEVEL)
-						if (m_pChunk->getBlock(x, y, z) == 0)
-							m_pChunk->setBlock(x, y, z, biome.getWaterSurfaceBlock(m_random));
+                    else if (y == WATER_LEVEL) {
+                        if (m_pChunk->getBlock(x, y, z) == 0)
+                            m_pChunk->setBlock(x, y, z, biome.getWaterSurfaceBlock(m_random), 15);
+                    }
 				}
 				else if (y == height) {
 					if (y >= WATER_LEVEL) {

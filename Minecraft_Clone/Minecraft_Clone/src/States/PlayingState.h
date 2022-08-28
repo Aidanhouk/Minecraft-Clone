@@ -11,16 +11,21 @@
 
 #include "Tick/TickManager.h"
 #include "Environment/SkyManager.h"
+#include "Environment/LiquidManager.h"
 #include "Player/BlockBreaker.h"
 #include "Player/PlayerHand/Hand.h"
 
 extern std::shared_ptr<SkyManager> m_sky;
+extern std::shared_ptr<LiquidManager> m_liquidManager;
 
-class StatePlaying : public StateBase {
+class StatePlaying : public StateBase
+{
+
 public:
     StatePlaying(Application &app, const Config &config);
 	~StatePlaying();
 
+public:
     void handleEvent(sf::Event e) override;
     void handleInput() override;
 
@@ -29,6 +34,7 @@ public:
     void render(RenderMaster &renderer) override;
 
     void onOpen() override;
+
 private:
 	void setTextSettings(Application &app);
 
@@ -52,7 +58,7 @@ private:
 	sf::Text						m_deathText;
     sf::Text                        m_debugInfo;
 
-	std::unique_ptr<TickManager>	m_tickManager;
+    std::unique_ptr<TickManager>	m_tickManager;
 	std::unique_ptr<std::thread>	m_tickThread;
 
 	std::unique_ptr<std::thread>	m_soundThread;

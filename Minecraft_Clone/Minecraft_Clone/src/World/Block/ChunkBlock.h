@@ -110,7 +110,7 @@ public:
 private:
 	/*
 	AO values must be store for each 4 vertices of all 6 faces = 24 vertices.
-	Vertex can be fully occluded, half occluded or fully lit -> 3 stages -> 2 bits for every 24 vertices.
+	Vertex can be 0%, 33%, 66% and 100% lit -> 4 stages -> 2 bits for every 24 vertices.
 	That's 48 bits or 6 bytes. I use 3 shorts here for convenince but it might be a little ineffective.
 	11 - fully lit, 10 - 66%, 01 - 33%, 00 - N/A
 	*/

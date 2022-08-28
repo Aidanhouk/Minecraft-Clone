@@ -29,6 +29,7 @@
     <ClCompile Include="src\Crafting\CraftRecipes.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Environment\Cloud.cpp" />
+    <ClCompile Include="src\Environment\LiquidManager.cpp" />
     <ClCompile Include="src\Environment\ProcSky.cpp" />
     <ClCompile Include="src\Environment\Rain.cpp" />
     <ClCompile Include="src\Environment\SkyManager.cpp" />
@@ -574,12 +575,12 @@
     <ClInclude Include="src\world\block\BlockId.h" />
     <ClInclude Include="src\world\block\blocktypes\Blocktype.h" />
     <ClInclude Include="src\world\block\ChunkBlock.h" />
+    <ClInclude Include="src\World\Block\LiquidBlock.h" />
     <ClInclude Include="src\world\Chunk\Chunk.h" />
     <ClInclude Include="src\world\Chunk\ChunkManager.h" />
     <ClInclude Include="src\World\Chunk\ChunkMesh\ChunkMesh.h" />
     <ClInclude Include="src\World\Chunk\ChunkMesh\ChunkMeshBuilder.h" />
     <ClInclude Include="src\world\Chunk\ChunkSection.h" />
-    <ClInclude Include="src\world\Chunk\IChunk.h" />
     <ClInclude Include="src\World\Chunk\UnloadedBlock.h" />
     <ClInclude Include="src\world\Event\IWorldEvent.h" />
     <ClInclude Include="src\world\Event\PlayerDigEvent.h" />
@@ -600,6 +601,7 @@
     <ClInclude Include="src\world\Generation\Terrain\ClassicOverWorldGenerator.h" />
     <ClInclude Include="src\World\Generation\Terrain\SuperFlatGenerator.h" />
     <ClInclude Include="src\world\Generation\Terrain\TerrainGenerator.h" />
+    <ClInclude Include="src\Environment\LiquidManager.h" />
     <ClInclude Include="src\World\World\World.h" />
     <ClInclude Include="src\World\World\WorldConstants.h" />
   </ItemGroup>

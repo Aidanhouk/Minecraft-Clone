@@ -47,24 +47,26 @@ ChunkSection & ChunkSection::operator=(ChunkSection && x)
 	return *this;
 }
 
-void ChunkSection::setBlock(int x, int y, int z, ChunkBlock block)
+ChunkBlock* ChunkSection::setBlock(int x, int y, int z, ChunkBlock block)
 {
 	if (outOfBounds(x) || outOfBounds(y) || outOfBounds(z)) {
 	    auto location = toWorldPosition(x, y, z);
 	    m_pWorld->setBlock(location.x, y, location.z, block);
-	    return;
+	    return nullptr;
 	}
 	
 	m_layers[y].update(block);
 	
 	m_blocks[getIndex(x, y, z)] = block;
+    return &m_blocks[getIndex(x, y, z)];
 }
 
-void ChunkSection::setBlockInSection(int x, int y, int z, ChunkBlock block)
+ChunkBlock* ChunkSection::setBlockInSection(int x, int y, int z, ChunkBlock block)
 {
 	m_layers[y].update(block);
 
 	m_blocks[getIndex(x, y, z)] = block;
+    return &m_blocks[getIndex(x, y, z)];
 }
 
 ChunkBlock ChunkSection::getBlock(int x, int y, int z) const

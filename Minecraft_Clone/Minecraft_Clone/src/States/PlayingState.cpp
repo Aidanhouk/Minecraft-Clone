@@ -16,6 +16,7 @@
 #include <iostream>
 
 std::shared_ptr<SkyManager> m_sky;
+std::shared_ptr<LiquidManager> m_liquidManager;
 
 StatePlaying::StatePlaying(Application &app, const Config &config)
 	: StateBase(app)
@@ -37,8 +38,10 @@ StatePlaying::StatePlaying(Application &app, const Config &config)
 	m_tickManager = std::make_unique<TickManager>();
 	m_tickThread = std::make_unique<std::thread>(std::bind(&TickManager::run, m_tickManager.get()));
 
-	m_sky = std::make_unique<SkyManager>();
-	m_tickManager->add(m_sky);
+    m_sky = std::make_unique<SkyManager>();
+    m_tickManager->add(m_sky);
+    m_liquidManager = std::make_unique<LiquidManager>(&m_world.getChunkManager());
+    m_tickManager->add(m_liquidManager);
 
 	m_player.setDroppedItemsManager(&m_world.getDroppedItemsManager());
 
