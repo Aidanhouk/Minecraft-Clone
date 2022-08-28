@@ -1757,6 +1757,9 @@
     <ClInclude Include="src\World\World\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\World\AO_Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\ext\matrix_clip_space.inl">

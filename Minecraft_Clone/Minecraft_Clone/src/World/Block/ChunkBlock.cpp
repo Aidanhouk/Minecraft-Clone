@@ -44,19 +44,65 @@ bool ChunkBlock::operator!=(ChunkBlock other) const
 
 
 
-int ChunkBlock::getSunLight() const
+bool ChunkBlock::isShaderCube() const
+{
+	return this->getData().shaderType == BlockShaderType::Cube;
+}
+
+bool ChunkBlock::isShaderLiquid() const
+{
+	return this->getData().shaderType == BlockShaderType::Liquid;
+}
+
+bool ChunkBlock::isShaderFlora() const
+{
+	return this->getData().shaderType == BlockShaderType::Flora;
+}
+
+
+
+bool ChunkBlock::isMeshCube() const
+{
+	return this->getData().meshType == BlockMeshType::Cube;
+}
+
+bool ChunkBlock::isMeshX() const
+{
+	return this->getData().meshType == BlockMeshType::X;
+}
+
+bool ChunkBlock::isMeshCactus() const
+{
+	return this->getData().meshType == BlockMeshType::Cactus;
+}
+
+
+
+bool ChunkBlock::isOpaque() const
+{
+    return this->getData().isOpaque;
+}
+
+bool ChunkBlock::isCollidable() const
+{
+	return this->getData().isCollidable;
+}
+
+
+
+unsigned char ChunkBlock::getLight() const
+{
+	return light;
+}
+
+unsigned char ChunkBlock::getSunLight() const
 {
 	return (light >> 4) & 0xF;
 }
 
-int ChunkBlock::getTorchLight() const
+unsigned char ChunkBlock::getTorchLight() const
 {
 	return light & 0xF;
-}
-
-int ChunkBlock::getBlockLight() const
-{
-	return light;
 }
 
 

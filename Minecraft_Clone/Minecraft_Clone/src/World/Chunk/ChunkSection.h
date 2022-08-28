@@ -13,14 +13,17 @@
 
 class World;
 
-class ChunkSection : public IChunk {
+class ChunkSection : public IChunk
+{
+
+private:
 	friend class Chunk;
 	
 	class Layer {
 	public:
 		void update(ChunkBlock c)
 		{
-			if (c.getData().isOpaque)
+			if (c.isOpaque())
 				m_solidBlockCount--;
 			else
 				m_solidBlockCount++;
@@ -84,6 +87,7 @@ private:
 	static bool outOfBounds(int value);
 	static int getIndex(int x, int y, int z);
 
+private:
 	std::array<ChunkBlock, CHUNK_VOLUME> m_blocks;
 	std::array<Layer, CHUNK_SIZE> m_layers;
 	

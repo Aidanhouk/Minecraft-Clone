@@ -11,6 +11,7 @@ class TextureAtlas;
 
 class Hand
 {
+
 public:
 	Hand();
 
@@ -27,12 +28,14 @@ public:
 	void leftMouseUnhold();
 	void rightMouseHold();
 	void rightMouseUnhold();
+
 private:
 	void makeEmptyHandMesh();
 	void makeCubeMesh(ChunkBlock& block);
 	void makeCactusMesh(ChunkBlock& block);
 	void makeDefaultItemMesh(ChunkBlock& block);
 
+private:
 	bool			m_leftMouseHolded;
 	bool			m_rightMouseHolded;
 	bool			m_soundMade;

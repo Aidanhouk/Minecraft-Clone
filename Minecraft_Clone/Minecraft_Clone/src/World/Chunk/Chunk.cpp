@@ -51,7 +51,8 @@ void Chunk::makeMesh(const Camera &camera)
 {
     for (auto &chunkSection : m_chunkSections) {
 		if ((!chunkSection.hasMesh() || m_updateMesh)
-			)//&& camera.getFrustum().isBoxInFrustum(chunkSection.m_aabb))
+			//&& camera.getFrustum().isBoxInFrustum(chunkSection.m_aabb)
+            )
 		{
 			chunkSection.makeMesh();
 			m_updateMesh = false;
@@ -77,7 +78,7 @@ void Chunk::setBlock(int x, int y, int z, ChunkBlock block)
 	// if the highest block was destroyed
 	if (y == m_highestBlocks.get(x, z)) {
 	    auto highBlock = getBlock(x, y--, z);
-	    while (!highBlock.getData().isOpaque && y >= 0) {
+	    while (!highBlock.isOpaque() && y >= 0) {
 	        highBlock = getBlock(x, y--, z);
 	    }
 	}
@@ -96,7 +97,7 @@ void Chunk::setBlockInChunk(int x, int y, int z, ChunkBlock block)
 	// if the highest block was destroyed
 	if (y == m_highestBlocks.get(x, z)) {
 		auto highBlock = getBlock(x, y--, z);
-		while (!highBlock.getData().isOpaque && y >= 0) {
+		while (!highBlock.isOpaque() && y >= 0) {
 			highBlock = getBlock(x, y--, z);
 		}
 	}

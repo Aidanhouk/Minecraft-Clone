@@ -25,19 +25,18 @@ class World;
 
 struct Entity;
 
-class World : public NonCopyable {
+class World : public NonCopyable
+{
+
 public:
     World(const Camera &camera, const Config &config, Player &player);
     ~World();
 
-	World(const World& x) = delete;
-	World& operator=(const World& x) = delete;
-
+public:
 	ChunkBlock getBlock(int x, int y, int z);
+	BlockId getBlockId(int x, int y, int z);
 	std::pair<Chunk*, ChunkBlock*> getBlockRef(int x, int y, int z);
     void setBlock(int x, int y, int z, ChunkBlock block);
-	void addUnloadedBlock(int x, int y, int z, ChunkBlock block);
-	void setAllUnloadedBlocks();
 
 	void reloadChunks() { m_reloadChunks = true; }
     void update(Player &player, float dt);
@@ -63,16 +62,24 @@ public:
 
 	BiomeId getBiomeId(int x, int z);
 
-	void setTorchLight(int x, int y, int z, int lightValue);
-	void removeTorchLight(int x, int y, int z);
-	int getTorchLight(int x, int y, int z);
-	void updateLitChunks(int x, int y, int z);
+    void addUnloadedBlock(int x, int y, int z, ChunkBlock block);
+    void setAllUnloadedBlocks();
 
-	void calculateSunLight(Chunk * chunk);
-	void updateSunLight(int x, int y, int z);
-	void removeSunLight(int x, int y, int z);
+private:
+    void updateChunks();
 
-	void updateAmbientOcclusion(int x, int y, int z, Chunk * chunk);
+    void loadChunks(const Camera& camera);
+    void setSpawnPoint();
+
+// Lighting
+public:
+    void setTorchLight(int x, int y, int z, int lightValue);
+    void removeTorchLight(int x, int y, int z);
+
+    void updateSunLight(int x, int y, int z);
+
+    void updateLitChunks(int x, int y, int z);
+
 private:
 	struct LightNode {
 		LightNode(short x, short y, short z, Chunk* ch)
@@ -81,7 +88,8 @@ private:
 		Chunk* chunk;
 	};
 	void tryAddLightNode(int x, int y, int z, int lightLevel, Chunk * chunk);
-	void propagateLight();
+    void tryAddSunLightNode(int x, int y, int z, int lightLevel, Chunk* chunk);
+
 	struct LightRemovalNode {
 		LightRemovalNode(short x, short y, short z, short value, Chunk* ch)
 			: x(x), y(y), z(z), value(value), chunk(ch) {}
@@ -90,15 +98,24 @@ private:
 		Chunk* chunk;
 	};
 	void tryAddLightRemovalNode(int x, int y, int z, int lightLevel, Chunk * chunk);
+    void tryAddSunLightRemovalNode(int x, int y, int z, int lightLevel, Chunk* chunk);
+
+    void propagateLight();
+    void propagateSunLight(bool _updateChunk = false);
+
 	void unPropagateLight();
+    void unPropagateSunLight();
 
-	void propagateSunLight();
-	// this function is like the one above but it also updates all chunk meshes affected by sunlight
-	void propagateSunLightUpdate();
-	void tryAddSunLightNode(int x, int y, int z, int lightLevel, Chunk * chunk);
-	void unPropagateSunLight();
-	void tryAddSunLightRemovalNode(int x, int y, int z, int lightLevel, Chunk * chunk);
+    int getTorchLight(int x, int y, int z);
 
+    void calculateSunLight(Chunk* chunk);
+    void removeSunLight(int x, int y, int z);
+
+// Ambient Occlusion
+public:
+    void updateAmbientOcclusion(int x, int y, int z, Chunk* chunk);
+
+private:
 	void calculateAmbientOcclusion(Chunk * chunk);
 	void calculateAO_Top(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
 	void calculateAO_Bottom(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
@@ -106,14 +123,8 @@ private:
 	void calculateAO_Right(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
 	void calculateAO_Back(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
 	void calculateAO_Front(int x, int y, int z, Chunk * chunk, ChunkBlock *block);
-	int vertexAO(bool side1, bool side2, bool corner);
 
-
-
-    void loadChunks(const Camera &camera);
-    void updateChunks();
-    void setSpawnPoint();
-
+private:
     ChunkManager m_chunkManager;
 
     std::vector<std::unique_ptr<IWorldEvent>> m_events;

@@ -5,6 +5,8 @@
 #include "../../Block/BlockData.h"
 #include "../../Block/BlockDatabase.h"
 
+#include "../../AO_Constants.h"
+
 #include <SFML/System/Clock.hpp>
 
 #include <cassert>
@@ -124,16 +126,14 @@ namespace cactusFaces {
 
 } // namespace cactusFaces
 
-//namespace {
-//
-//constexpr GLfloat LIGHT_TOP = 1.0f;
-//constexpr GLfloat LIGHT_LEFT = 0.9f;
-//constexpr GLfloat LIGHT_RIGHT = 0.8f;
-//constexpr GLfloat LIGHT_BACK = 0.7f;
-//constexpr GLfloat LIGHT_FRONT = 0.6f;
-//constexpr GLfloat LIGHT_BOT = 0.5f;
-//
-//} // namespace
+namespace {
+    void getAO_Top(std::array<GLfloat, 4>& AO, ChunkBlock block);
+    void getAO_Bottom(std::array<GLfloat, 4>& AO, ChunkBlock block);
+    void getAO_Left(std::array<GLfloat, 4>& AO, ChunkBlock block);
+    void getAO_Right(std::array<GLfloat, 4>& AO, ChunkBlock block);
+    void getAO_Back(std::array<GLfloat, 4>& AO, ChunkBlock block);
+    void getAO_Front(std::array<GLfloat, 4>& AO, ChunkBlock block);
+}
 
 ChunkMeshBuilder::ChunkMeshBuilder(ChunkSection &chunk,
                                    ChunkMeshCollection &mesh)
@@ -179,7 +179,7 @@ void ChunkMeshBuilder::buildMesh()
 					continue;
 
 #ifdef _DEBUG
-				if (block.id >= (Block_t)BlockId::NUM_TYPES) {
+				if (block.getId() >= (Block_t)BlockId::NUM_TYPES) {
 					block = 0;
 					continue;
 				}
@@ -199,57 +199,36 @@ void ChunkMeshBuilder::buildMesh()
 					std::array<GLfloat, 4> ambientOcclusion;
 
 					// Top
+                    getAO_Top(ambientOcclusion, block);
 					torchLight = m_pChunkSection->getBlock(x, y + 1, z).getTorchLight();
 					sunlight = m_pChunkSection->getBlock(x, y + 1, z).getSunLight();
-					ambientOcclusion[0] = block.getAO_Top_LeftBack() * 0.333f;
-					ambientOcclusion[1] = block.getAO_Top_RightBack() * 0.333f;
-					ambientOcclusion[2] = block.getAO_Top_RightFront() * 0.333f;
-					ambientOcclusion[3] = block.getAO_Top_LeftFront() * 0.333f;
-					//for (int i = 0; i < 4; i++)
-					//	if (ambientOcclusion[i] < 0.9f)
-					//		std::cout << ambientOcclusion[i] << "\n";
 					tryAddFaceToMesh(cubeFaces::topFace, data.texTopCoord, position, directions.up, ambientOcclusion, torchLight, sunlight);
 					if ((m_pChunkSection->getLocation().y != 0) || y != 0) {
 						// Bottom
-						ambientOcclusion[0] = block.getAO_Bottom_LeftBack() * 0.333f;
-						ambientOcclusion[1] = block.getAO_Bottom_RightBack() * 0.333f;
-						ambientOcclusion[2] = block.getAO_Bottom_RightFront() * 0.333f;
-						ambientOcclusion[3] = block.getAO_Bottom_LeftFront() * 0.333f;
+                        getAO_Bottom(ambientOcclusion, block);
 						torchLight = m_pChunkSection->getBlock(x, y - 1, z).getTorchLight();
 						sunlight = m_pChunkSection->getBlock(x, y - 1, z).getSunLight();
 						tryAddFaceToMesh(cubeFaces::bottomFace, data.texBottomCoord, position, directions.down, ambientOcclusion, torchLight, sunlight);
 						// Left
-						ambientOcclusion[0] = block.getAO_Left_BottomBack() * 0.333f;
-						ambientOcclusion[1] = block.getAO_Left_BottomFront() * 0.333f;
-						ambientOcclusion[2] = block.getAO_Left_TopFront() * 0.333f;
-						ambientOcclusion[3] = block.getAO_Left_TopBack() * 0.333f;
+                        getAO_Left(ambientOcclusion, block);
 						torchLight = m_pChunkSection->getBlock(x - 1, y, z).getTorchLight();
 						sunlight = m_pChunkSection->getBlock(x - 1, y, z).getSunLight();
 						tryAddFaceToMesh(cubeFaces::leftFace, data.texSideCoord, position, directions.left, ambientOcclusion, torchLight, sunlight);
 						// Right
-						ambientOcclusion[0] = block.getAO_Right_BottomFront() * 0.333f;
-						ambientOcclusion[1] = block.getAO_Right_BottomBack() * 0.333f;
-						ambientOcclusion[2] = block.getAO_Right_TopBack() * 0.333f;
-						ambientOcclusion[3] = block.getAO_Right_TopFront() * 0.333f;
+                        getAO_Right(ambientOcclusion, block);
 						torchLight = m_pChunkSection->getBlock(x + 1, y, z).getTorchLight();
 						sunlight = m_pChunkSection->getBlock(x + 1, y, z).getSunLight();
 						tryAddFaceToMesh(cubeFaces::rightFace, data.texSideCoord, position, directions.right, ambientOcclusion, torchLight, sunlight);
+                        // Back
+                        getAO_Back(ambientOcclusion, block);
+                        torchLight = m_pChunkSection->getBlock(x, y, z - 1).getTorchLight();
+                        sunlight = m_pChunkSection->getBlock(x, y, z - 1).getSunLight();
+                        tryAddFaceToMesh(cubeFaces::backFace, data.texSideCoord, position, directions.back, ambientOcclusion, torchLight, sunlight);
 						// Front
-						ambientOcclusion[0] = block.getAO_Front_BottomLeft() * 0.333f;
-						ambientOcclusion[1] = block.getAO_Front_BottomRight() * 0.333f;
-						ambientOcclusion[2] = block.getAO_Front_TopRight() * 0.333f;
-						ambientOcclusion[3] = block.getAO_Front_TopLeft() * 0.333f;
+                        getAO_Front(ambientOcclusion, block);
 						torchLight = m_pChunkSection->getBlock(x, y, z + 1).getTorchLight();
 						sunlight = m_pChunkSection->getBlock(x, y, z + 1).getSunLight();
 						tryAddFaceToMesh(cubeFaces::frontFace, data.texSideCoord, position, directions.front, ambientOcclusion, torchLight, sunlight);
-						// Back
-						ambientOcclusion[0] = block.getAO_Back_BottomLeft() * 0.333f;
-						ambientOcclusion[1] = block.getAO_Back_BottomRight() * 0.333f;
-						ambientOcclusion[2] = block.getAO_Back_TopRight() * 0.333f;
-						ambientOcclusion[3] = block.getAO_Back_TopLeft() * 0.333f;
-						torchLight = m_pChunkSection->getBlock(x, y, z - 1).getTorchLight(); 
-						sunlight = m_pChunkSection->getBlock(x, y, z - 1).getSunLight();
-						tryAddFaceToMesh(cubeFaces::backFace, data.texSideCoord, position, directions.back, ambientOcclusion, torchLight, sunlight);
 					}
 				}
 				else if (data.meshType == BlockMeshType::X) {
@@ -273,53 +252,28 @@ void ChunkMeshBuilder::buildMesh()
 				else if (data.meshType == BlockMeshType::Cactus) {
 					directions.update(x, y, z);
 
-					// I don't use AO on cactuses. Uncomment statements below to use AO.
-					std::array<GLfloat, 4> ambientOcclusion{ 1.0f,1.0f,1.0f,1.0f };
+					std::array<GLfloat, 4> ambientOcclusion{ AO_FULL, AO_FULL, AO_FULL, AO_FULL };
 					// Top
-					//ambientOcclusion[0] = block.getAO_Top_LeftBack() * 0.333f;
-					//ambientOcclusion[1] = block.getAO_Top_RightBack() * 0.333f;
-					//ambientOcclusion[2] = block.getAO_Top_RightFront() * 0.333f;
-					//ambientOcclusion[3] = block.getAO_Top_LeftFront() * 0.333f;
 					torchLight = m_pChunkSection->getBlock(x, y + 1, z).getTorchLight();
 					sunlight = m_pChunkSection->getBlock(x, y + 1, z).getSunLight();
 					tryAddFaceToMesh(cactusFaces::bottomFace, data.texBottomCoord, position, directions.down, ambientOcclusion, torchLight, sunlight);
 					// Bottom
-					//ambientOcclusion[0] = block.getAO_Bottom_LeftBack() * 0.333f;
-					//ambientOcclusion[1] = block.getAO_Bottom_RightBack() * 0.333f;
-					//ambientOcclusion[2] = block.getAO_Bottom_RightFront() * 0.333f;
-					//ambientOcclusion[3] = block.getAO_Bottom_LeftFront() * 0.333f;
 					torchLight = m_pChunkSection->getBlock(x, y - 1, z).getTorchLight();
 					sunlight = m_pChunkSection->getBlock(x, y - 1, z).getSunLight();
 					tryAddFaceToMesh(cactusFaces::topFace, data.texTopCoord, position, directions.up, ambientOcclusion, torchLight, sunlight);
 					// Left
-					//ambientOcclusion[0] = block.getAO_Left_BottomBack() * 0.333f;
-					//ambientOcclusion[1] = block.getAO_Left_BottomFront() * 0.333f;
-					//ambientOcclusion[2] = block.getAO_Left_TopFront() * 0.333f;
-					//ambientOcclusion[3] = block.getAO_Left_TopBack() * 0.333f;
 					torchLight = m_pChunkSection->getBlock(x - 1, y, z).getTorchLight();
 					sunlight = m_pChunkSection->getBlock(x - 1, y, z).getSunLight();
 					tryAddFaceToMesh(cactusFaces::leftFace, data.texSideCoord, position, directions.left, ambientOcclusion, torchLight, sunlight);
 					// Right
-					//ambientOcclusion[0] = block.getAO_Right_BottomFront() * 0.333f;
-					//ambientOcclusion[1] = block.getAO_Right_BottomBack() * 0.333f;
-					//ambientOcclusion[2] = block.getAO_Right_TopBack() * 0.333f;
-					//ambientOcclusion[3] = block.getAO_Right_TopFront() * 0.333f;
 					torchLight = m_pChunkSection->getBlock(x + 1, y, z).getTorchLight();
 					sunlight = m_pChunkSection->getBlock(x + 1, y, z).getSunLight();
 					tryAddFaceToMesh(cactusFaces::rightFace, data.texSideCoord, position, directions.right, ambientOcclusion, torchLight, sunlight);
 					// Front
-					//ambientOcclusion[0] = block.getAO_Front_BottomLeft() * 0.333f;
-					//ambientOcclusion[1] = block.getAO_Front_BottomRight() * 0.333f;
-					//ambientOcclusion[2] = block.getAO_Front_TopRight() * 0.333f;
-					//ambientOcclusion[3] = block.getAO_Front_TopLeft() * 0.333f;
 					torchLight = m_pChunkSection->getBlock(x, y, z + 1).getTorchLight();
 					sunlight = m_pChunkSection->getBlock(x, y, z + 1).getSunLight();
 					tryAddFaceToMesh(cactusFaces::frontFace, data.texSideCoord, position, directions.front, ambientOcclusion, torchLight, sunlight);
 					// Back
-					//ambientOcclusion[0] = block.getAO_Back_BottomLeft() * 0.333f;
-					//ambientOcclusion[1] = block.getAO_Back_BottomRight() * 0.333f;
-					//ambientOcclusion[2] = block.getAO_Back_TopRight() * 0.333f;
-					//ambientOcclusion[3] = block.getAO_Back_TopLeft() * 0.333f;
 					torchLight = m_pChunkSection->getBlock(x, y, z - 1).getTorchLight();
 					sunlight = m_pChunkSection->getBlock(x, y, z - 1).getSunLight();
 					tryAddFaceToMesh(cactusFaces::backFace, data.texSideCoord, position, directions.back, ambientOcclusion, torchLight, sunlight);
@@ -368,8 +322,7 @@ void ChunkMeshBuilder::tryAddFaceToMesh(
 	}
 }
 
-bool ChunkMeshBuilder::shouldMakeFace(const sf::Vector3i &adjBlockPos,
-                                      const BlockDataHolder &blockData)
+bool ChunkMeshBuilder::shouldMakeFace(const sf::Vector3i &adjBlockPos, const BlockDataHolder &blockData)
 {
     auto adjBlock = m_pChunkSection->getBlock(adjBlockPos.x, adjBlockPos.y, adjBlockPos.z);
     auto &data = adjBlock.getData();
@@ -399,4 +352,49 @@ bool ChunkMeshBuilder::shouldMakeLayer(int y)
            (!m_pChunkSection->getLayer(y + 1).isAllSolid()) ||
            (!m_pChunkSection->getLayer(y - 1).isAllSolid()) ||
            (!adjIsSolid(1, 0)) || (!adjIsSolid(0, 1)) || (!adjIsSolid(-1, 0)) || (!adjIsSolid(0, -1));
+}
+
+namespace {
+    void getAO_Top(std::array<GLfloat, 4>& AO, ChunkBlock block)
+    {
+        AO[0] = block.getAO_Top_LeftBack() * AO_33;
+        AO[1] = block.getAO_Top_RightBack() * AO_33;
+        AO[2] = block.getAO_Top_RightFront() * AO_33;
+        AO[3] = block.getAO_Top_LeftFront() * AO_33;
+    }
+    void getAO_Bottom(std::array<GLfloat, 4>& AO, ChunkBlock block)
+    {
+        AO[0] = block.getAO_Bottom_LeftBack() * AO_33;
+        AO[1] = block.getAO_Bottom_RightBack() * AO_33;
+        AO[2] = block.getAO_Bottom_RightFront() * AO_33;
+        AO[3] = block.getAO_Bottom_LeftFront() * AO_33;
+    }
+    void getAO_Left(std::array<GLfloat, 4>& AO, ChunkBlock block)
+    {
+        AO[0] = block.getAO_Left_BottomBack() * AO_33;
+        AO[1] = block.getAO_Left_BottomFront() * AO_33;
+        AO[2] = block.getAO_Left_TopFront() * AO_33;
+        AO[3] = block.getAO_Left_TopBack() * AO_33;
+    }
+    void getAO_Right(std::array<GLfloat, 4>& AO, ChunkBlock block)
+    {
+        AO[0] = block.getAO_Right_BottomFront() * AO_33;
+        AO[1] = block.getAO_Right_BottomBack() * AO_33;
+        AO[2] = block.getAO_Right_TopBack() * AO_33;
+        AO[3] = block.getAO_Right_TopFront() * AO_33;
+    }
+    void getAO_Back(std::array<GLfloat, 4>& AO, ChunkBlock block)
+    {
+        AO[0] = block.getAO_Back_BottomLeft() * AO_33;
+        AO[1] = block.getAO_Back_BottomRight() * AO_33;
+        AO[2] = block.getAO_Back_TopRight() * AO_33;
+        AO[3] = block.getAO_Back_TopLeft() * AO_33;
+    }
+    void getAO_Front(std::array<GLfloat, 4>& AO, ChunkBlock block)
+    {
+        AO[0] = block.getAO_Front_BottomLeft() * AO_33;
+        AO[1] = block.getAO_Front_BottomRight() * AO_33;
+        AO[2] = block.getAO_Front_TopRight() * AO_33;
+        AO[3] = block.getAO_Front_TopLeft() * AO_33;
+    }
 }

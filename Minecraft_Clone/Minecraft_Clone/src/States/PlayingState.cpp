@@ -12,6 +12,7 @@
 #include "Audio/SoundMaster.h"
 #include "Audio/SoundFunctions.h"
 
+#include <sstream>
 #include <iostream>
 
 std::shared_ptr<SkyManager> m_sky;
@@ -84,6 +85,11 @@ void StatePlaying::setTextSettings(Application &app)
 		app.getWindow().getSize().x / 2,
 		app.getWindow().getSize().y / 5
 	);
+
+    m_debugInfo.setFont(m_font);
+    m_debugInfo.setOutlineColor(sf::Color::Black);
+    m_debugInfo.setCharacterSize(app.getWindow().getSize().x / 100);
+    m_debugInfo.setPosition(0.0f, 50.0f * app.getWindow().getSize().x / 2560);
 }
 
 void StatePlaying::handleEvent(sf::Event e)
@@ -107,21 +113,23 @@ void StatePlaying::handleInput()
 	if (g_PlayerInfo.inventoryCursor)
 		return;
 
-	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-	//	if (m_keyboard.toggle(sf::Keyboard::Add)) {
-	//		++g_Config.renderDistance;
-	//		m_world.reloadChunks();
-	//	}
-	//	if (m_keyboard.toggle(sf::Keyboard::Subtract)) {
-	//		--g_Config.renderDistance;
-	//		if (g_Config.renderDistance < 4)
-	//			g_Config.renderDistance = 4;
-	//		m_world.reloadChunks();
-	//	}
-	//}
-	if (m_keyboard.toggle(sf::Keyboard::C)) {
-		m_world.reloadChunks();
-	}
+#ifdef DEBUG
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+        if (m_keyboard.toggle(sf::Keyboard::PageUp)) {
+            ++g_Config.renderDistance;
+            m_world.reloadChunks();
+        }
+        if (m_keyboard.toggle(sf::Keyboard::PageDown)) {
+            --g_Config.renderDistance;
+            if (g_Config.renderDistance < 4)
+                g_Config.renderDistance = 4;
+            m_world.reloadChunks();
+        }
+    }
+#endif // DEBUG
+    if (m_keyboard.toggle(sf::Keyboard::C)) {
+        m_world.reloadChunks();
+    }
 
 	glm::vec3 lastPosition{ 0 };
 
@@ -224,7 +232,7 @@ void StatePlaying::handleInput()
 							m_player.position.y < ceil(lastPosition.y) + m_player.box.dimensions.y &&
 							m_player.position.y > floor(lastPosition.y) - m_player.box.dimensions.y
 							) ||
-							!heldItem.getData().isCollidable
+							!heldItem.isCollidable()
 							) {
 							m_world.addEvent<PlayerDigEvent>(sf::Mouse::Right, lastPosition, m_player, m_hand);
 							m_placeBlockTimer.restart();
@@ -352,7 +360,18 @@ void StatePlaying::render(RenderMaster &renderer)
 {
 	if (g_PlayerInfo.FPS_HUD) {
 		m_fpsCounter.draw(renderer);
-		m_player.drawGUI(renderer);
+
+        std::ostringstream stream;
+        stream
+            << std::boolalpha
+            << " <F3> Hide debug info"
+            << "\n";
+
+		m_player.printDebugInfo(stream);
+        m_sky->printDebugInfo(stream);
+
+        m_debugInfo.setString(stream.str());
+        renderer.drawSFML(m_debugInfo);
 	}
 
 	switch (g_PlayerInfo.gameState)

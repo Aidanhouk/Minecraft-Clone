@@ -57,6 +57,11 @@ ChunkBlock World::getBlock(int x, int y, int z)
 	}
 }
 
+BlockId World::getBlockId(int x, int y, int z)
+{
+	return getBlock(x, y, z).getData().id;
+}
+
 std::pair<Chunk*, ChunkBlock*> World::getBlockRef(int x, int y, int z)
 {
 	//@TODO fix this one day
@@ -95,7 +100,7 @@ void World::setBlock(int x, int y, int z, ChunkBlock block)
 	auto lightChar = chunk.getBlock(bp.x, y, bp.z).light;
 	block.light = lightChar;
 
-	if (block.getData().isOpaque &&
+	if (block.isOpaque() &&
 		block.getData().id != BlockId::Glowstone) {
 
 		if ((int)(lightChar & 0xF) > 0) {

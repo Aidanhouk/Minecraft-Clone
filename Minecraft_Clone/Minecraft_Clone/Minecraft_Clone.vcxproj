@@ -568,6 +568,7 @@
     <ClInclude Include="src\vendor\glm\vec4.hpp" />
     <ClInclude Include="src\vendor\glm\vector_relational.hpp" />
     <ClInclude Include="src\vendor\stb_image\stb_image.h" />
+    <ClInclude Include="src\World\AO_Constants.h" />
     <ClInclude Include="src\world\block\BlockData.h" />
     <ClInclude Include="src\world\block\BlockDatabase.h" />
     <ClInclude Include="src\world\block\BlockId.h" />

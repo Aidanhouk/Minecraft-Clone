@@ -50,7 +50,7 @@ void DroppedItemsBuilder::buildMesh(World * world)
 		else if (world) {
 			float newY = position.y + 0.3f;
 			for (int i = position.y - 1; i >= 0; --i) {
-				if (world->getBlock(position.x, i, position.z).getData().isCollidable) {
+				if (world->getBlock(position.x, i, position.z).isCollidable()) {
 					newY = i + 1.3f;
 					break;
 				}
@@ -63,10 +63,10 @@ void DroppedItemsBuilder::buildMesh(World * world)
 
 		ChunkBlock block(item.getItemStack().getBlockId());
 
-		if (block.getData().meshType == BlockMeshType::Cube) {
+		if (block.isMeshCube()) {
 			buildCubeMesh(block, position, torchLight, sunLight);
 		}
-		else if (block.getData().meshType == BlockMeshType::Cactus) {
+		else if (block.isMeshCactus()) {
 			buildCactusMesh(block, position, torchLight, sunLight);
 		}
 		else { // X or Default
@@ -154,12 +154,13 @@ void DroppedItemsBuilder::buildDefaultItemMesh(
 				continue;
 
 			auto pixelTexCoords = texCoords;
-			//\
-					xMin 0 6\
-					xMax 2 4\
-					yMin 5 7\
-					yMax 1 3\
-					return { xMin, yMin, xMax, yMin, xMax, yMax, xMin, yMax };
+			/*
+			xMin 0 6
+			xMax 2 4
+			yMin 5 7
+			yMax 1 3
+			return { xMin, yMin, xMax, yMin, xMax, yMax, xMin, yMax };
+            */
 			pixelTexCoords[0] = pixelTexCoords[6] = pixelTexCoords[0] + x * pixelSize; // xMin
 			pixelTexCoords[2] = pixelTexCoords[4] = pixelTexCoords[0] + pixelSize; // xMax
 			pixelTexCoords[5] = pixelTexCoords[7] = pixelTexCoords[5] + y * pixelSize; // yMin

@@ -22,9 +22,11 @@ enum class PrecipitationType {
 
 class SkyManager : public TickObject
 {
+
 public:
 	SkyManager();
 	
+public:
 	void tickUpdate(unsigned int tickTime);
 	void update(glm::vec3 playerPosition, PrecipitationType precipitaionType);
 	
@@ -33,9 +35,10 @@ public:
 	
 	void renderSkyBox(const Camera& camera);
 	void render(const Camera& camera);
-private:
-	void playMusic(unsigned int dayTime);
 
+    void printDebugInfo(std::ostringstream& stream);
+
+private:
 	float precipitationLightLevel;
 	unsigned int dayTime;
 	

@@ -14,7 +14,11 @@ class BlockData;
 struct ChunkMeshCollection;
 struct BlockDataHolder;
 
-class ChunkMeshBuilder {
+class ChunkMeshBuilder
+{
+    using ADJ_BLOCKS_DATA = std::array<std::array<int, 3>, 8>;
+    using AO_DATA = std::array<std::array<int, 3>, 4>;
+
 public:
     ChunkMeshBuilder(ChunkSection &chunk, ChunkMeshCollection &meshes);
 
@@ -30,7 +34,8 @@ private:
 	void calculateAO_Front(int x, int y, int z, std::array<GLfloat, 4> &verticesAO);
 	void calculateAO_Back(int x, int y, int z, std::array<GLfloat, 4> &verticesAO);
 
-	float vertexAO(bool side1, bool side2, bool corner);
+    void calculateAO(int x, int y, int z, std::array<GLfloat, 4>& verticesAO,
+        const ADJ_BLOCKS_DATA& adj_blocks_data, const AO_DATA& AO_data);
 
 	void tryAddFaceToMesh(const std::array<GLfloat, 12> &blockFace,
 		const sf::Vector2i &textureCoords,
@@ -45,6 +50,7 @@ private:
 
     bool shouldMakeLayer(int y);
 
+private:
     const ChunkBlock *m_pBlockPtr = nullptr;
     ChunkSection *m_pChunkSection = nullptr;
     ChunkMeshCollection *m_pMeshes = nullptr;

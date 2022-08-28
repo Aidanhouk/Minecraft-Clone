@@ -50,7 +50,7 @@ https://youtube.com/playlist?list=PLlqmWU1ThvSpI_KBOWY2OALfcfpfgZbJR
 | Q                             | Drop held item                                                 |
 | Mouse wheel                   | Previous/next item in toolbar                                  |
 | 0-9                           | Select item in toolbar                                         |
-| +/-          			| Add/subtract 0.5 hour                                          |
+| PageUp/PageDown		| Add/subtract 0.5 hour                                          |
 | C                             | Reload chunks                                                  |
 | L                             | Lock mouse                                                     |
 | P                             | Toggle postprocessing                                          |

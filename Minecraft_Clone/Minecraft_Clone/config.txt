@@ -1,6 +1,6 @@
-render_distance 12
+render_distance 8
 fullscreen 1
-resolution 0 0 (leave 0 0 for auto-detection)
+resolution 0 0
 fov 70
 gamma 1.0
 contrast 1.0

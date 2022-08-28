@@ -32,6 +32,7 @@ public:
 private:
 	void setTextSettings(Application &app);
 
+private:
 	Mouse m_mouse;
     Keyboard m_keyboard;
     Player m_player;
@@ -49,6 +50,7 @@ private:
 	sf::Text						m_startText;
 	sf::Text						m_pauseText;
 	sf::Text						m_deathText;
+    sf::Text                        m_debugInfo;
 
 	std::unique_ptr<TickManager>	m_tickManager;
 	std::unique_ptr<std::thread>	m_tickThread;

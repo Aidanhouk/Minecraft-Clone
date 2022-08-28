@@ -54,7 +54,7 @@ void World::propagateLight()
 
 		m_lightQueue.pop();
 
-		if (chunk->getBlock(x, y, z).getData().isOpaque)
+		if (chunk->getBlock(x, y, z).isOpaque())
 			continue;
 
 		int lightLevel = chunk->getTorchLight(x, y, z);
@@ -117,7 +117,7 @@ void World::unPropagateLight()
 
 		m_lightRemovalQueue.pop();
 
-		if (chunk->getBlock(x, y, z).getData().isOpaque
+		if (chunk->getBlock(x, y, z).isOpaque()
 			&& chunk->getBlock(x, y, z).getData().id != BlockId::Glowstone) {
 			continue;
 		}
@@ -183,7 +183,7 @@ void World::calculateSunLight(Chunk * chunk)
 		for (int z = 0; z < CHUNK_SIZE; ++z) {
 			int y = chunk->getHeightAt(x, z) + 1;
 
-			while (!chunk->getBlock(x, y, z).getData().isOpaque && y > 0) {
+			while (!chunk->getBlock(x, y, z).isOpaque() && y > 0) {
 				chunk->setSunLight(x, y, z, SUN_LIGHT_VALUE);
 				m_sunLightQueue.emplace(x, y, z, chunk);
 				--y;
@@ -201,6 +201,7 @@ void World::updateSunLight(int x, int y, int z)
 {
 	auto chunkPosition = getChunkXZ(x, z);
 	std::unique_lock<std::mutex> lock(m_genMutex);
+
 	auto &chunk = m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z);
 	chunk.addBusyLevel();
 	if (!chunk.hasLoaded()) {
@@ -213,7 +214,7 @@ void World::updateSunLight(int x, int y, int z)
 	auto lightValue = chunk.getSunLight(x, y, z);
 	
 	if (lightValue == SUN_LIGHT_VALUE) {
-		while (!chunk.getBlock(x, y, z).getData().isOpaque && y > 0) {
+		while (!chunk.getBlock(x, y, z).isOpaque() && y > 0) {
 			chunk.setSunLight(x, y, z, SUN_LIGHT_VALUE);
 			m_sunLightQueue.emplace(x, y, z, &chunk);
 			--y;
@@ -225,7 +226,7 @@ void World::updateSunLight(int x, int y, int z)
 		m_sunLightQueue.emplace(x, y, z, &chunk);
 	}
 
-	propagateSunLightUpdate();
+	propagateSunLight(true);
 
 	chunk.setSunLightLoaded(true);
 	chunk.subtractBusyLevel();
@@ -233,8 +234,9 @@ void World::updateSunLight(int x, int y, int z)
 
 void World::removeSunLight(int x, int y, int z)
 {
-	std::unique_lock<std::mutex> lock(m_genMutex);
 	auto chunkPosition = getChunkXZ(x, z);
+	std::unique_lock<std::mutex> lock(m_genMutex);
+
 	auto &chunk = m_chunkManager.getChunk(chunkPosition.x, chunkPosition.z);
 	if (!chunk.hasLoaded())
 		return;
@@ -246,7 +248,7 @@ void World::removeSunLight(int x, int y, int z)
 	chunk.setSunLight(blockPositionInChunk.x, y, blockPositionInChunk.z, 0);
 	--y;
 
-	while (!chunk.getBlock(blockPositionInChunk.x, y, blockPositionInChunk.z).getData().isOpaque && y > 0) {
+	while (!chunk.getBlock(blockPositionInChunk.x, y, blockPositionInChunk.z).isOpaque() && y > 0) {
 		chunk.setSunLight(blockPositionInChunk.x, y, blockPositionInChunk.z, 0);
 		m_sunLightRemovalQueue.emplace(blockPositionInChunk.x, y, blockPositionInChunk.z, 0, &chunk);
 		--y;
@@ -257,7 +259,7 @@ void World::removeSunLight(int x, int y, int z)
 	propagateSunLight();
 }
 
-void World::propagateSunLight()
+void World::propagateSunLight(bool _updateChunk/* = false*/)
 {
 	while (!m_sunLightQueue.empty()) {
 		LightNode &node = m_sunLightQueue.front();
@@ -265,64 +267,12 @@ void World::propagateSunLight()
 		short y = node.y;
 		short z = node.z;
 		Chunk* chunk = node.chunk;
+        if (_updateChunk)
+            updateChunk(chunk->getLocation().x * CHUNK_SIZE + x, y, chunk->getLocation().y * CHUNK_SIZE + z);
 
 		m_sunLightQueue.pop();
 
-		if (chunk->getBlock(x, y, z).getData().isOpaque)
-			continue;
-
-		int lightLevel = chunk->getSunLight(x, y, z);
-
-		if (x == 0) {
-			auto &chunkLocation = chunk->getLocation();
-			Chunk* adjChunk = &m_chunkManager.getChunk(chunkLocation.x - 1, chunkLocation.y);
-			tryAddSunLightNode(CHUNK_SIZE - 1, y, z, lightLevel, adjChunk);
-		}
-		else
-			tryAddSunLightNode(x - 1, y, z, lightLevel, chunk);
-
-		if (x == CHUNK_SIZE - 1) {
-			auto& chunkLocation = chunk->getLocation();
-			Chunk* adjChunk = &m_chunkManager.getChunk(chunkLocation.x + 1, chunkLocation.y);
-			tryAddSunLightNode(0, y, z, lightLevel, adjChunk);
-		}
-		else
-			tryAddSunLightNode(x + 1, y, z, lightLevel, chunk);
-
-		if (z == 0) {
-			auto& chunkLocation = chunk->getLocation();
-			Chunk* adjChunk = &m_chunkManager.getChunk(chunkLocation.x, chunkLocation.y - 1);
-			tryAddSunLightNode(x, y, CHUNK_SIZE - 1, lightLevel, adjChunk);
-		}
-		else
-			tryAddSunLightNode(x, y, z - 1, lightLevel, chunk);
-
-		if (z == CHUNK_SIZE - 1) {
-			auto& chunkLocation = chunk->getLocation();
-			Chunk* adjChunk = &m_chunkManager.getChunk(chunkLocation.x, chunkLocation.y + 1);
-			tryAddSunLightNode(x, y, 0, lightLevel, adjChunk);
-		}
-		else
-			tryAddSunLightNode(x, y, z + 1, lightLevel, chunk);
-
-		tryAddSunLightNode(x, y - 1, z, lightLevel, chunk);
-		tryAddSunLightNode(x, y + 1, z, lightLevel, chunk);
-	}
-}
-
-void World::propagateSunLightUpdate()
-{
-	while (!m_sunLightQueue.empty()) {
-		LightNode &node = m_sunLightQueue.front();
-		short x = node.x;
-		short y = node.y;
-		short z = node.z;
-		Chunk* chunk = node.chunk;
-		updateChunk(chunk->getLocation().x * CHUNK_SIZE + x, y, chunk->getLocation().y * CHUNK_SIZE + z);
-
-		m_sunLightQueue.pop();
-
-		if (chunk->getBlock(x, y, z).getData().isOpaque)
+		if (chunk->getBlock(x, y, z).isOpaque())
 			continue;
 
 		int lightLevel = chunk->getSunLight(x, y, z);
@@ -385,7 +335,7 @@ void World::unPropagateSunLight()
 
 		m_sunLightRemovalQueue.pop();
 	
-		if (chunk->getBlock(x, y, z).getData().isOpaque)
+		if (chunk->getBlock(x, y, z).isOpaque())
 			continue;
 	
 		if (x == 0) {

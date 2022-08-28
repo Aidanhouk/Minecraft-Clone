@@ -294,31 +294,12 @@ const Biome &ClassicOverWorldGenerator::getBiome(int chunkX, int chunkZ) const
 {
 	int biomeValue = m_biomeMap.get(chunkX, chunkZ);
 
-	if (biomeValue < 750) {
-		return m_oceanBiome;
-	}
-	else if (biomeValue < 950) {
-		return m_desertBiome;
-	}
-	else if (biomeValue < 1050) {
-		return m_valleyBiome;
-	}
-	else if (biomeValue < 1250) {
-		return m_forestBiome;
-	}
-	else if (biomeValue < 1450) {
-		return m_mountainsBiome;
-	}
-	else if (biomeValue < 1850) {
-		return m_tundraBiome;
-	}
-	else {
-		return m_valleyBiome;
-	}
+	return getBiome(biomeValue);
 }
 
 const Biome & ClassicOverWorldGenerator::getBiome(int biomeValue) const
 {
+	// @TODO more work with biome generation
 	if (biomeValue < 750) {
 		return m_oceanBiome;
 	}

@@ -34,13 +34,6 @@ Player::Player(const Config &config, Application &app)
 	m_saturationLevel(SATURATION_DEFAULT)
 {
 	g_PlayerInfo.player = this;
-
-    m_font.loadFromFile("Res/Fonts/MinecraftRegular.otf");
-
-	m_playerInfo.setFont(m_font);
-	m_playerInfo.setOutlineColor(sf::Color::Black);
-	m_playerInfo.setCharacterSize(app.getWindow().getSize().x / 100);
-	m_playerInfo.setPosition(0.0f, 50.0f * app.getWindow().getSize().x / 2560);
 }
 
 int Player::addItem(BlockId blockID, int number)
@@ -345,7 +338,7 @@ void Player::collide(World &world, const glm::vec3 &vel)
 
 				auto block = world.getBlock(x, y, z);
 
-				if (block.getData().isCollidable) {
+				if (block.isCollidable()) {
 
 					bool gotDamage = false;
 					if (block.getData().id == BlockId::Cactus && !m_creativeMode) {
@@ -449,7 +442,7 @@ bool Player::sneakyFallCheck(float dt, World & world)
 
 		bool playerDoesNotFall = false;
 		for (int i = 0; i < 4; ++i) {
-			if (blocks[i].getData().isCollidable)
+			if (blocks[i].isCollidable())
 				playerDoesNotFall = true;
 		}
 
@@ -463,7 +456,7 @@ bool Player::sneakyFallCheck(float dt, World & world)
 
 			std::array<bool, 4> existingBlocks{ false };
 			for (int i = 0; i < 4; ++i) {
-				if (blocks[i].getData().isCollidable)
+				if (blocks[i].isCollidable())
 					existingBlocks[i] = true;
 			}
 
@@ -948,40 +941,25 @@ void Player::jump(World &world)
 	}
 }
 
-void Player::drawGUI(RenderMaster &master)
+void Player::printDebugInfo(std::ostringstream& stream)
 {
-	std::ostringstream stream;
-	stream
-		<< " <F3> Hide debug info"
-		<< "\n"
-		<< "\n XYZ:  " <<
-		(int)position.x << " / " <<
-		(int)position.y << " / " <<
-		(int)position.z
-		<< "\n Chunk:  " <<
-		(int)position.x % CHUNK_SIZE << " / " <<
-		(int)position.y % CHUNK_SIZE << " / " <<
-		(int)position.z % CHUNK_SIZE
-		<< std::boolalpha
-		<< "\n <F4>   Fog - " << g_Info.fog
-		<< "\n <F5>   Weather - " << g_Info.weather
-		//<< "\n <LCtrl +/->  Render distance - " << g_Config.renderDistance
-		<< "\n <+/-> Time : ";
-	if (g_Info.dayTime >= 18000)
-		stream << g_Info.dayTime / 1000 - 18 << " AM";
-	else if (g_Info.dayTime < 6000)
-		stream << g_Info.dayTime / 1000 + 6 << " AM";
-	else
-		stream << g_Info.dayTime / 1000 - 6 << " PM";
-
-	stream
-		<< "\n <Tab> Creative mode - " << m_creativeMode
-		<< "\n <F>    Flying (in creative mode) - " << m_isFlying
-		<< "\n <P>    Post processing - " << g_Config.postProcess;
-
-	m_playerInfo.setString(stream.str());
-
-	master.drawSFML(m_playerInfo);
+    stream
+        << "\n XYZ:  " <<
+        (int)position.x << " / " <<
+        (int)position.y << " / " <<
+        (int)position.z
+        << "\n Chunk:  " <<
+        (int)position.x % CHUNK_SIZE << " / " <<
+        (int)position.y % CHUNK_SIZE << " / " <<
+        (int)position.z % CHUNK_SIZE
+#ifdef DEBUG
+        << "\n <LCtrl + PageUp/PageDown>"
+#endif // DEBUG
+        << "\n Render distance - " << g_Config.renderDistance
+        << "\n"
+        << "\n <Tab> Creative mode - " << m_creativeMode
+        << "\n <F>    Flying (in creative mode) - " << m_isFlying
+        ;
 }
 
 void Player::parametersUpdate()

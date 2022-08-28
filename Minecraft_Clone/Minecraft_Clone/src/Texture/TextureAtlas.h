@@ -12,10 +12,13 @@ struct Pixel
 	float a;
 };
 
-class TextureAtlas : public BasicTexture {
+class TextureAtlas : public BasicTexture
+{
+
 public:
 	TextureAtlas(const std::string &textureFileName, unsigned int imageSize, unsigned int individualTextureSize);
 
+public:
 	void createAtlasPixelsVector();
 
 	void getTextureCoords(std::array<GLfloat, 8>& texCoords, const sf::Vector2i &coords);
@@ -24,6 +27,7 @@ public:
 	const sf::Image & getAtlasImage() const { return m_textureAtlasImage; }
 	int getAtlasSize() const { return m_imageSize; }
 	int getIndivTextureSize() const { return m_individualTextureSize; }
+
 private:
 	sf::Image m_textureAtlasImage;
 	int m_imageSize;

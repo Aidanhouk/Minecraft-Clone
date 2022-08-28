@@ -2,358 +2,91 @@
 
 #include "../ChunkSection.h"
 
+#include "../../AO_Constants.h"
+
+namespace {
+	bool isBlockMakesAO(ChunkBlock block);
+	float vertexAO(bool side1, bool side2, bool corner);
+}
+
 void ChunkMeshBuilder::calculateAO_Top(int x, int y, int z, std::array<GLfloat, 4>& verticesAO)
 {
-	if (m_pChunkSection->getBlock(x, y, z).getData().isOpaque) {
-		verticesAO[0] = 1.0f;
-		verticesAO[1] = 1.0f;
-		verticesAO[2] = 1.0f;
-		verticesAO[3] = 1.0f;
-		return;
-	}
-
-	std::array<bool, 8> adjBlocks;
-	ChunkBlock block;
-
-	block = m_pChunkSection->getBlock(x - 1, y, z - 1);
-	adjBlocks[0] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y, z - 1);
-	adjBlocks[1] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y, z - 1);
-	adjBlocks[2] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y, z);
-	adjBlocks[3] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y, z + 1);
-	adjBlocks[4] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y, z + 1);
-	adjBlocks[5] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x - 1, y, z + 1);
-	adjBlocks[6] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x - 1, y, z);
-	adjBlocks[7] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-
-	verticesAO[0] = vertexAO(adjBlocks[5], adjBlocks[7], adjBlocks[6]);
-	verticesAO[1] = vertexAO(adjBlocks[3], adjBlocks[5], adjBlocks[4]);
-	verticesAO[2] = vertexAO(adjBlocks[1], adjBlocks[3], adjBlocks[2]);
-	verticesAO[3] = vertexAO(adjBlocks[7], adjBlocks[1], adjBlocks[0]);
-
-	block = m_pChunkSection->getBlock(x, y, z);
-	if (block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube) {
-		if (verticesAO[0] == 1.0f)
-			verticesAO[0] = 0.666f;
-		if (verticesAO[1] == 1.0f)
-			verticesAO[1] = 0.666f;
-		if (verticesAO[2] == 1.0f)
-			verticesAO[2] = 0.666f;
-		if (verticesAO[3] == 1.0f)
-			verticesAO[3] = 0.666f;
-		return;
-	}
+    calculateAO(x, y, z, verticesAO, ADJ_BLOCKS_DATA_TOP, AO_DATA_TOP);
 }
 
 void ChunkMeshBuilder::calculateAO_Bottom(int x, int y, int z, std::array<GLfloat, 4>& verticesAO)
 {
-	if (m_pChunkSection->getBlock(x, y, z).getData().isOpaque) {
-		verticesAO[0] = 1.0f;
-		verticesAO[1] = 1.0f;
-		verticesAO[2] = 1.0f;
-		verticesAO[3] = 1.0f;
-		return;
-	}
-
-	std::array<bool, 8> adjBlocks;
-	ChunkBlock block;
-
-	block = m_pChunkSection->getBlock(x - 1, y, z - 1);
-	adjBlocks[0] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y, z - 1);
-	adjBlocks[1] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y, z - 1);
-	adjBlocks[2] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y, z);
-	adjBlocks[3] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y, z + 1);
-	adjBlocks[4] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y, z + 1);
-	adjBlocks[5] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x - 1, y, z + 1);
-	adjBlocks[6] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x - 1, y, z);
-	adjBlocks[7] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-
-	verticesAO[0] = vertexAO(adjBlocks[7], adjBlocks[1], adjBlocks[0]);
-	verticesAO[1] = vertexAO(adjBlocks[1], adjBlocks[3], adjBlocks[2]);
-	verticesAO[2] = vertexAO(adjBlocks[3], adjBlocks[5], adjBlocks[4]);
-	verticesAO[3] = vertexAO(adjBlocks[5], adjBlocks[7], adjBlocks[6]);
-
-	block = m_pChunkSection->getBlock(x, y, z);
-	if (block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube) {
-		if (verticesAO[0] == 1.0f)
-			verticesAO[0] = 0.666f;
-		if (verticesAO[1] == 1.0f)
-			verticesAO[1] = 0.666f;
-		if (verticesAO[2] == 1.0f)
-			verticesAO[2] = 0.666f;
-		if (verticesAO[3] == 1.0f)
-			verticesAO[3] = 0.666f;
-		return;
-	}
+    calculateAO(x, y, z, verticesAO, ADJ_BLOCKS_DATA_BOTTOM, AO_DATA_BOTTOM);
 }
 
 void ChunkMeshBuilder::calculateAO_Left(int x, int y, int z, std::array<GLfloat, 4>& verticesAO)
 {
-	if (m_pChunkSection->getBlock(x, y, z).getData().isOpaque) {
-		verticesAO[0] = 1.0f;
-		verticesAO[1] = 1.0f;
-		verticesAO[2] = 1.0f;
-		verticesAO[3] = 1.0f;
-		return;
-	}
-
-	std::array<bool, 8> adjBlocks;
-	ChunkBlock block;
-
-	block = m_pChunkSection->getBlock(x, y + 1, z - 1);
-	adjBlocks[0] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y + 1, z);
-	adjBlocks[1] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y + 1, z + 1);
-	adjBlocks[2] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y, z + 1);
-	adjBlocks[3] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y - 1, z + 1);
-	adjBlocks[4] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y - 1, z);
-	adjBlocks[5] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y - 1, z - 1);
-	adjBlocks[6] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y, z - 1);
-	adjBlocks[7] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-
-	verticesAO[0] = vertexAO(adjBlocks[5], adjBlocks[7], adjBlocks[6]);
-	verticesAO[1] = vertexAO(adjBlocks[3], adjBlocks[5], adjBlocks[4]);
-	verticesAO[2] = vertexAO(adjBlocks[1], adjBlocks[3], adjBlocks[2]);
-	verticesAO[3] = vertexAO(adjBlocks[7], adjBlocks[1], adjBlocks[0]);
-
-	block = m_pChunkSection->getBlock(x, y, z);
-	if (block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube) {
-		if (verticesAO[0] == 1.0f)
-			verticesAO[0] = 0.666f;
-		if (verticesAO[1] == 1.0f)
-			verticesAO[1] = 0.666f;
-		if (verticesAO[2] == 1.0f)
-			verticesAO[2] = 0.666f;
-		if (verticesAO[3] == 1.0f)
-			verticesAO[3] = 0.666f;
-		return;
-	}
+    calculateAO(x, y, z, verticesAO, ADJ_BLOCKS_DATA_LEFT, AO_DATA_LEFT);
 }
 
 void ChunkMeshBuilder::calculateAO_Right(int x, int y, int z, std::array<GLfloat, 4>& verticesAO)
 {
-	if (m_pChunkSection->getBlock(x, y, z).getData().isOpaque) {
-		verticesAO[0] = 1.0f;
-		verticesAO[1] = 1.0f;
-		verticesAO[2] = 1.0f;
-		verticesAO[3] = 1.0f;
-		return;
-	}
-
-	std::array<bool, 8> adjBlocks;
-	ChunkBlock block;
-
-	block = m_pChunkSection->getBlock(x, y + 1, z - 1);
-	adjBlocks[0] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y + 1, z);
-	adjBlocks[1] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y + 1, z + 1);
-	adjBlocks[2] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y, z + 1);
-	adjBlocks[3] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y - 1, z + 1);
-	adjBlocks[4] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y - 1, z);
-	adjBlocks[5] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y - 1, z - 1);
-	adjBlocks[6] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y, z - 1);
-	adjBlocks[7] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-
-	verticesAO[0] = vertexAO(adjBlocks[3], adjBlocks[5], adjBlocks[4]);
-	verticesAO[1] = vertexAO(adjBlocks[5], adjBlocks[7], adjBlocks[6]);
-	verticesAO[3] = vertexAO(adjBlocks[1], adjBlocks[3], adjBlocks[2]);
-	verticesAO[2] = vertexAO(adjBlocks[7], adjBlocks[1], adjBlocks[0]);
-
-	block = m_pChunkSection->getBlock(x, y, z);
-	if (block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube) {
-		if (verticesAO[0] == 1.0f)
-			verticesAO[0] = 0.666f;
-		if (verticesAO[1] == 1.0f)
-			verticesAO[1] = 0.666f;
-		if (verticesAO[2] == 1.0f)
-			verticesAO[2] = 0.666f;
-		if (verticesAO[3] == 1.0f)
-			verticesAO[3] = 0.666f;
-		return;
-	}
+    calculateAO(x, y, z, verticesAO, ADJ_BLOCKS_DATA_RIGHT, AO_DATA_RIGHT);
 }
 
 void ChunkMeshBuilder::calculateAO_Front(int x, int y, int z, std::array<GLfloat, 4>& verticesAO)
 {
-	if (m_pChunkSection->getBlock(x, y, z).getData().isOpaque) {
-		verticesAO[0] = 1.0f;
-		verticesAO[1] = 1.0f;
-		verticesAO[2] = 1.0f;
-		verticesAO[3] = 1.0f;
-		return;
-	}
-
-	std::array<bool, 8> adjBlocks;
-	ChunkBlock block;
-
-	block = m_pChunkSection->getBlock(x - 1, y + 1, z);
-	adjBlocks[0] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y + 1, z);
-	adjBlocks[1] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y + 1, z);
-	adjBlocks[2] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y, z);
-	adjBlocks[3] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y - 1, z);
-	adjBlocks[4] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y - 1, z);
-	adjBlocks[5] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x - 1, y - 1, z);
-	adjBlocks[6] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x - 1, y, z);
-	adjBlocks[7] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-
-	verticesAO[0] = vertexAO(adjBlocks[5], adjBlocks[7], adjBlocks[6]);
-	verticesAO[1] = vertexAO(adjBlocks[3], adjBlocks[5], adjBlocks[4]);
-	verticesAO[2] = vertexAO(adjBlocks[1], adjBlocks[3], adjBlocks[2]);
-	verticesAO[3] = vertexAO(adjBlocks[7], adjBlocks[1], adjBlocks[0]);
-
-	block = m_pChunkSection->getBlock(x, y, z);
-	if (block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube) {
-		if (verticesAO[0] == 1.0f)
-			verticesAO[0] = 0.666f;
-		if (verticesAO[1] == 1.0f)
-			verticesAO[1] = 0.666f;
-		if (verticesAO[2] == 1.0f)
-			verticesAO[2] = 0.666f;
-		if (verticesAO[3] == 1.0f)
-			verticesAO[3] = 0.666f;
-		return;
-	}
+    calculateAO(x, y, z, verticesAO, ADJ_BLOCKS_DATA_FRONT, AO_DATA_FRONT);
 }
 
 void ChunkMeshBuilder::calculateAO_Back(int x, int y, int z, std::array<GLfloat, 4>& verticesAO)
 {
-	if (m_pChunkSection->getBlock(x, y, z).getData().isOpaque) {
-		verticesAO[0] = 1.0f;
-		verticesAO[1] = 1.0f;
-		verticesAO[2] = 1.0f;
-		verticesAO[3] = 1.0f;
-		return;
-	}
-
-	std::array<bool, 8> adjBlocks;
-	ChunkBlock block;
-
-	block = m_pChunkSection->getBlock(x - 1, y + 1, z);
-	adjBlocks[0] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y + 1, z);
-	adjBlocks[1] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y + 1, z);
-	adjBlocks[2] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y, z);
-	adjBlocks[3] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x + 1, y - 1, z);
-	adjBlocks[4] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x, y - 1, z);
-	adjBlocks[5] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x - 1, y - 1, z);
-	adjBlocks[6] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-	block = m_pChunkSection->getBlock(x - 1, y, z);
-	adjBlocks[7] = block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube;
-
-	verticesAO[0] = vertexAO(adjBlocks[3], adjBlocks[5], adjBlocks[4]);
-	verticesAO[2] = vertexAO(adjBlocks[7], adjBlocks[1], adjBlocks[0]);
-	verticesAO[1] = vertexAO(adjBlocks[5], adjBlocks[7], adjBlocks[6]);
-	verticesAO[3] = vertexAO(adjBlocks[1], adjBlocks[3], adjBlocks[2]);
-
-	block = m_pChunkSection->getBlock(x, y, z);
-	if (block != 0 && block.getData().id != BlockId::Water &&
-		block.getData().meshType == BlockMeshType::Cube) {
-		if (verticesAO[0] == 1.0f)
-			verticesAO[0] = 0.666f;
-		if (verticesAO[1] == 1.0f)
-			verticesAO[1] = 0.666f;
-		if (verticesAO[2] == 1.0f)
-			verticesAO[2] = 0.666f;
-		if (verticesAO[3] == 1.0f)
-			verticesAO[3] = 0.666f;
-		return;
-	}
+    calculateAO(x, y, z, verticesAO, ADJ_BLOCKS_DATA_BACK, AO_DATA_BACK);
 }
 
-float ChunkMeshBuilder::vertexAO(bool side1, bool side2, bool corner)
+void ChunkMeshBuilder::calculateAO(int x, int y, int z, std::array<GLfloat, 4>& verticesAO,
+    const ADJ_BLOCKS_DATA& adj_blocks_data, const AO_DATA& AO_data)
 {
-	if (side1 && side2) {
-		return 0.333f;
+    if (m_pChunkSection->getBlock(x, y, z).isOpaque()) {
+        for (auto vertexAO : verticesAO)
+            vertexAO = AO_FULL;
+
+        return;
+    }
+
+    std::array<bool, 8> adjBlocks;
+
+    for (size_t i = 0; i < adjBlocks.size(); ++i) {
+        auto xx = x + adj_blocks_data[i][0];
+        auto yy = y + adj_blocks_data[i][1];
+        auto zz = z + adj_blocks_data[i][2];
+        adjBlocks[0] = isBlockMakesAO(m_pChunkSection->getBlock(xx, yy, zz));
+    }
+
+    for (size_t i = 0; i < verticesAO.size(); ++i) {
+        auto side1 = adjBlocks[AO_data[i][0]];
+        auto side2 = adjBlocks[AO_data[i][1]];
+        auto corner = adjBlocks[AO_data[i][2]];
+        verticesAO[i] = vertexAO(side1, side2, corner);
+    }
+
+    if (isBlockMakesAO(m_pChunkSection->getBlock(x, y, z))) {
+        for (auto vertexAO : verticesAO) {
+            if (vertexAO == AO_FULL)
+                vertexAO = AO_66;
+        }
+    }
+}
+
+namespace {
+	bool isBlockMakesAO(ChunkBlock block)
+	{
+		return
+			block != 0 &&
+			block.getData().id != BlockId::Water &&
+			block.isMeshCube();
 	}
-	return (3 - (side1 + side2 + corner)) / 3.0f;
+
+	float vertexAO(bool side1, bool side2, bool corner)
+	{
+		if (side1 && side2) {
+			return AO_33;
+		}
+		return (3 - (side1 + side2 + corner)) / 3.0f;
+	}
 }

@@ -12,7 +12,7 @@ void World::setAllUnloadedBlocks()
 {
 	for (auto iter = m_unloadedBlocks.begin(); iter != m_unloadedBlocks.end(); ++iter) {
 #ifdef _DEBUG
-		if (iter->block.id >= (Block_t)BlockId::NUM_TYPES) {
+		if (iter->block.getId() >= (Block_t)BlockId::NUM_TYPES) {
 			continue;
 		}
 #endif // _DEBUG

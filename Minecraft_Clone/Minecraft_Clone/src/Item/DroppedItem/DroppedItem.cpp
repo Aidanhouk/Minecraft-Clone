@@ -114,7 +114,7 @@ void DroppedItem::move(World &world, float dt)
 			for (int y = position.y - box.dimensions.y; y < position.y + box.dimensions.y; ++y) {
 				for (int z = position.z - box.dimensions.z; z < position.z + box.dimensions.z; ++z) {
 
-					if (world.getBlock(x, y, z).getData().isCollidable) {
+					if (world.getBlock(x, y, z).isCollidable()) {
 						position.x -= m_acceleration.x * dt;
 						position.z -= m_acceleration.z * dt;
 						
@@ -128,7 +128,7 @@ void DroppedItem::move(World &world, float dt)
 	else {
 
 		auto blockBelow = world.getBlock(position.x, position.y - box.dimensions.y, position.z);
-		if (blockBelow.getData().isCollidable) {
+		if (blockBelow.isCollidable()) {
 			m_acceleration.y = 0.0f;
 			position.y += 0.001f;
 		}
@@ -136,7 +136,7 @@ void DroppedItem::move(World &world, float dt)
 			m_acceleration.y = -0.1f;
 
 		auto blockAbove = world.getBlock(position.x, position.y + 0.6f * box.dimensions.y, position.z);
-		if (blockAbove.getData().isCollidable) {
+		if (blockAbove.isCollidable()) {
 			position.y -= 2 * m_acceleration.y * dt;
 			m_acceleration.y = -0.01f;
 		}
@@ -147,7 +147,7 @@ void DroppedItem::startFalling(World & world)
 {
 	if (m_acceleration.x == 0.0f && m_acceleration.z == 0.0f) {
 		auto blockBelow = world.getBlock(position.x, position.y - box.dimensions.y, position.z);
-		if (blockBelow != 0 && blockBelow.getData().isCollidable) {
+		if (blockBelow != 0 && blockBelow.isCollidable()) {
 			m_acceleration.y = 0.0f;
 		}
 		else if (m_acceleration.y == 0.0f)

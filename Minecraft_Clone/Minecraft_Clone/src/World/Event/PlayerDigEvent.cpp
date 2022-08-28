@@ -72,7 +72,7 @@ void PlayerDigEvent::_handle(World &world)
 			if (!newBlockPlaced)
 				world.setBlock(x, y, z, 0);
 
-			if (block.getData().isOpaque &&
+			if (block.isOpaque() &&
 				block.getData().id != BlockId::Glowstone) { // @TODO refactor to get rid of glowstone while calculating sun light
 
 				if ((int)(lightChar & 0xF) > 0) {
@@ -125,7 +125,7 @@ void PlayerDigEvent::breakBlocksAbove(World & world, const glm::vec3 &pos)
 
 	while (blockId == BlockId::Cactus ||
 		blockId == BlockId::SugarCane ||
-		(block.getData().shaderType == BlockShaderType::Flora && !block.getData().isCollidable))
+		(block.isShaderFlora() && !block.isCollidable()))
 	{
 		switch (blockId)
 		{

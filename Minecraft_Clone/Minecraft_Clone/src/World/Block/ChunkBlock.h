@@ -5,7 +5,10 @@
 struct BlockDataHolder;
 class BlockType;
 
-struct ChunkBlock {
+class ChunkBlock
+{
+
+public:
 	ChunkBlock() = default;
 
 	ChunkBlock(Block_t id);
@@ -13,21 +16,33 @@ struct ChunkBlock {
 	ChunkBlock(Block_t id, unsigned char light);
 	ChunkBlock(BlockId id, unsigned char light);
 
+public:
 	const BlockDataHolder &getData() const;
 	const BlockType &getType() const;
 
-	const Block_t getId() const
-	{
-		return id;
-	}
+	const Block_t getId() const { return id; }
 
 	bool operator==(ChunkBlock other) const;
 	bool operator!=(ChunkBlock other) const;
 
-	int getSunLight() const;
-	int getTorchLight() const;
-	int getBlockLight() const;
+public:
+	bool isShaderCube() const;
+	bool isShaderLiquid() const;
+	bool isShaderFlora() const;
 
+	bool isMeshCube() const;
+	bool isMeshX() const;
+	bool isMeshCactus() const;
+
+    bool isOpaque() const;
+	bool isCollidable() const;
+
+public:
+	unsigned char getLight() const;
+	unsigned char getSunLight() const;
+	unsigned char getTorchLight() const;
+
+public:
 	int getAO_Top_LeftBack() const;
 	void setAO_Top_LeftBack(int value);
 	int getAO_Top_LeftFront() const;
@@ -82,14 +97,23 @@ struct ChunkBlock {
 	int getAO_Front_BottomRight() const;
 	void setAO_Front_BottomRight(int value);
 
+private:
 	Block_t id = 0;
-	// First 4 bits are sunLight values, fully lit by default
-	// Second 4 bits are torchLight values
+
+public:
+	/*
+	First 4 bits are sunLight values, fully lit by default
+	Second 4 bits are torchLight values
+	*/
 	unsigned char light = 0xf0;
-	// AO values must be store for each 4 vertices of all 6 faces = 24 vertices.
-	// Vertex can be fully occluded, half occluded or fully lit -> 3 stages -> 2 bits for every 24 vertices.
-	// That's 48 bits or 6 bytes. I use 3 shorts here for convenince but it might be a little ineffective.
-	// 11 - fully lit, 10 - 66%, 01 - 33%, 00 - N/A
+
+private:
+	/*
+	AO values must be store for each 4 vertices of all 6 faces = 24 vertices.
+	Vertex can be fully occluded, half occluded or fully lit -> 3 stages -> 2 bits for every 24 vertices.
+	That's 48 bits or 6 bytes. I use 3 shorts here for convenince but it might be a little ineffective.
+	11 - fully lit, 10 - 66%, 01 - 33%, 00 - N/A
+	*/
 	unsigned short AO_TopBottom = 0xffffff;
 	unsigned short AO_LeftRight = 0xffffff;
 	unsigned short AO_BackFront = 0xffffff;

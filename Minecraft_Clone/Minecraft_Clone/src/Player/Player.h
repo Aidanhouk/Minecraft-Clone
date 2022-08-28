@@ -20,7 +20,9 @@ class Application;
 class DroppedItemsManager;
 class Hand;
 
-class Player : public Entity {
+class Player : public Entity
+{
+
 public:
 	Player(const Config &config, Application &app);
 	
@@ -40,7 +42,7 @@ public:
 	bool isFlying() const { return m_isFlying; }
 	bool isRunning() const { return m_isRunning; }
 
-	void drawGUI(RenderMaster &master);
+	void printDebugInfo(std::ostringstream& stream);
 	void drawInventory(RenderMaster &master);
 
 	void setDroppedItemsManager(DroppedItemsManager* manager);
@@ -51,6 +53,7 @@ public:
 	void loseDurability(int loseDur);
 
 	void openCraftingTable();
+
 private:
 	void statsUpdate(float dt);
 	void decreaseSaturation();
@@ -71,6 +74,7 @@ private:
 
 	void parametersUpdate();
 	
+private:
 	bool m_mouseLocked = false;
 	bool m_creativeMode = false;
 	bool m_isFlying = false;
@@ -101,8 +105,6 @@ private:
 	sf::Clock m_fallDelayTimer;
 	
 	Inventory m_Inventory;
-	sf::Text m_playerInfo;
-	sf::Font m_font;
 	
 	glm::vec3 m_acceleration;
 	

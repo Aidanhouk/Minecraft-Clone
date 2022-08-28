@@ -16,6 +16,7 @@ ChunkManager::ChunkManager(World *world)
 
 Chunk &ChunkManager::getChunk(int x, int z)
 {
+    std::unique_lock<std::mutex> lock(m_genMutex);
     VectorXZ key{x, z};
     if (!chunkExistsAt(x, z)) {
 		sf::Vector2i vector{ x,z };

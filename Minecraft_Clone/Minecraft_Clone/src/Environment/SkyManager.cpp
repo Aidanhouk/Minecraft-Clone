@@ -8,9 +8,25 @@
 #include "Audio/SoundMaster.h"
 #include "GlobalInfo.h"
 
+#include <sstream>
 #include <iostream>
 
+//#define RealTime
+
 #define degreesToRadians(x) x*(3.141592f/180.0f)
+
+namespace {
+    const unsigned int
+        TIME_SUNRISE = 0u,
+        TIME_DAY = 6000u,
+        TIME_SUNSET = 12000u,
+        TIME_NIGHT = 18000u;
+
+    void playMusic(unsigned int dayTime);
+    inline bool isInRange(int n, int x, int y);
+
+    void printTime(std::ostringstream& stream, int time);
+}
 
 float blend(float x, float y, float factor)
 {
@@ -26,103 +42,101 @@ SkyManager::SkyManager()
 	m_currentPrecipitation = PrecipitationType::NONE;
 	m_precipitationVisibility = 0.0f;
 
-	std::vector<GLfloat> sVertexCoords{
+	const std::vector<GLfloat> sVertexCoords{
 		-25,  25, 400,
 		 25,  25, 400,
 		 25, -25, 400,
 		-25, -25, 400
 	};
 
-	std::vector<GLfloat> sTextureCoords{
+    const std::vector<GLfloat> sTextureCoords{
 		0, 1,
 		1, 1,
 		1, 0,
 		0, 0,
 	};
 
-	std::vector<GLuint> sIndexCoords{
+    const std::vector<GLuint> sIndexCoords{
 		0, 1, 2,
 		2, 3, 0
 	};
 
 	m_SunModel.addData({ sVertexCoords, sTextureCoords, sIndexCoords });
 
-	std::vector<GLfloat> mVertexCoords{
+    const std::vector<GLfloat> mVertexCoords{
 		-15,  15, -400,
 		 15,  15, -400,
 		 15, -15, -400,
 		-15, -15, -400
 	};
 
-	std::vector<GLfloat> mTextureCoords{
+    const std::vector<GLfloat> mTextureCoords{
 		0, 1,
 		1, 1,
 		1, 0,
 		0, 0,
 	};
 
-	std::vector<GLuint> mIndexCoords{
+    const std::vector<GLuint> mIndexCoords{
 		0, 1, 2,
 		2, 3, 0
 	};
 
 	m_MoonModel.addData({ mVertexCoords, mTextureCoords, mIndexCoords });
-
 }
 
 void SkyManager::tickUpdate(unsigned int tickTime)
 {
-	// Real-life time
-	//std::time_t t = std::time(0);
-	//std::tm* now = localtime(&t);
-	//dayTime = 1000 * now->tm_hour +
-	//	(1000.0f / 60) * now->tm_min +
-	//	(1000.0f / 60 / 60) * now->tm_sec;
-	//dayTime -= 6000;
-	//if (dayTime < 0)
-	//	dayTime = 24000 - dayTime;
-	// Day Time Management
-	dayTime += tickTime - m_prevTime;
+#ifdef RealTime
+    struct tm newtime;
+    time_t now = time(nullptr);
+    localtime_s(&newtime, &now);
+    int Month = 1 + newtime.tm_mon;
+    dayTime = 1000 * newtime.tm_hour +
+        (1000.0f / 60) * newtime.tm_min +
+        (1000.0f / 60 / 60) * newtime.tm_sec;
+    dayTime -= 6000;
+    if (dayTime < 0)
+        dayTime = 24000 - dayTime;
+#else
+    dayTime += tickTime - m_prevTime;
+    m_prevTime = tickTime;
+#endif
 	playMusic(dayTime);
-	m_prevTime = tickTime;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Add)) {
-		dayTime += 500;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract)) {
-		dayTime += 23500;
-		if (dayTime > 24000) {
-			dayTime -= 24000;
-		}
-	}
+    if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp)) {
+            dayTime += 500;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown)) {
+            dayTime += 23500;
+            if (dayTime > 24000) {
+                dayTime -= 24000;
+            }
+        }
+    }
 
-	if (dayTime > 23999) {
+	if (dayTime > 23999)
 		dayTime = 0;
-	}
 
 	//Ambient light
 	// 0 = 6 am
 	// 6000 = 12 am
 	// 12000 = 6 pm
 	// 18000 = 12 pm
-	if (dayTime < 1500) { //6am - 9am sun gets brighter
-		g_Info.lighting = blend(0.6f, 1.0f, (float)dayTime / 1500);
-	}
-	if (dayTime > 1500 && dayTime < 10500) { //9am - 3pm sun is brightest
+	if (dayTime < 1500) //6am - 9am sun gets brighter
+        g_Info.lighting = blend(0.6f, 1.0f, (float)dayTime / 1500);
+	else if (dayTime > 1500 && dayTime < 10500) //9am - 3pm sun is brightest
 		g_Info.lighting = 1.0f;
-	}
-	if (dayTime > 10500 && dayTime < 12000) { //3pm - 6pm sun gets dimmer
+	else if (dayTime > 10500 && dayTime < 12000) //3pm - 6pm sun gets dimmer
 		g_Info.lighting = blend(1.0f, 0.6f, (float)((float)dayTime - 10500) / 1500);
-	}
-	if (dayTime > 12000 && dayTime < 13500) { //6pm - 9pm sun light fades
+    else if (dayTime > 12000 && dayTime < 13500) //6pm - 9pm sun light fades
 		g_Info.lighting = blend(0.6f, 0.1f, (float)((float)dayTime - 12000) / 1500);
-	}
-	if (dayTime > 13500 && dayTime < 22500) { //9pm - 3am is night
+    else if (dayTime > 13500 && dayTime < 22500) //9pm - 3am is night
 		g_Info.lighting = 0.1f;
-	}
-	if (dayTime > 22500 && dayTime < 24000) {
+    else if (dayTime > 22500 && dayTime < 24000)
 		g_Info.lighting = blend(0.1f, 0.6f, (float)((float)dayTime - 22500) / 1500);
-	}
+
 	g_Info.lighting *= precipitationLightLevel;
 
 	//Update Sun/Moon matrix
@@ -266,20 +280,64 @@ void SkyManager::render(const Camera& camera)
 	g_Info.cam = (Camera*)&camera;
 }
 
-void SkyManager::playMusic(unsigned int dayTime)
+void SkyManager::printDebugInfo(std::ostringstream& stream)
 {
-	if (dayTime < 0 + 100)
-		g_SoundMaster.keepPlaying(MusicSet::DefaultInGameSet);
+    stream
+        << "\n"
+        << "\n <F4>   Fog - " << g_Info.fog
+        << "\n <F5>   Weather - " << g_Info.weather
+        << "\n <P>    Post processing - " << g_Config.postProcess
+        << "\n"
+        ;
 
-	else if (dayTime >= 6000 &&
-		dayTime < 6000 + 100)
-		g_SoundMaster.keepPlaying(MusicSet::DefaultInGameSet);
+    if (g_Info.dayTime >= 18000) {
+        int time = g_Info.dayTime - 18000;
+        printTime(stream, time);
+        stream << " AM";
+    }
+    else if (g_Info.dayTime < 6000) {
+        int time = g_Info.dayTime + 6000;
+        printTime(stream, time);
+        stream << " AM";
+    }
+    else {
+        int time = g_Info.dayTime - 6000;
+        printTime(stream, time);
+        stream << " PM";
+    }
+}
 
-	else if (dayTime >= 12000 &&
-		dayTime < 12000 + 100)
-		g_SoundMaster.keepPlaying(MusicSet::DefaultInGameSet);
+namespace {
+    void playMusic(unsigned int dayTime)
+    {
+        bool play = false;
+        if (isInRange(dayTime, TIME_SUNRISE, TIME_SUNRISE + 100u))
+            g_SoundMaster.keepPlaying(MusicSet::DefaultInGameSet);
 
-	else if (dayTime >= 18000 &&
-		dayTime < 18000 + 100)
-		g_SoundMaster.keepPlaying(MusicSet::DefaultInGameSet);
+        else if (isInRange(dayTime, TIME_DAY, TIME_DAY + 100u))
+            g_SoundMaster.keepPlaying(MusicSet::DefaultInGameSet);
+
+        else if (isInRange(dayTime, TIME_SUNSET, TIME_SUNSET + 100u))
+            g_SoundMaster.keepPlaying(MusicSet::DefaultInGameSet);
+
+        else if (isInRange(dayTime, TIME_NIGHT, TIME_NIGHT + 100u))
+            g_SoundMaster.keepPlaying(MusicSet::DefaultInGameSet);
+    }
+
+    inline bool isInRange(int n, int x, int y)
+    {
+        return n >= x && n < y;
+    }
+
+    void printTime(std::ostringstream& stream, int time)
+    {
+        int hours = time / 1000;
+        std::string hourZero = hours < 10 ? "0" : "";
+        int minutes = (time % 1000) / 1000.0f * 60;
+        std::string minutesZero = minutes < 10 ? "0" : "";
+        stream
+            << "\n <PageUp/PageDown>"
+            << "\n Time: " << hourZero << hours << ":" << minutesZero << minutes
+            ;
+    }
 }

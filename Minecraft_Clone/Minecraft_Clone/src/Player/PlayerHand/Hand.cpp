@@ -162,11 +162,11 @@ bool Hand::update(ChunkBlock block)
 			makeEmptyHandMesh();
 		}
 		else {
-			if (block.getData().meshType == BlockMeshType::Cube) {
+			if (block.isMeshCube()) {
 				m_handMesh.setHandType(HandType::Cube);
 				makeCubeMesh(block);
 			}
-			else if (block.getData().meshType == BlockMeshType::Cactus) {
+			else if (block.isMeshCactus()) {
 				m_handMesh.setHandType(HandType::Cactus);
 				makeCactusMesh(block);
 			}
