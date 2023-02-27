@@ -131,6 +131,7 @@
     <ClCompile Include="src\world\block\BlockDatabase.cpp" />
     <ClCompile Include="src\world\block\blocktypes\Blocktype.cpp" />
     <ClCompile Include="src\world\block\ChunkBlock.cpp" />
+    <ClCompile Include="src\World\Block\Utils\BlockUtils.cpp" />
     <ClCompile Include="src\world\Chunk\Chunk.cpp" />
     <ClCompile Include="src\world\Chunk\ChunkManager.cpp" />
     <ClCompile Include="src\World\Chunk\ChunkMesh\ChunkMesh.cpp" />
@@ -167,6 +168,8 @@
     <ClInclude Include="src\Audio\Music\MusicSet.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Config.h" />
+    <ClInclude Include="src\Constants\WorldConstants\AO_Constants.h" />
+    <ClInclude Include="src\Constants\WorldConstants\WorldConstants.h" />
     <ClInclude Include="src\Context.h" />
     <ClInclude Include="src\Crafting\Crafting.h" />
     <ClInclude Include="src\Crafting\CraftRecipes.h" />
@@ -573,6 +576,7 @@
     <ClInclude Include="src\world\block\BlockId.h" />
     <ClInclude Include="src\world\block\blocktypes\Blocktype.h" />
     <ClInclude Include="src\world\block\ChunkBlock.h" />
+    <ClInclude Include="src\World\Block\Utils\BlockUtils.h" />
     <ClInclude Include="src\world\Chunk\Chunk.h" />
     <ClInclude Include="src\world\Chunk\ChunkManager.h" />
     <ClInclude Include="src\World\Chunk\ChunkMesh\ChunkMesh.h" />

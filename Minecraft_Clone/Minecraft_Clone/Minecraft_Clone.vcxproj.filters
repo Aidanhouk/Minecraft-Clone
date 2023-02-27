@@ -432,6 +432,9 @@
     <ClCompile Include="src\World\World\WorldAmbientOcclusion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\World\Block\Utils\BlockUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader\Shader.h">
@@ -1755,6 +1758,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\World\World\World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Constants\WorldConstants\AO_Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Constants\WorldConstants\WorldConstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\Block\Utils\BlockUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
