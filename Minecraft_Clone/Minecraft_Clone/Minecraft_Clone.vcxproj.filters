@@ -432,7 +432,7 @@
     <ClCompile Include="src\World\World\WorldAmbientOcclusion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Environment\LiquidManager.cpp">
+    <ClCompile Include="src\World\Block\Utils\BlockUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1340,6 +1340,9 @@
     <ClInclude Include="src\world\Chunk\ChunkSection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\world\Chunk\IChunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\world\Event\IWorldEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1757,13 +1760,13 @@
     <ClInclude Include="src\World\World\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\World\AO_Constants.h">
+    <ClInclude Include="src\Constants\WorldConstants\AO_Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\World\Block\LiquidBlock.h">
+    <ClInclude Include="src\Constants\WorldConstants\WorldConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Environment\LiquidManager.h">
+    <ClInclude Include="src\World\Block\Utils\BlockUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -29,7 +29,6 @@
     <ClCompile Include="src\Crafting\CraftRecipes.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Environment\Cloud.cpp" />
-    <ClCompile Include="src\Environment\LiquidManager.cpp" />
     <ClCompile Include="src\Environment\ProcSky.cpp" />
     <ClCompile Include="src\Environment\Rain.cpp" />
     <ClCompile Include="src\Environment\SkyManager.cpp" />
@@ -132,6 +131,7 @@
     <ClCompile Include="src\world\block\BlockDatabase.cpp" />
     <ClCompile Include="src\world\block\blocktypes\Blocktype.cpp" />
     <ClCompile Include="src\world\block\ChunkBlock.cpp" />
+    <ClCompile Include="src\World\Block\Utils\BlockUtils.cpp" />
     <ClCompile Include="src\world\Chunk\Chunk.cpp" />
     <ClCompile Include="src\world\Chunk\ChunkManager.cpp" />
     <ClCompile Include="src\World\Chunk\ChunkMesh\ChunkMesh.cpp" />
@@ -168,6 +168,8 @@
     <ClInclude Include="src\Audio\Music\MusicSet.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Config.h" />
+    <ClInclude Include="src\Constants\WorldConstants\AO_Constants.h" />
+    <ClInclude Include="src\Constants\WorldConstants\WorldConstants.h" />
     <ClInclude Include="src\Context.h" />
     <ClInclude Include="src\Crafting\Crafting.h" />
     <ClInclude Include="src\Crafting\CraftRecipes.h" />
@@ -569,18 +571,18 @@
     <ClInclude Include="src\vendor\glm\vec4.hpp" />
     <ClInclude Include="src\vendor\glm\vector_relational.hpp" />
     <ClInclude Include="src\vendor\stb_image\stb_image.h" />
-    <ClInclude Include="src\World\AO_Constants.h" />
     <ClInclude Include="src\world\block\BlockData.h" />
     <ClInclude Include="src\world\block\BlockDatabase.h" />
     <ClInclude Include="src\world\block\BlockId.h" />
     <ClInclude Include="src\world\block\blocktypes\Blocktype.h" />
     <ClInclude Include="src\world\block\ChunkBlock.h" />
-    <ClInclude Include="src\World\Block\LiquidBlock.h" />
+    <ClInclude Include="src\World\Block\Utils\BlockUtils.h" />
     <ClInclude Include="src\world\Chunk\Chunk.h" />
     <ClInclude Include="src\world\Chunk\ChunkManager.h" />
     <ClInclude Include="src\World\Chunk\ChunkMesh\ChunkMesh.h" />
     <ClInclude Include="src\World\Chunk\ChunkMesh\ChunkMeshBuilder.h" />
     <ClInclude Include="src\world\Chunk\ChunkSection.h" />
+    <ClInclude Include="src\world\Chunk\IChunk.h" />
     <ClInclude Include="src\World\Chunk\UnloadedBlock.h" />
     <ClInclude Include="src\world\Event\IWorldEvent.h" />
     <ClInclude Include="src\world\Event\PlayerDigEvent.h" />
@@ -601,7 +603,6 @@
     <ClInclude Include="src\world\Generation\Terrain\ClassicOverWorldGenerator.h" />
     <ClInclude Include="src\World\Generation\Terrain\SuperFlatGenerator.h" />
     <ClInclude Include="src\world\Generation\Terrain\TerrainGenerator.h" />
-    <ClInclude Include="src\Environment\LiquidManager.h" />
     <ClInclude Include="src\World\World\World.h" />
     <ClInclude Include="src\World\World\WorldConstants.h" />
   </ItemGroup>
