@@ -1,6 +1,6 @@
 #include "MovementFOV.h"
 
-#include "Config.h"
+#include "UserSettings/Config.h"
 
 MovementFOV::MovementFOV(const Config &config)
 	: m_MinFOV{ config.fov }

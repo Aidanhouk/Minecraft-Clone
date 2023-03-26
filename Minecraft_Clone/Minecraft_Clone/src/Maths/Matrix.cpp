@@ -3,7 +3,7 @@
 #include "../Camera.h"
 #include "../Entity.h"
 
-#include "../Config.h"
+#include "UserSettings/Config.h"
 #include "RenderSettings.h"
 
 glm::mat4 makeModelMatrix(const Entity &entity)

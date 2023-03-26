@@ -31,4 +31,3 @@ Features are missing:
 
 Please view 'controls.txt' for controls!
 
-=========== Press enter to begin ============

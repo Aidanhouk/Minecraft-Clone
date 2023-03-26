@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../Config.h"
+#include "UserSettings/Config.h"
 #include "ChunkRenderer.h"
 #include "AimedBlock/DelineateBlockRenderer.h"
 #include "AimedBlock/BreakBlockRenderer.h"
