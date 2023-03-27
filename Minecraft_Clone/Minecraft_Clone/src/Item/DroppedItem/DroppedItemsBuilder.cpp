@@ -11,7 +11,7 @@
 #include "World/World/World.h"
 
 #include "RenderSettings.h"
-#include "Config.h"
+#include "UserSettings/Config.h"
 #include "Player/PlayerInfo.h"
 #include "Player/Player.h"
 

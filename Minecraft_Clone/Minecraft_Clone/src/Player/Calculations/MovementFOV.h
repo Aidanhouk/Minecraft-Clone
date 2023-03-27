@@ -2,7 +2,7 @@
 
 #include <SFML/System.hpp>
 
-#include "Config.h"
+#include "UserSettings/Config.h"
 
 class MovementFOV
 {

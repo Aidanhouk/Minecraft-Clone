@@ -8,6 +8,6 @@ saturation 1.2
 brightness 1.0
 post_process 1
 
-mouse_sensitivity 5.0
+mouse_sensitivity 10.0
 
 music_volume 50

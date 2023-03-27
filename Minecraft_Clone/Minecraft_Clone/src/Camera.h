@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config.h"
+#include "UserSettings/Config.h"
 #include "Entity.h"
 #include "Maths/Frustum.h"
 #include "Maths/glm.h"

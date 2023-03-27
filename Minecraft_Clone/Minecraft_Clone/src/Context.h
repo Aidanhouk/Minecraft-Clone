@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Config.h"
+#include "UserSettings/Config.h"
 
 extern sf::RenderWindow* g_Window;
 

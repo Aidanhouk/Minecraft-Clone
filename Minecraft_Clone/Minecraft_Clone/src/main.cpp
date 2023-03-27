@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "Config.h"
+#include "UserSettings/Config.h"
 
 #ifdef __WIN32
 extern "C" {
@@ -15,10 +15,13 @@ __declspec(dllexport) bool AmdPowerXpressRequestHighPerformance = true;
 
 namespace
 {
+    static constexpr int RENDER_DISTANCE_MIN = 4;
+    static constexpr int FOV_MIN = 30, FOV_MAX = 115;
+
 	void loadConfig(Config &config);
 	void loadShaders();
 	void displayInfo();
-} // namespace
+}
 
 int main()
 {
@@ -32,7 +35,7 @@ int main()
 
 	Application app(config);
 
-	app.runLoop();;
+	app.runLoop();
 
 	return EXIT_SUCCESS;
 }
@@ -44,77 +47,75 @@ namespace {
 		std::string key;
 
 		if (configFile.is_open()) {
+            std::cout << "config:\n";
 			while (configFile >> key) {
 				if (key == "render_distance") {
 					configFile >> config.renderDistance;
-					if (config.renderDistance < 4)
-						config.renderDistance = 4;
+					if (config.renderDistance < RENDER_DISTANCE_MIN)
+						config.renderDistance = RENDER_DISTANCE_MIN;
 #ifdef _DEBUG
-					config.renderDistance = 4;
+					config.renderDistance = RENDER_DISTANCE_MIN;
 #endif // _DEBUG
-					std::cout << "Config: Render distance: "
+					std::cout << "Render distance: "
 						<< config.renderDistance << '\n';
 					// formula is not that good, would be nice to hardcore every render distance option
 					config.fogDensity = 0.014f * 8.0f / config.renderDistance;
 				}
 				else if (key == "fullscreen") {
 					configFile >> config.isFullscreen;
-					std::cout << "Config: Fullscreen mode: " << std::boolalpha
+					std::cout << "Fullscreen mode: " << std::boolalpha
 						<< config.isFullscreen << '\n';
 				}
 				else if (key == "resolution") {
 					configFile >> config.windowX >> config.windowY;
 					if (config.windowX == 0 || config.windowY == 0) {
 						config.customResolution = false;
-						std::cout << "Config: Resolution: screen resolution\n";
+						std::cout << "Resolution: screen resolution\n";
 					}
 					else {
 						config.customResolution = true;
-						std::cout << "Config: Resolution: " << config.windowX << " x "
+						std::cout << "Resolution: " << config.windowX << " x "
 							<< config.windowY << '\n';
 					}
 				}
 				else if (key == "fov") {
 					int fov;
 					configFile >> fov;
-					if (fov < 30)
-						fov = 30;
-					else if (fov > 115)
-						fov = 115;
+                    std::clamp(fov, FOV_MIN, FOV_MAX);
 					config.fov = fov;
-					std::cout << "Config: Field of view: " << config.fov << '\n';
+					std::cout << "Field of view: " << config.fov << '\n';
 				}
 
 				else if (key == "gamma") {
 					configFile >> config.gamma;
-					std::cout << "Config: Gamma: " << config.gamma << std::endl;
+					std::cout << "Gamma: " << config.gamma << std::endl;
 				}
 				else if (key == "contrast") {
 					configFile >> config.contrast;
-					std::cout << "Config: Contrast: " << config.contrast << std::endl;
+					std::cout << "Contrast: " << config.contrast << std::endl;
 				}
 				else if (key == "saturation") {
 					configFile >> config.saturation;
-					std::cout << "Config: Saturation: " << config.saturation << std::endl;
+					std::cout << "Saturation: " << config.saturation << std::endl;
 				}
 				else if (key == "brightness") {
 					configFile >> config.value;
-					std::cout << "Config: Brightness(value): " << config.value << std::endl;
+					std::cout << "Brightness(value): " << config.value << std::endl;
 				}
 				else if (key == "post_process") {
 					configFile >> config.postProcess;
-					std::cout << "Config: Post Processing: " << config.postProcess << std::endl;
+					std::cout << "Post Processing: " << config.postProcess << std::endl;
 				}
 
 				else if (key == "mouse_sensitivity") {
 					configFile >> config.mouseSensitivity;
-					std::cout << "Config: Mouse sensitivity: "
+					std::cout << "Mouse sensitivity: "
 						<< config.mouseSensitivity << '\n';
 				}
 
 				else if (key == "music_volume") {
 					configFile >> config.musicVolume;
-					std::cout << "Config: Music volume: "
+					std::cout << "Music volume: "
 						<< config.musicVolume << '\n';
 				}
 			}
@@ -154,35 +155,36 @@ namespace {
 			while (shaderFile >> key) {
 				if (key == "fxaa") {
 					shaderFile >> g_ShaderSettings.fxaa;
-					std::cout << "Shader: FXAA: " << g_ShaderSettings.fxaa << std::endl;
+					std::cout << "FXAA: " << g_ShaderSettings.fxaa << "\n";
 				}
 				else if (key == "bloom") {
 					shaderFile >> g_ShaderSettings.bloom;
-					std::cout << "Shader: Bloom: " << g_ShaderSettings.bloom << std::endl;
+					std::cout << "Bloom: " << g_ShaderSettings.bloom << "\n";
 				}
 				else if (key == "motion_blur") {
 					shaderFile >> g_ShaderSettings.motionblur;
-					std::cout << "Shader: Motion Blur: " << g_ShaderSettings.motionblur << std::endl;
+					std::cout << "Motion Blur: " << g_ShaderSettings.motionblur << "\n";
 				}
 				else if (key == "anisotropic_filtration") {
 					shaderFile >> g_ShaderSettings.aniso;
-					std::cout << "Shader: Anisotropic Filtering: " << g_ShaderSettings.aniso << std::endl;
+					std::cout << "Anisotropic Filtering: " << g_ShaderSettings.aniso << "\n";
 				}
 			}
 		}
 		else {
-			std::cerr << "Error: Could not find shaders.txt file! Using defaults.\n";
+			std::cerr << "Error: Could not find shaders.txt file. Using defaults...\n";
 		}
 		std::cout << "\n";
 	}
 
 	void displayInfo()
 	{
-		std::ifstream inFile("Res/info.txt");
-		if (inFile.is_open()) {
+		std::ifstream infoFile("Res/info.txt");
+		if (infoFile.is_open()) {
 			std::string line;
-			while (std::getline(inFile, line))
+			while (std::getline(infoFile, line))
 				std::cout << line << "\n";
 		}
+        std::cout << "========== = Press enter to begin ============" << "\n";
 	}
 } // namespace

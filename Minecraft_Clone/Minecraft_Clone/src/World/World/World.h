@@ -16,7 +16,7 @@
 #include "../Chunk/UnloadedBlock.h"
 #include "../Event/IWorldEvent.h"
 
-#include "../Config.h"
+#include "UserSettings/Config.h"
 
 class RenderMaster;
 class Camera;

@@ -23,7 +23,7 @@
     <ClCompile Include="src\Audio\Music\Music.cpp" />
     <ClCompile Include="src\Audio\Music\MusicSet.cpp" />
     <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Config.cpp" />
+    <ClCompile Include="src\UserSettings\Config.cpp" />
     <ClCompile Include="src\Context.cpp" />
     <ClCompile Include="src\Crafting\Crafting.cpp" />
     <ClCompile Include="src\Crafting\CraftRecipes.cpp" />
@@ -167,7 +167,7 @@
     <ClInclude Include="src\Audio\Music\MusicId.h" />
     <ClInclude Include="src\Audio\Music\MusicSet.h" />
     <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Config.h" />
+    <ClInclude Include="src\UserSettings\Config.h" />
     <ClInclude Include="src\Constants\WorldConstants\AO_Constants.h" />
     <ClInclude Include="src\Constants\WorldConstants\WorldConstants.h" />
     <ClInclude Include="src\Context.h" />

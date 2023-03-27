@@ -171,7 +171,7 @@
     <ClCompile Include="src\ShaderData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Config.cpp">
+    <ClCompile Include="src\UserSettings\Config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PostProcess\Framebuffer.cpp">
@@ -443,7 +443,7 @@
     <ClInclude Include="src\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Config.h">
+    <ClInclude Include="src\UserSettings\Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\other\NonCopyable.h">

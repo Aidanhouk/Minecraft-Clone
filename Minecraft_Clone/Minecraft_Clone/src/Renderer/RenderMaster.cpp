@@ -8,7 +8,7 @@
 #include "../World/Chunk/ChunkMesh/ChunkMesh.h"
 #include "../World/Chunk/ChunkSection.h"
 
-#include "../Config.h"
+#include "UserSettings/Config.h"
 #include "../RenderSettings.h"
 #include "../ShaderData.h"
 #include "Inventory/IconsMesh.h"
